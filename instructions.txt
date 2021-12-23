@@ -1,0 +1,2 @@
+If *.jsp is not loading, go to File | Project Structure | Modules | <module> | Web.
+There select folder with JSP files, usually select whole webapp folder.
