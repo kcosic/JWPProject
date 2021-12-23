@@ -1,0 +1,28 @@
+@import "variables";
+@import "../../bundles/bootstrap/scss/functions";
+
+//bootstrap variable override
+$blue:      $primary-color;
+$red:       $danger-color;
+$yellow:    $warning-color;
+$green:     $success-color;
+$cyan:      $info-color;
+$gray-100:  $secondary-color-100;
+$gray-200:  $secondary-color-200;
+$gray-300:  $secondary-color-300;
+$gray-400:  $secondary-color-400;
+$gray-500:  $secondary-color-500;
+$gray-600:  $secondary-color-600;
+$gray-700:  $secondary-color-700;
+$gray-800:  $secondary-color-800;
+$gray-900:  $secondary-color-900;
+$black: $black-color;
+$white: $white-color;
+@import "../../bundles/bootstrap/scss/variables";
+@import "../../bundles/bootstrap/scss/bootstrap";
+
+body {
+  font-family: "Droid Sans", sans-serif;
+  background-color: $background-color !important;
+  color: $text-color !important;
+}

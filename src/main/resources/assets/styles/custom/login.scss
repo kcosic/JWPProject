@@ -1,0 +1,8 @@
+@import "global";
+
+.red-border{
+  border: 1px solid $danger-color;
+  border-radius: 10px;
+  background-color: $danger-color;
+  color:$background-color;
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+    <persistence-unit name="JWP">
+        <class>com.kcosic.jwp.shared.model.entities.AddressEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.CartEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.CartItemEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.CategoryEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.CustomerEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.HistoryEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.ItemEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.RoleEntity</class>
+        <properties>
+            <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>
+            <property name="jakarta.persistence.jdbc.user" value="admin"/>
+            <property name="jakarta.persistence." value="admin"/>
+            <property name="jakarta.persistence.jdbc.password" value="Q1w2e3qwerrr"/>
+        </properties>
+        <!--<properties>
+
+
+            <property name="toplink.jdbc.url"
+                      value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>
+            <property name="toplink.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="hibernate.connection.url"
+                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
+            <property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="openjpa.ConnectionURL"
+                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
+            <property name="openjpa.ConnectionDriverName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="eclipselink.jdbc.url"
+                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
+            <property name="eclipselink.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        </properties>-->
+    </persistence-unit>
+</persistence>
