@@ -38,12 +38,14 @@ public class CustomerEntity extends BaseEntity {
     private int roleId;
     @OneToMany(mappedBy = "customerByUserId")
     private Collection<AddressEntity> addressesById;
+    @OneToMany(mappedBy = "customerByCustomerId")
+    private Collection<CartEntity> cartsById;
+    @ManyToOne
+    @JoinColumn(name = "currentCartId", referencedColumnName = "id", insertable=false, updatable=false)
+    private CartEntity cartByCurrentCartId;
     @ManyToOne
     @JoinColumn(name = "defaultAddressId", referencedColumnName = "id", insertable=false, updatable=false)
     private AddressEntity addressByDefaultAddressId;
-    @ManyToOne
-    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private RoleEntity roleByRoleId;
 
     public int getId() {
         return id;
@@ -161,19 +163,27 @@ public class CustomerEntity extends BaseEntity {
         this.addressesById = addressesById;
     }
 
+    public Collection<CartEntity> getCartsById() {
+        return cartsById;
+    }
+
+    public void setCartsById(Collection<CartEntity> cartsById) {
+        this.cartsById = cartsById;
+    }
+
+    public CartEntity getCartByCurrentCartId() {
+        return cartByCurrentCartId;
+    }
+
+    public void setCartByCurrentCartId(CartEntity cartByCurrentCartId) {
+        this.cartByCurrentCartId = cartByCurrentCartId;
+    }
+
     public AddressEntity getAddressByDefaultAddressId() {
         return addressByDefaultAddressId;
     }
 
     public void setAddressByDefaultAddressId(AddressEntity addressByDefaultAddressId) {
         this.addressByDefaultAddressId = addressByDefaultAddressId;
-    }
-
-    public RoleEntity getRoleByRoleId() {
-        return roleByRoleId;
-    }
-
-    public void setRoleByRoleId(RoleEntity roleByRoleId) {
-        this.roleByRoleId = roleByRoleId;
     }
 }

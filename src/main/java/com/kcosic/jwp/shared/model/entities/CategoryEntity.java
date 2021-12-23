@@ -2,8 +2,6 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-
 @Entity
 @Table(name = "Category", schema = "dbo", catalog = "JWPProject")
 public class CategoryEntity extends BaseEntity {
@@ -14,8 +12,6 @@ public class CategoryEntity extends BaseEntity {
     @Basic
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @OneToMany(mappedBy = "categoryByCategoryId")
-    private Collection<ItemEntity> itemsById;
 
     public int getId() {
         return id;
@@ -51,13 +47,5 @@ public class CategoryEntity extends BaseEntity {
         int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
-    }
-
-    public Collection<ItemEntity> getItemsById() {
-        return itemsById;
-    }
-
-    public void setItemsById(Collection<ItemEntity> itemsById) {
-        this.itemsById = itemsById;
     }
 }

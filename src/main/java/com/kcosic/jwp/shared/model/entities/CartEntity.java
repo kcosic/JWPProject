@@ -2,8 +2,6 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-
 @Entity
 @Table(name = "Cart", schema = "dbo", catalog = "JWPProject")
 public class CartEntity extends BaseEntity {
@@ -11,10 +9,9 @@ public class CartEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
     private int id;
-    @OneToMany(mappedBy = "cartByCartId")
-    private Collection<CartItemEntity> cartItemsById;
-    @OneToMany(mappedBy = "cartByCartId")
-    private Collection<HistoryEntity> historiesById;
+    @Basic
+    @Column(name = "customerId", nullable = false)
+    private int customerId;
 
     public int getId() {
         return id;
@@ -22,6 +19,14 @@ public class CartEntity extends BaseEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     @Override
@@ -32,28 +37,15 @@ public class CartEntity extends BaseEntity {
         CartEntity that = (CartEntity) o;
 
         if (id != that.id) return false;
+        if (customerId != that.customerId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id;
-    }
-
-    public Collection<CartItemEntity> getCartItemsById() {
-        return cartItemsById;
-    }
-
-    public void setCartItemsById(Collection<CartItemEntity> cartItemsById) {
-        this.cartItemsById = cartItemsById;
-    }
-
-    public Collection<HistoryEntity> getHistoriesById() {
-        return historiesById;
-    }
-
-    public void setHistoriesById(Collection<HistoryEntity> historiesById) {
-        this.historiesById = historiesById;
+        int result = id;
+        result = 31 * result + customerId;
+        return result;
     }
 }

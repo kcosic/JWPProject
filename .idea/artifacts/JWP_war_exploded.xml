@@ -9,12 +9,13 @@
       </options>
     </properties>
     <root id="root">
-      <element id="module-output" name="JWP" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
+          <element id="jpa-descriptors" facet="JWP/jpa/JPA" />
           <element id="module-output" name="JWP" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="jstl 1.2" />
           <element id="library" level="project" name="Maven: org.hibernate:hibernate-core-jakarta:5.6.1.Final" />
           <element id="library" level="project" name="Maven: org.jboss.logging:jboss-logging:3.4.2.Final" />
           <element id="library" level="project" name="Maven: net.bytebuddy:byte-buddy:1.11.20" />
@@ -40,6 +41,8 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/JWP-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="JWP/web/Web" />
+      <element id="module-output" name="JWP" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/webapp" />
     </root>
   </artifact>
 </component>

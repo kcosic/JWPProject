@@ -6,7 +6,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "History", schema = "dbo", catalog = "JWPProject")
-public class HistoryEntity extends BaseEntity {
+public class HistoryEntity  extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)

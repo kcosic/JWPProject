@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CartItem", schema = "dbo", catalog = "JWPProject")
-public class CartItemEntity extends BaseEntity {
+public class CartItemEntity extends  BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
@@ -21,9 +21,6 @@ public class CartItemEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "cartId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private CartEntity cartByCartId;
-    @ManyToOne
-    @JoinColumn(name = "itemId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private ItemEntity itemByItemId;
 
     public int getId() {
         return id;
@@ -87,13 +84,5 @@ public class CartItemEntity extends BaseEntity {
 
     public void setCartByCartId(CartEntity cartByCartId) {
         this.cartByCartId = cartByCartId;
-    }
-
-    public ItemEntity getItemByItemId() {
-        return itemByItemId;
-    }
-
-    public void setItemByItemId(ItemEntity itemByItemId) {
-        this.itemByItemId = itemByItemId;
     }
 }

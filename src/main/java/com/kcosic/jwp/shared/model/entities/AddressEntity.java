@@ -2,8 +2,6 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-
 @Entity
 @Table(name = "Address", schema = "dbo", catalog = "JWPProject")
 public class AddressEntity extends BaseEntity {
@@ -38,11 +36,6 @@ public class AddressEntity extends BaseEntity {
     @Basic
     @Column(name = "country", nullable = false, length = 100)
     private String country;
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private CustomerEntity customerByUserId;
-    @OneToMany(mappedBy = "addressByDefaultAddressId")
-    private Collection<CustomerEntity> customersById;
 
     public int getId() {
         return id;
@@ -158,21 +151,5 @@ public class AddressEntity extends BaseEntity {
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
-    }
-
-    public CustomerEntity getCustomerByUserId() {
-        return customerByUserId;
-    }
-
-    public void setCustomerByUserId(CustomerEntity customerByUserId) {
-        this.customerByUserId = customerByUserId;
-    }
-
-    public Collection<CustomerEntity> getCustomersById() {
-        return customersById;
-    }
-
-    public void setCustomersById(Collection<CustomerEntity> customersById) {
-        this.customersById = customersById;
     }
 }
