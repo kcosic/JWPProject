@@ -13,4 +13,8 @@
       <module name="JWP" target="10" />
     </bytecodeTargetLevel>
   </component>
+  <component name="TypeScriptCompiler">
+    <option name="recompileOnChanges" value="true" />
+    <option name="useService" value="false" />
+  </component>
 </project>

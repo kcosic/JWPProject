@@ -11,11 +11,14 @@ public class DbHelper {
     }
 
     public static List<CustomerEntity> retrieveAllCustomers(){
-        return Dal.retrieveAll(CustomerEntity.class);
+        Dal dal = new Dal();
+        return dal.retrieveAll(CustomerEntity.class);
     }
 
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
-        var data = Dal.retrieveAll(CustomerEntity.class);
+        Dal dal = new Dal();
+
+        var data = dal.retrieveAll(CustomerEntity.class);
         var filteredUser = data.stream().filter((customer)-> customer.getEmail().equals(email)).findFirst();
         if(!filteredUser.isPresent()){
             throw new EntityNotFoundException("Customer with given email doesn't exist.");
@@ -24,7 +27,8 @@ public class DbHelper {
     }
 
     public static CustomerEntity retrieveCustomerById(int id) throws EntityNotFoundException {
-        var data = Dal.retrieveById(CustomerEntity.class, id);
+        Dal dal = new Dal();
+        var data = dal.retrieveById(CustomerEntity.class, id);
         if(data == null){
             throw new EntityNotFoundException("Customer with given ID doesn't exist.");
         }
@@ -32,12 +36,18 @@ public class DbHelper {
     }
 
     public static CustomerEntity createCustomer(CustomerEntity customer){
-        /*EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
-        entityManager.persist(customer);
-        entityManager.getTransaction().commit();
-        entityManager.*/
-        return null;
+        var dal = new Dal();
+        return dal.create(CustomerEntity.class, customer);
     }
 
+    public static boolean doesEmailExist(String email) {
+        Dal dal = new Dal();
+        var data = dal.retrieveAll(CustomerEntity.class);
+        for (var customer : data) {
+            if(customer.getEmail().equals(email)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

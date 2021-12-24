@@ -6,11 +6,11 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "History", schema = "dbo", catalog = "JWPProject")
-public class HistoryEntity  extends BaseEntity{
+public class HistoryEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Basic
     @Column(name = "cartId", nullable = true)
     private Integer cartId;
@@ -27,11 +27,11 @@ public class HistoryEntity  extends BaseEntity{
     @JoinColumn(name = "cartId", referencedColumnName = "id", insertable=false, updatable=false)
     private CartEntity cartByCartId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,7 +74,7 @@ public class HistoryEntity  extends BaseEntity{
 
         HistoryEntity that = (HistoryEntity) o;
 
-        if (id != that.id) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (cartId != null ? !cartId.equals(that.cartId) : that.cartId != null) return false;
         if (dateCreated != null ? !dateCreated.equals(that.dateCreated) : that.dateCreated != null) return false;
         if (dateUpdated != null ? !dateUpdated.equals(that.dateUpdated) : that.dateUpdated != null) return false;
@@ -86,7 +86,7 @@ public class HistoryEntity  extends BaseEntity{
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (cartId != null ? cartId.hashCode() : 0);
         result = 31 * result + (dateCreated != null ? dateCreated.hashCode() : 0);
         result = 31 * result + (dateUpdated != null ? dateUpdated.hashCode() : 0);

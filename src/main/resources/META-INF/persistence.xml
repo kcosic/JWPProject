@@ -18,34 +18,7 @@
             <property name="jakarta.persistence.jdbc.user" value="admin"/>
             <property name="jakarta.persistence." value="admin"/>
             <property name="jakarta.persistence.jdbc.password" value="Q1w2e3qwerrr"/>
-            <property name="toplink.jdbc.url"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="toplink.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
-            <property name="openjpa.ConnectionURL"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="openjpa.ConnectionDriverName" value="net.sourceforge.jtds.jdbc.Driver"/>
-            <property name="eclipselink.jdbc.url"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="eclipselink.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>
+
         </properties>
-        <!--<properties>
-
-
-            <property name="toplink.jdbc.url"
-                      value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>
-            <property name="toplink.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-            <property name="openjpa.ConnectionURL"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="openjpa.ConnectionDriverName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-            <property name="eclipselink.jdbc.url"
-                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>
-            <property name="eclipselink.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-        </properties>-->
     </persistence-unit>
 </persistence>

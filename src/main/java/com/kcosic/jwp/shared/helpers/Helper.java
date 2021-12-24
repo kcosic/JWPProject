@@ -1,6 +1,6 @@
 package com.kcosic.jwp.shared.helpers;
 
-import com.kcosic.jwp.shared.enums.ParameterEnum;
+import com.kcosic.jwp.shared.enums.AttributeEnum;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Helper {
 
-    public static String getParameterName(ParameterEnum value){
+    public static String getParameterName(AttributeEnum value){
         return value.toString();
     }
 

@@ -11,7 +11,7 @@ public class ItemEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Basic
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -29,18 +29,18 @@ public class ItemEntity extends BaseEntity {
     private String image;
     @Basic
     @Column(name = "categoryId", nullable = false)
-    private int categoryId;
+    private Integer categoryId;
     @OneToMany(mappedBy = "itemByItemId")
     private Collection<CartItemEntity> cartItemsById;
     @ManyToOne
     @JoinColumn(name = "categoryId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private CategoryEntity categoryByCategoryId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -84,11 +84,11 @@ public class ItemEntity extends BaseEntity {
         this.image = image;
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -99,26 +99,26 @@ public class ItemEntity extends BaseEntity {
 
         ItemEntity that = (ItemEntity) o;
 
-        if (id != that.id) return false;
-        if (categoryId != that.categoryId) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (price != null ? !price.equals(that.price) : that.price != null) return false;
         if (image != null ? !image.equals(that.image) : that.image != null) return false;
+        if (categoryId != null ? !categoryId.equals(that.categoryId) : that.categoryId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + (image != null ? image.hashCode() : 0);
-        result = 31 * result + categoryId;
+        result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
         return result;
     }
 

@@ -2,28 +2,30 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+
 @Entity
 @Table(name = "Address", schema = "dbo", catalog = "JWPProject")
 public class AddressEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Basic
-    @Column(name = "userId", nullable = false)
-    private int userId;
+    @Column(name = "customerId", nullable = false)
+    private Integer customerId;
     @Basic
     @Column(name = "street", nullable = false, length = 100)
     private String street;
     @Basic
     @Column(name = "streetNumber", nullable = false)
-    private int streetNumber;
+    private Integer streetNumber;
     @Basic
     @Column(name = "apartmentNumber", nullable = false)
-    private int apartmentNumber;
+    private Integer apartmentNumber;
     @Basic
     @Column(name = "floorNumber", nullable = false)
-    private int floorNumber;
+    private Integer floorNumber;
     @Basic
     @Column(name = "zipCode", nullable = false, length = 50)
     private String zipCode;
@@ -36,21 +38,26 @@ public class AddressEntity extends BaseEntity {
     @Basic
     @Column(name = "country", nullable = false, length = 100)
     private String country;
+    @ManyToOne
+    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    private CustomerEntity customerByCustomerId;
+    @OneToMany(mappedBy = "addressByDefaultAddressId")
+    private Collection<CustomerEntity> customersById;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     public String getStreet() {
@@ -61,27 +68,27 @@ public class AddressEntity extends BaseEntity {
         this.street = street;
     }
 
-    public int getStreetNumber() {
+    public Integer getStreetNumber() {
         return streetNumber;
     }
 
-    public void setStreetNumber(int streetNumber) {
+    public void setStreetNumber(Integer streetNumber) {
         this.streetNumber = streetNumber;
     }
 
-    public int getApartmentNumber() {
+    public Integer getApartmentNumber() {
         return apartmentNumber;
     }
 
-    public void setApartmentNumber(int apartmentNumber) {
+    public void setApartmentNumber(Integer apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
-    public int getFloorNumber() {
+    public Integer getFloorNumber() {
         return floorNumber;
     }
 
-    public void setFloorNumber(int floorNumber) {
+    public void setFloorNumber(Integer floorNumber) {
         this.floorNumber = floorNumber;
     }
 
@@ -124,12 +131,13 @@ public class AddressEntity extends BaseEntity {
 
         AddressEntity that = (AddressEntity) o;
 
-        if (id != that.id) return false;
-        if (userId != that.userId) return false;
-        if (streetNumber != that.streetNumber) return false;
-        if (apartmentNumber != that.apartmentNumber) return false;
-        if (floorNumber != that.floorNumber) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (customerId != null ? !customerId.equals(that.customerId) : that.customerId != null) return false;
         if (street != null ? !street.equals(that.street) : that.street != null) return false;
+        if (streetNumber != null ? !streetNumber.equals(that.streetNumber) : that.streetNumber != null) return false;
+        if (apartmentNumber != null ? !apartmentNumber.equals(that.apartmentNumber) : that.apartmentNumber != null)
+            return false;
+        if (floorNumber != null ? !floorNumber.equals(that.floorNumber) : that.floorNumber != null) return false;
         if (zipCode != null ? !zipCode.equals(that.zipCode) : that.zipCode != null) return false;
         if (city != null ? !city.equals(that.city) : that.city != null) return false;
         if (state != null ? !state.equals(that.state) : that.state != null) return false;
@@ -140,16 +148,32 @@ public class AddressEntity extends BaseEntity {
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + userId;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
         result = 31 * result + (street != null ? street.hashCode() : 0);
-        result = 31 * result + streetNumber;
-        result = 31 * result + apartmentNumber;
-        result = 31 * result + floorNumber;
+        result = 31 * result + (streetNumber != null ? streetNumber.hashCode() : 0);
+        result = 31 * result + (apartmentNumber != null ? apartmentNumber.hashCode() : 0);
+        result = 31 * result + (floorNumber != null ? floorNumber.hashCode() : 0);
         result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
+    }
+
+    public CustomerEntity getCustomerByCustomerId() {
+        return customerByCustomerId;
+    }
+
+    public void setCustomerByCustomerId(CustomerEntity customerByCustomerId) {
+        this.customerByCustomerId = customerByCustomerId;
+    }
+
+    public Collection<CustomerEntity> getCustomersById() {
+        return customersById;
+    }
+
+    public void setCustomersById(Collection<CustomerEntity> customersById) {
+        this.customersById = customersById;
     }
 }

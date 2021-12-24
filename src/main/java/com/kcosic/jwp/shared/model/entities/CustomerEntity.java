@@ -11,7 +11,7 @@ public class CustomerEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Basic
     @Column(name = "firstName", nullable = false, length = 100)
     private String firstName;
@@ -35,8 +35,8 @@ public class CustomerEntity extends BaseEntity {
     private Integer defaultAddressId;
     @Basic
     @Column(name = "roleId", nullable = false)
-    private int roleId;
-    @OneToMany(mappedBy = "customerByUserId")
+    private Integer roleId;
+    @OneToMany(mappedBy = "customerByCustomerId")
     private Collection<AddressEntity> addressesById;
     @OneToMany(mappedBy = "customerByCustomerId")
     private Collection<CartEntity> cartsById;
@@ -46,12 +46,15 @@ public class CustomerEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "defaultAddressId", referencedColumnName = "id", insertable=false, updatable=false)
     private AddressEntity addressByDefaultAddressId;
+    @ManyToOne
+    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    private RoleEntity roleByRoleId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -111,11 +114,11 @@ public class CustomerEntity extends BaseEntity {
         this.defaultAddressId = defaultAddressId;
     }
 
-    public int getRoleId() {
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(int roleId) {
+    public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
 
@@ -126,8 +129,7 @@ public class CustomerEntity extends BaseEntity {
 
         CustomerEntity that = (CustomerEntity) o;
 
-        if (id != that.id) return false;
-        if (roleId != that.roleId) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
         if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
@@ -137,13 +139,14 @@ public class CustomerEntity extends BaseEntity {
             return false;
         if (defaultAddressId != null ? !defaultAddressId.equals(that.defaultAddressId) : that.defaultAddressId != null)
             return false;
+        if (roleId != null ? !roleId.equals(that.roleId) : that.roleId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
@@ -151,7 +154,7 @@ public class CustomerEntity extends BaseEntity {
         result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
         result = 31 * result + (currentCartId != null ? currentCartId.hashCode() : 0);
         result = 31 * result + (defaultAddressId != null ? defaultAddressId.hashCode() : 0);
-        result = 31 * result + roleId;
+        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
         return result;
     }
 
@@ -185,5 +188,13 @@ public class CustomerEntity extends BaseEntity {
 
     public void setAddressByDefaultAddressId(AddressEntity addressByDefaultAddressId) {
         this.addressByDefaultAddressId = addressByDefaultAddressId;
+    }
+
+    public RoleEntity getRoleByRoleId() {
+        return roleByRoleId;
+    }
+
+    public void setRoleByRoleId(RoleEntity roleByRoleId) {
+        this.roleByRoleId = roleByRoleId;
     }
 }
