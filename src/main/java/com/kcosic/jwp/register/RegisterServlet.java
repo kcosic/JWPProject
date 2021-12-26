@@ -58,15 +58,14 @@ public class RegisterServlet extends HttpServlet {
         newCustomer.setDateOfBirth(dateOfBirth);
         newCustomer.setEmail(email);
         newCustomer.setPassword(hashedPass);
-        newCustomer.setRoleId(1);
+        newCustomer.setRoleId(2);
         newCustomer.setDefaultAddressId(null);
         newCustomer.setCurrentCartId(null);
 
         newCustomer = DbHelper.createCustomer(newCustomer);
 
 
-        request.getRequestDispatcher(JspEnum.LOGIN.toString()).forward(request, response);
-
+        Helper.goToLogin(request,response, false);
     }
 
     private void attachAttributes(HttpServletRequest request, String firstName, String lastName, Date dateOfBirth, String email) {

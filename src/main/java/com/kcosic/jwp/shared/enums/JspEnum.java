@@ -2,7 +2,8 @@ package com.kcosic.jwp.shared.enums;
 
 public enum JspEnum {
     LOGIN("login.jsp"),
-    REGISTER("register.jsp");
+    REGISTER("register.jsp"),
+    PRODUCTS("products.jsp");
 
 
     private final String label;

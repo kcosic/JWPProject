@@ -2,6 +2,7 @@ package com.kcosic.jwp.shared.singletons;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.FlushModeType;
 import jakarta.persistence.Persistence;
 
 public class Database {
@@ -19,6 +20,7 @@ public class Database {
     private static void createConnection() {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JWP");
         entityManager = entityManagerFactory.createEntityManager();
+        entityManager.setFlushMode(FlushModeType.AUTO);
     }
 
 

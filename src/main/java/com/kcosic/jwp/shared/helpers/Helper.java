@@ -1,16 +1,17 @@
 package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.enums.AttributeEnum;
+import com.kcosic.jwp.shared.enums.JspEnum;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Helper {
-
-    public static String getParameterName(AttributeEnum value){
-        return value.toString();
-    }
 
     public static String hash(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -28,5 +29,16 @@ public class Helper {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static void goToLogin(HttpServletRequest request, HttpServletResponse response, boolean hasError) throws ServletException, IOException {
+        request.setAttribute(AttributeEnum.HAS_ERROR.toString(), hasError);
+        request.getRequestDispatcher(JspEnum.LOGIN.toString()).forward(request, response);
+
+    }
+
+
+    public static boolean isUserAuthenticated(String jsonUserData) {
+        return false;
     }
 }

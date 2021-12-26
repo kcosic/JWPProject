@@ -8,6 +8,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Dal {
     private final EntityManager entityManager;
@@ -25,9 +26,9 @@ public class Dal {
         return entityManager.createQuery(criteriaQuery);
     }
 
-    public <T extends BaseEntity> List<T> retrieveAll(Class<T> clazz){
+    public <T extends BaseEntity> Stream<T> retrieveAll(Class<T> clazz){
         var query = createQuery(clazz);
-        return query.getResultList();
+        return query.getResultStream();
     }
 
     public <T extends BaseEntity> T retrieveById(Class<T> clazz, int id){
@@ -35,20 +36,29 @@ public class Dal {
     }
 
     public <T extends BaseEntity> T create(Class<T> clazz, T object){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
         entityManager.persist(object);
-        entityManager.flush();
+        entityTransaction.commit();
+        //entityManager.flush();
         return object;
     }
 
     public <T extends BaseEntity> T update(Class<T> clazz, T object){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
         entityManager.merge(object);
-        entityManager.flush();
+        entityTransaction.commit();
+        //entityManager.flush();
         return object;
     }
 
     public <T extends BaseEntity> T delete(Class<T> clazz, T object){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
         entityManager.remove(object);
-        entityManager.flush();
+        entityTransaction.commit();
+        //entityManager.flush();
         return object;
     }
 }

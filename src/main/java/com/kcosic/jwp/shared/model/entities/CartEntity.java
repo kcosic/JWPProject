@@ -15,7 +15,7 @@ public class CartEntity extends BaseEntity{
     @Column(name = "customerId", nullable = false)
     private Integer customerId;
     @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private CustomerEntity customerByCustomerId;
     @OneToMany(mappedBy = "cartByCartId")
     private Collection<CartItemEntity> cartItemsById;

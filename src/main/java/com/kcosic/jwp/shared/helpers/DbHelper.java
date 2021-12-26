@@ -3,6 +3,7 @@ package com.kcosic.jwp.shared.helpers;
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
 import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.entities.ItemEntity;
 
 import java.util.List;
 
@@ -12,15 +13,15 @@ public class DbHelper {
 
     public static List<CustomerEntity> retrieveAllCustomers(){
         Dal dal = new Dal();
-        return dal.retrieveAll(CustomerEntity.class);
+        return dal.retrieveAll(CustomerEntity.class).toList();
     }
 
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
         Dal dal = new Dal();
 
         var data = dal.retrieveAll(CustomerEntity.class);
-        var filteredUser = data.stream().filter((customer)-> customer.getEmail().equals(email)).findFirst();
-        if(!filteredUser.isPresent()){
+        var filteredUser = data.filter((customer)-> customer.getEmail().equals(email)).findFirst();
+        if(filteredUser.isEmpty()){
             throw new EntityNotFoundException("Customer with given email doesn't exist.");
         }
         return filteredUser.get();
@@ -42,12 +43,20 @@ public class DbHelper {
 
     public static boolean doesEmailExist(String email) {
         Dal dal = new Dal();
-        var data = dal.retrieveAll(CustomerEntity.class);
-        for (var customer : data) {
-            if(customer.getEmail().equals(email)){
-                return true;
-            }
-        }
-        return false;
+
+        return dal
+                .retrieveAll(CustomerEntity.class)
+                .anyMatch(
+                        (customer)->customer.getEmail().equals(email)
+                );
+    }
+
+
+    public static List<ItemEntity> retrieveItems() {
+        Dal dal = new Dal();
+
+        var data = dal.retrieveAll(ItemEntity.class);
+
+        return data.toList();
     }
 }

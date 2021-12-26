@@ -17,9 +17,13 @@ import java.security.NoSuchAlgorithmException;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        response.setContentType("text/html");
         try {
+            response.setContentType("text/html");
+
+            if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.USER_DATA.toString()))) {
+                request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
+                request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
+            }
             request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
             request.getRequestDispatcher(JspEnum.LOGIN.toString()).forward(request, response);
         } catch (ServletException e) {
@@ -37,8 +41,8 @@ public class LoginServlet extends HttpServlet {
         try {
             var customer = DbHelper.retrieveCustomerByEmail(username);
             var hashedPassword = Helper.hash(password);
-            if(hashedPassword.equals(customer.getPassword())){
-                request.getRequestDispatcher(null).forward(request, response);
+            if (hashedPassword.equals(customer.getPassword())) {
+                request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
             }
         } catch (EntityNotFoundException e) {
             request.setAttribute(AttributeEnum.HAS_ERROR.toString(), true);

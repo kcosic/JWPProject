@@ -5,8 +5,6 @@
   Time: 15:58
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %>
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -17,12 +15,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="${contextPath}/assets/scripts/popper/popper.min.js" rel="script">
     <link href="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" rel="script">
-    <%--    <link href="${contextPath}/assets/styles/bootstrap/bootstrap.css" rel="stylesheet" type="text/css">--%>
-    <%--    <link href="${contextPath}/assets/styles/bootstrap/bootstrap-grid.css" rel="stylesheet" type="text/css">--%>
-    <%--    <link href="${contextPath}/assets/scripts/bootstrap/bootstrap.js" rel="script">--%>
     <link href="${contextPath}/assets/styles/custom/register.css" rel="stylesheet" type="text/css">
     <script src="${contextPath}/assets/scripts/custom/register.js" type="text/javascript"></script>
 </head>
+<body>
 <div class="container h-100 d-flex justify-content-center align-items-center">
     <div class="card">
         <div class="card-header">
@@ -87,7 +83,8 @@
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="password" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                       title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"  class="form-control" value="Pa$$w0rd"
+                                       title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                       class="form-control" value="Pa$$w0rd"
                                        id="password" required>
                                 <label for="password">Password</label>
                                 <div class="invalid-feedback">

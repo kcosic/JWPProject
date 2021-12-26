@@ -9,6 +9,9 @@
     </properties>
     <root id="archive" name="app.war">
       <element id="artifact" artifact-name="JWP:war exploded" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/app/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>

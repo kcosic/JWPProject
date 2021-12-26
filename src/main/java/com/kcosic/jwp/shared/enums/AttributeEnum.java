@@ -14,7 +14,9 @@ public enum AttributeEnum {
     COUNTRY("country"),
     COUNTY("county"),
     CITY("city"),
+    USER_DATA("user_data"),
     ERROR_MESSAGE("errorMessage"),
+    ITEMS("items"),
     HAS_ERROR("hasError");
 
 
