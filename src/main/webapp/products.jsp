@@ -6,10 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %>
-<%@ page import="com.kcosic.jwp.shared.model.entities.ItemEntity" %>
-<%@ page import="java.util.List" %>
 
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -54,7 +52,7 @@
                         ${item.manufacturer} - ${item.name}
                     </div>
                     <div class="card-cover">
-                        <img src="${contextPath}/assets/images/${item.image}" alt="No image"/>
+                        <img class="item-preview" src="${contextPath}/assets/images/${item.image}" alt="No image"/>
                     </div>
                     <div class="card-body">
                         <p class="item-description">${item.description}</p>

@@ -23,7 +23,6 @@ public class ProductsServlet extends HttpServlet {
         } catch (ServletException e) {
             PrintWriter out = response.getWriter();
             e.printStackTrace(out);
-            var a  = "shit";
         }
     }
 
