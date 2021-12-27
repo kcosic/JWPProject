@@ -1,3 +1,4 @@
+<jsp:useBean id="totalPrice" scope="request" class="java.lang.String"/>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -43,7 +44,7 @@
                 <a class="d-flex nav-url" href="cart">
                     <span class="material-icons">shopping_cart</span>
                 </a>
-                <span id="price" class="price">${cartSum != null ? cartSum : "-1" }kn</span>
+                <span id="price" class="price">${totalPrice != null ? totalPrice : "-" }kn</span>
             </div>
             <a class="d-flex nav-url mx-3" href="account">
                 <span class="material-icons">

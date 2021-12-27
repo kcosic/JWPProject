@@ -2,7 +2,7 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Address", schema = "dbo", catalog = "JWPProject")
@@ -40,9 +40,9 @@ public class AddressEntity extends BaseEntity {
     private String country;
     @ManyToOne
     @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private CustomerEntity customerByCustomerId;
-    @OneToMany(mappedBy = "addressByDefaultAddressId")
-    private Collection<CustomerEntity> customersById;
+    private CustomerEntity customer;
+    @OneToOne(mappedBy = "defaultAddress")
+    private CustomerEntity currentCustomer;
 
     public Integer getId() {
         return id;
@@ -128,52 +128,28 @@ public class AddressEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         AddressEntity that = (AddressEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (customerId != null ? !customerId.equals(that.customerId) : that.customerId != null) return false;
-        if (street != null ? !street.equals(that.street) : that.street != null) return false;
-        if (streetNumber != null ? !streetNumber.equals(that.streetNumber) : that.streetNumber != null) return false;
-        if (apartmentNumber != null ? !apartmentNumber.equals(that.apartmentNumber) : that.apartmentNumber != null)
-            return false;
-        if (floorNumber != null ? !floorNumber.equals(that.floorNumber) : that.floorNumber != null) return false;
-        if (zipCode != null ? !zipCode.equals(that.zipCode) : that.zipCode != null) return false;
-        if (city != null ? !city.equals(that.city) : that.city != null) return false;
-        if (state != null ? !state.equals(that.state) : that.state != null) return false;
-        if (country != null ? !country.equals(that.country) : that.country != null) return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(street, that.street) && Objects.equals(streetNumber, that.streetNumber) && Objects.equals(apartmentNumber, that.apartmentNumber) && Objects.equals(floorNumber, that.floorNumber) && Objects.equals(zipCode, that.zipCode) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(country, that.country);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
-        result = 31 * result + (street != null ? street.hashCode() : 0);
-        result = 31 * result + (streetNumber != null ? streetNumber.hashCode() : 0);
-        result = 31 * result + (apartmentNumber != null ? apartmentNumber.hashCode() : 0);
-        result = 31 * result + (floorNumber != null ? floorNumber.hashCode() : 0);
-        result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
-        result = 31 * result + (city != null ? city.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (country != null ? country.hashCode() : 0);
-        return result;
+        return Objects.hash(id, customerId, street, streetNumber, apartmentNumber, floorNumber, zipCode, city, state, country);
     }
 
-    public CustomerEntity getCustomerByCustomerId() {
-        return customerByCustomerId;
+    public CustomerEntity getCustomer() {
+        return customer;
     }
 
-    public void setCustomerByCustomerId(CustomerEntity customerByCustomerId) {
-        this.customerByCustomerId = customerByCustomerId;
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
-    public Collection<CustomerEntity> getCustomersById() {
-        return customersById;
+    public CustomerEntity getCurrentCustomer() {
+        return currentCustomer;
     }
 
-    public void setCustomersById(Collection<CustomerEntity> customersById) {
-        this.customersById = customersById;
+    public void setCurrentCustomer(CustomerEntity currentCustomer) {
+        this.currentCustomer = currentCustomer;
     }
 }

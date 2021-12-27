@@ -2,9 +2,12 @@ package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
+import com.kcosic.jwp.shared.model.entities.CartEntity;
+import com.kcosic.jwp.shared.model.entities.CartItemEntity;
 import com.kcosic.jwp.shared.model.entities.CustomerEntity;
 import com.kcosic.jwp.shared.model.entities.ItemEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class DbHelper {
@@ -58,5 +61,55 @@ public class DbHelper {
         var data = dal.retrieveAll(ItemEntity.class);
 
         return data.toList();
+    }
+
+    public static BigDecimal addToCart(int customerId, ItemEntity item, boolean getTotalPrice) throws EntityNotFoundException {
+        Dal dal = new Dal();
+
+        var customer = retrieveCustomerById(customerId);
+
+        if(customer.getCurrentCartId() == null){
+            var newCart = new CartEntity();
+            newCart.setCustomerId(customerId);
+            newCart = dal.create(CartEntity.class,newCart);
+            customer.setCurrentCartId(newCart.getId());
+        }
+
+        var optionalCartItem = customer.getCurrentCart()
+                .getCartItems()
+                .stream()
+                .filter(
+                        cartItemEntity ->
+                                cartItemEntity.getItemId().equals(item.getId())
+                ).findFirst();
+
+        if(optionalCartItem.isPresent()){
+            var cartItem = optionalCartItem.get();
+            cartItem.setCount(cartItem.getCount() + 1);
+            dal.update(CartItemEntity.class, cartItem);
+        }
+        else{
+            var newCartItem = new CartItemEntity();
+            newCartItem.setCartId(customer.getCurrentCartId());
+            newCartItem.setItemId(item.getId());
+            newCartItem.setCount(1);
+            dal.create(CartItemEntity.class, newCartItem);
+        }
+
+        if(getTotalPrice){
+            return calculateTotalPrice(customer.getCurrentCart());
+        }
+        return null;
+    }
+
+    private static BigDecimal calculateTotalPrice(CartEntity currentCart) {
+        BigDecimal price = BigDecimal.valueOf(0);
+        for (var cartItem : currentCart.getCartItems()) {
+            price = price.add(
+                    BigDecimal.valueOf(cartItem.getCount())
+                            .multiply(cartItem.getItem().getPrice()));
+        }
+
+        return price;
     }
 }

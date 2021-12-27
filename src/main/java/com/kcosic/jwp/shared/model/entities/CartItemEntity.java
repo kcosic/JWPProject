@@ -2,6 +2,8 @@ package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "CartItem", schema = "dbo", catalog = "JWPProject")
 public class CartItemEntity extends BaseEntity {
@@ -20,10 +22,10 @@ public class CartItemEntity extends BaseEntity {
     private Integer count;
     @ManyToOne
     @JoinColumn(name = "cartId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private CartEntity cartByCartId;
+    private CartEntity cart;
     @ManyToOne
     @JoinColumn(name = "itemId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private ItemEntity itemByItemId;
+    private ItemEntity item;
 
     public Integer getId() {
         return id;
@@ -61,39 +63,28 @@ public class CartItemEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         CartItemEntity that = (CartItemEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (cartId != null ? !cartId.equals(that.cartId) : that.cartId != null) return false;
-        if (itemId != null ? !itemId.equals(that.itemId) : that.itemId != null) return false;
-        if (count != null ? !count.equals(that.count) : that.count != null) return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(cartId, that.cartId) && Objects.equals(itemId, that.itemId) && Objects.equals(count, that.count);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (cartId != null ? cartId.hashCode() : 0);
-        result = 31 * result + (itemId != null ? itemId.hashCode() : 0);
-        result = 31 * result + (count != null ? count.hashCode() : 0);
-        return result;
+        return Objects.hash(id, cartId, itemId, count);
     }
 
-    public CartEntity getCartByCartId() {
-        return cartByCartId;
+    public CartEntity getCart() {
+        return cart;
     }
 
-    public void setCartByCartId(CartEntity cartByCartId) {
-        this.cartByCartId = cartByCartId;
+    public void setCart(CartEntity cart) {
+        this.cart = cart;
     }
 
-    public ItemEntity getItemByItemId() {
-        return itemByItemId;
+    public ItemEntity getItem() {
+        return item;
     }
 
-    public void setItemByItemId(ItemEntity itemByItemId) {
-        this.itemByItemId = itemByItemId;
+    public void setItem(ItemEntity item) {
+        this.item = item;
     }
 }

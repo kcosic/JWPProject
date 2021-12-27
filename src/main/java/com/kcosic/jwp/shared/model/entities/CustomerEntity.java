@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Customer", schema = "dbo", catalog = "JWPProject")
@@ -13,19 +14,19 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic
-    @Column(name = "firstName", nullable = false, length = 100)
+    @Column(name = "firstName", nullable = true, length = 100)
     private String firstName;
     @Basic
-    @Column(name = "lastName", nullable = false, length = 100)
+    @Column(name = "lastName", nullable = true, length = 100)
     private String lastName;
     @Basic
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = true, length = 100)
     private String email;
     @Basic
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", nullable = true, length = 100)
     private String password;
     @Basic
-    @Column(name = "dateOfBirth", nullable = false)
+    @Column(name = "dateOfBirth", nullable = true)
     private Date dateOfBirth;
     @Basic
     @Column(name = "currentCartId", nullable = true)
@@ -36,19 +37,19 @@ public class CustomerEntity extends BaseEntity {
     @Basic
     @Column(name = "roleId", nullable = false)
     private Integer roleId;
-    @OneToMany(mappedBy = "customerByCustomerId")
-    private Collection<AddressEntity> addressesById;
-    @OneToMany(mappedBy = "customerByCustomerId")
-    private Collection<CartEntity> cartsById;
-    @ManyToOne
+    @OneToMany(mappedBy = "customer")
+    private Collection<AddressEntity> addresses;
+    @OneToMany(mappedBy = "customer")
+    private Collection<CartEntity> carts;
+    @OneToOne
     @JoinColumn(name = "currentCartId", referencedColumnName = "id", insertable=false, updatable=false)
-    private CartEntity cartByCurrentCartId;
-    @ManyToOne
+    private CartEntity currentCart;
+    @OneToOne
     @JoinColumn(name = "defaultAddressId", referencedColumnName = "id", insertable=false, updatable=false)
-    private AddressEntity addressByDefaultAddressId;
+    private AddressEntity defaultAddress;
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private RoleEntity roleByRoleId;
+    private RoleEntity role;
 
     public Integer getId() {
         return id;
@@ -126,75 +127,52 @@ public class CustomerEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         CustomerEntity that = (CustomerEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (dateOfBirth != null ? !dateOfBirth.equals(that.dateOfBirth) : that.dateOfBirth != null) return false;
-        if (currentCartId != null ? !currentCartId.equals(that.currentCartId) : that.currentCartId != null)
-            return false;
-        if (defaultAddressId != null ? !defaultAddressId.equals(that.defaultAddressId) : that.defaultAddressId != null)
-            return false;
-        if (roleId != null ? !roleId.equals(that.roleId) : that.roleId != null) return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(dateOfBirth, that.dateOfBirth) && Objects.equals(currentCartId, that.currentCartId) && Objects.equals(defaultAddressId, that.defaultAddressId) && Objects.equals(roleId, that.roleId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
-        result = 31 * result + (currentCartId != null ? currentCartId.hashCode() : 0);
-        result = 31 * result + (defaultAddressId != null ? defaultAddressId.hashCode() : 0);
-        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
-        return result;
+        return Objects.hash(id, firstName, lastName, email, password, dateOfBirth, currentCartId, defaultAddressId, roleId);
     }
 
-    public Collection<AddressEntity> getAddressesById() {
-        return addressesById;
+    public Collection<AddressEntity> getAddresses() {
+        return addresses;
     }
 
-    public void setAddressesById(Collection<AddressEntity> addressesById) {
-        this.addressesById = addressesById;
+    public void setAddresses(Collection<AddressEntity> addresses) {
+        this.addresses = addresses;
     }
 
-    public Collection<CartEntity> getCartsById() {
-        return cartsById;
+    public Collection<CartEntity> getCarts() {
+        return carts;
     }
 
-    public void setCartsById(Collection<CartEntity> cartsById) {
-        this.cartsById = cartsById;
+    public void setCarts(Collection<CartEntity> carts) {
+        this.carts = carts;
     }
 
-    public CartEntity getCartByCurrentCartId() {
-        return cartByCurrentCartId;
+    public CartEntity getCurrentCart() {
+        return currentCart;
     }
 
-    public void setCartByCurrentCartId(CartEntity cartByCurrentCartId) {
-        this.cartByCurrentCartId = cartByCurrentCartId;
+    public void setCurrentCart(CartEntity currentCart) {
+        this.currentCart = currentCart;
     }
 
-    public AddressEntity getAddressByDefaultAddressId() {
-        return addressByDefaultAddressId;
+    public AddressEntity getDefaultAddress() {
+        return defaultAddress;
     }
 
-    public void setAddressByDefaultAddressId(AddressEntity addressByDefaultAddressId) {
-        this.addressByDefaultAddressId = addressByDefaultAddressId;
+    public void setDefaultAddress(AddressEntity defaultAddress) {
+        this.defaultAddress = defaultAddress;
     }
 
-    public RoleEntity getRoleByRoleId() {
-        return roleByRoleId;
+    public RoleEntity getRole() {
+        return role;
     }
 
-    public void setRoleByRoleId(RoleEntity roleByRoleId) {
-        this.roleByRoleId = roleByRoleId;
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }

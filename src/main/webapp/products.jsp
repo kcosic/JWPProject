@@ -43,23 +43,39 @@
         </div>
     </div>
     <div class="row">
-    <% if(request.getAttribute(AttributeEnum.ITEMS.toString()) != null){ %>
+        <% if (request.getAttribute(AttributeEnum.ITEMS.toString()) != null) { %>
 
+        <jsp:useBean id="items" scope="request" type="java.util.List"/>
         <c:forEach var="item" items="${items}">
             <div class="col-xs-12 col-sm-6 col-md-3 col-xl-2">
                 <div class="card">
                     <div class="card-header">
-                        ${item.manufacturer} - ${item.name}
+                        <h5>${item.manufacturer} - ${item.name}</h5>
                     </div>
-                    <div class="card-cover">
+                    <div class="card-image">
                         <img class="item-preview" src="${contextPath}/assets/images/${item.image}" alt="No image"/>
                     </div>
                     <div class="card-body">
                         <p class="item-description">${item.description}</p>
                     </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">Price: ${item.price}kn</div>
+                            <div class="col">
+                                <form action="products" method="post" novalidate>
+                                    <input id="itemId" name="itemId" hidden value="${item.id}" readonly/>
+                                    <div class=" d-grid gap-2">
+                                        <button class="btn btn-sm btn-secondary" type="submit">
+                                            <span class="material-icons">add_shopping_cart</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-footer">
                         <div class="row">
-                            <div class="col">
+                            <div class="col d-grid gap-2">
                                 <a class="btn btn-primary" href="products/${item.id}">Visit</a>
                             </div>
                         </div>
@@ -68,10 +84,9 @@
             </div>
         </c:forEach>
 
-<%  }
-    else { %>
+        <% } else { %>
         <div class="no-items">There are no products to show</div>
-    <% } %>
+        <% } %>
 
     </div>
 

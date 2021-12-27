@@ -17,6 +17,8 @@ public enum AttributeEnum {
     USER_DATA("user_data"),
     ERROR_MESSAGE("errorMessage"),
     ITEMS("items"),
+    ITEM_ID("itemId"),
+    TOTAL_PRICE("totalPrice"),
     HAS_ERROR("hasError");
 
 

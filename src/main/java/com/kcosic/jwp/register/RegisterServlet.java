@@ -18,6 +18,16 @@ import java.sql.Date;
 public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRegistrationGetRequest(request, response);
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRegistrationPostRequest(request, response);
+    }
+
+    private void processRegistrationGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
 
         try {
@@ -26,13 +36,10 @@ public class RegisterServlet extends HttpServlet {
         } catch (ServletException e) {
             PrintWriter out = response.getWriter();
             e.printStackTrace(out);
-
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    private void processRegistrationPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var email = (String)request.getParameter(AttributeEnum.EMAIL.toString());
         var firstName =request.getParameter(AttributeEnum.FIRST_NAME.toString());
         var lastName =request.getParameter(AttributeEnum.LAST_NAME.toString());
@@ -44,7 +51,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        String hashedPass = "";
+        String hashedPass;
         try {
             hashedPass = Helper.hash(request.getParameter(AttributeEnum.PASSWORD.toString()));
         } catch (NoSuchAlgorithmException e) {
@@ -52,6 +59,7 @@ public class RegisterServlet extends HttpServlet {
             sendErrorResponse(request,response,e.getMessage());
             return;
         }
+
         var newCustomer = new CustomerEntity();
         newCustomer.setFirstName(firstName);
         newCustomer.setLastName(lastName);
@@ -61,11 +69,9 @@ public class RegisterServlet extends HttpServlet {
         newCustomer.setRoleId(2);
         newCustomer.setDefaultAddressId(null);
         newCustomer.setCurrentCartId(null);
+        DbHelper.createCustomer(newCustomer);
 
-        newCustomer = DbHelper.createCustomer(newCustomer);
-
-
-        Helper.goToLogin(request,response, false);
+        Helper.goToPage(request,response, JspEnum.LOGIN, false);
     }
 
     private void attachAttributes(HttpServletRequest request, String firstName, String lastName, Date dateOfBirth, String email) {

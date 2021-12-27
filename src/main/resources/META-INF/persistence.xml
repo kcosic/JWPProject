@@ -18,7 +18,6 @@
             <property name="jakarta.persistence.jdbc.user" value="admin"/>
             <property name="jakarta.persistence." value="admin"/>
             <property name="jakarta.persistence.jdbc.password" value="Q1w2e3qwerrr"/>
-
         </properties>
     </persistence-unit>
 </persistence>

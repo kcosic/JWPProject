@@ -3,6 +3,7 @@ package com.kcosic.jwp.shared.model.entities;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Role", schema = "dbo", catalog = "JWPProject")
@@ -14,8 +15,8 @@ public class RoleEntity extends BaseEntity {
     @Basic
     @Column(name = "name", nullable = false, length = 50)
     private String name;
-    @OneToMany(mappedBy = "roleByRoleId")
-    private Collection<CustomerEntity> customersById;
+    @OneToMany(mappedBy = "role")
+    private Collection<CustomerEntity> customers;
 
     public Integer getId() {
         return id;
@@ -37,27 +38,20 @@ public class RoleEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         RoleEntity that = (RoleEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name);
     }
 
-    public Collection<CustomerEntity> getCustomersById() {
-        return customersById;
+    public Collection<CustomerEntity> getCustomers() {
+        return customers;
     }
 
-    public void setCustomersById(Collection<CustomerEntity> customersById) {
-        this.customersById = customersById;
+    public void setCustomers(Collection<CustomerEntity> customers) {
+        this.customers = customers;
     }
 }

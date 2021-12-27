@@ -3,10 +3,11 @@ package com.kcosic.jwp.shared.model.entities;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Cart", schema = "dbo", catalog = "JWPProject")
-public class CartEntity extends BaseEntity{
+public class CartEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
@@ -16,13 +17,13 @@ public class CartEntity extends BaseEntity{
     private Integer customerId;
     @ManyToOne
     @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
-    private CustomerEntity customerByCustomerId;
-    @OneToMany(mappedBy = "cartByCartId")
-    private Collection<CartItemEntity> cartItemsById;
-    @OneToMany(mappedBy = "cartByCurrentCartId")
-    private Collection<CustomerEntity> customersById;
-    @OneToMany(mappedBy = "cartByCartId")
-    private Collection<HistoryEntity> historiesById;
+    private CustomerEntity customer;
+    @OneToMany(mappedBy = "cart")
+    private Collection<CartItemEntity> cartItems;
+    @OneToOne(mappedBy = "currentCart")
+    private CustomerEntity currentCustomer;
+    @OneToOne(mappedBy = "cart")
+    private HistoryEntity history;
 
     public Integer getId() {
         return id;
@@ -44,51 +45,44 @@ public class CartEntity extends BaseEntity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         CartEntity that = (CartEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (customerId != null ? !customerId.equals(that.customerId) : that.customerId != null) return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
-        return result;
+        return Objects.hash(id, customerId);
     }
 
-    public CustomerEntity getCustomerByCustomerId() {
-        return customerByCustomerId;
+    public CustomerEntity getCustomer() {
+        return customer;
     }
 
-    public void setCustomerByCustomerId(CustomerEntity customerByCustomerId) {
-        this.customerByCustomerId = customerByCustomerId;
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
-    public Collection<CartItemEntity> getCartItemsById() {
-        return cartItemsById;
+    public Collection<CartItemEntity> getCartItems() {
+        return cartItems;
     }
 
-    public void setCartItemsById(Collection<CartItemEntity> cartItemsById) {
-        this.cartItemsById = cartItemsById;
+    public void setCartItems(Collection<CartItemEntity> cartItems) {
+        this.cartItems = cartItems;
     }
 
-    public Collection<CustomerEntity> getCustomersById() {
-        return customersById;
+    public CustomerEntity getCurrentCustomer() {
+        return currentCustomer;
     }
 
-    public void setCustomersById(Collection<CustomerEntity> customersById) {
-        this.customersById = customersById;
+    public void setCurrentCustomer(CustomerEntity currentCustomer) {
+        this.currentCustomer = currentCustomer;
     }
 
-    public Collection<HistoryEntity> getHistoriesById() {
-        return historiesById;
+    public HistoryEntity getHistory() {
+        return history;
     }
 
-    public void setHistoriesById(Collection<HistoryEntity> historiesById) {
-        this.historiesById = historiesById;
+    public void setHistory(HistoryEntity history) {
+        this.history = history;
     }
 }

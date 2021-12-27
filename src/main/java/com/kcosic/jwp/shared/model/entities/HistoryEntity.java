@@ -3,6 +3,7 @@ package com.kcosic.jwp.shared.model.entities;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "History", schema = "dbo", catalog = "JWPProject")
@@ -23,9 +24,9 @@ public class HistoryEntity extends BaseEntity {
     @Basic
     @Column(name = "datePurchased", nullable = true)
     private Date datePurchased;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cartId", referencedColumnName = "id", insertable=false, updatable=false)
-    private CartEntity cartByCartId;
+    private CartEntity cart;
 
     public Integer getId() {
         return id;
@@ -71,34 +72,20 @@ public class HistoryEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         HistoryEntity that = (HistoryEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (cartId != null ? !cartId.equals(that.cartId) : that.cartId != null) return false;
-        if (dateCreated != null ? !dateCreated.equals(that.dateCreated) : that.dateCreated != null) return false;
-        if (dateUpdated != null ? !dateUpdated.equals(that.dateUpdated) : that.dateUpdated != null) return false;
-        if (datePurchased != null ? !datePurchased.equals(that.datePurchased) : that.datePurchased != null)
-            return false;
-
-        return true;
+        return Objects.equals(id, that.id) && Objects.equals(cartId, that.cartId) && Objects.equals(dateCreated, that.dateCreated) && Objects.equals(dateUpdated, that.dateUpdated) && Objects.equals(datePurchased, that.datePurchased);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (cartId != null ? cartId.hashCode() : 0);
-        result = 31 * result + (dateCreated != null ? dateCreated.hashCode() : 0);
-        result = 31 * result + (dateUpdated != null ? dateUpdated.hashCode() : 0);
-        result = 31 * result + (datePurchased != null ? datePurchased.hashCode() : 0);
-        return result;
+        return Objects.hash(id, cartId, dateCreated, dateUpdated, datePurchased);
     }
 
-    public CartEntity getCartByCartId() {
-        return cartByCartId;
+    public CartEntity getCart() {
+        return cart;
     }
 
-    public void setCartByCartId(CartEntity cartByCartId) {
-        this.cartByCartId = cartByCartId;
+    public void setCart(CartEntity cart) {
+        this.cart = cart;
     }
 }
