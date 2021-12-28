@@ -23,6 +23,9 @@ public enum AttributeEnum {
     SORT_ASC("sortAsc"),
     SORT_DESC("sortDesc"),
     ITEM("item"),
+    ID("id"),
+    CATEGORY("category"),
+    CART_ITEMS("cartItems"),
     HAS_ERROR("hasError");
 
 

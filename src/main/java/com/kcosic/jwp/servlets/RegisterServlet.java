@@ -31,7 +31,7 @@ public class RegisterServlet extends HttpServlet {
         response.setContentType("text/html");
 
         try {
-            request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
+            Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.REGISTER.toString()).forward(request, response);
         } catch (ServletException e) {
             PrintWriter out = response.getWriter();
@@ -75,15 +75,15 @@ public class RegisterServlet extends HttpServlet {
     }
 
     private void attachAttributes(HttpServletRequest request, String firstName, String lastName, Date dateOfBirth, String email) {
-        request.setAttribute(AttributeEnum.FIRST_NAME.toString(), firstName);
-        request.setAttribute(AttributeEnum.LAST_NAME.toString(), lastName);
-        request.setAttribute(AttributeEnum.DATE_OF_BIRTH.toString(), dateOfBirth);
-        request.setAttribute(AttributeEnum.EMAIL.toString(), email);
+       Helper.addAttribute(request,AttributeEnum.FIRST_NAME, firstName);
+       Helper.addAttribute(request,AttributeEnum.LAST_NAME, lastName);
+       Helper.addAttribute(request,AttributeEnum.DATE_OF_BIRTH, dateOfBirth);
+       Helper.addAttribute(request,AttributeEnum.EMAIL, email);
     }
 
     private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
-        request.setAttribute(AttributeEnum.HAS_ERROR.toString(), true);
-        request.setAttribute(AttributeEnum.ERROR_MESSAGE.toString(), message);
+        Helper.addAttribute(request,AttributeEnum.HAS_ERROR, true);
+        Helper.addAttribute(request,AttributeEnum.ERROR_MESSAGE, message);
         request.getRequestDispatcher(JspEnum.REGISTER.toString()).forward(request, response);
     }
 }

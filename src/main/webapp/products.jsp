@@ -57,9 +57,6 @@
                         <img class="item-preview" src="${contextPath}/assets/images/${item.image}" alt="No image"/>
                     </div>
                     <div class="card-body">
-                        <p class="item-description">${item.description}</p>
-                    </div>
-                    <div class="card-body">
                         <div class="row">
                             <div class="col">Price: ${item.price}kn</div>
                             <div class="col">
@@ -77,7 +74,8 @@
                     <div class="card-footer">
                         <div class="row">
                             <div class="col d-grid gap-2">
-                                <a class="btn btn-primary" href="products/${item.id}">Visit</a>
+                                <%-- TODO fix this because request is not being passed to product servlet --%>
+                                <a class="btn btn-primary" href="product?id=${item.id}">Visit</a>
                             </div>
                         </div>
                     </div>

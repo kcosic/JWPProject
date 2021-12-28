@@ -1,4 +1,5 @@
 <jsp:useBean id="totalPrice" scope="request" class="java.lang.String"/>
+<jsp:useBean id="cartItems" scope="request" class="java.lang.Integer"/>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -11,7 +12,7 @@
         text-decoration: none;
         color: #FDFDF9FF;
     }
-    .price{
+    .header-price{
         color:#FDFDF9FF;
     }
 </style>
@@ -42,10 +43,16 @@
                 <%--                </li>--%>
             </ul>
             <div class="d-flex flex-row-reverse align-content-center mx-3" href="cart">
-                <a class="d-flex nav-url" href="cart">
+                <a class="position-relative nav-url" href="cart">
                     <span class="material-icons">shopping_cart</span>
+                    <% if(cartItems != null && cartItems > 0) { %>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        ${cartItems}
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                    <% } %>
                 </a>
-                <span id="price" class="price">${totalPrice != null ? totalPrice : "-" }kn</span>
+                <span id="price" class="header-price">${totalPrice != null ? totalPrice : "-" }kn</span>
             </div>
             <a class="d-flex nav-url mx-3" href="account">
                 <span class="material-icons">

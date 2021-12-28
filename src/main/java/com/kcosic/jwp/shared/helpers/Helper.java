@@ -72,4 +72,23 @@ public class Helper {
         return DbHelper.createCustomer(guest);
     }
 
+    public static void addAttributeIfNotExists(HttpServletRequest request, AttributeEnum attribute, Object value){
+        if(request.getAttribute(attribute.toString()) == null){
+            request.setAttribute(attribute.toString(), value);
+        }
+    }
+
+
+    public static void addAttribute(HttpServletRequest request, AttributeEnum attribute, Object value){
+        request.setAttribute(attribute.toString(), value);
+    }
+
+    public static void removeAttribute(HttpServletRequest request, AttributeEnum attribute){
+        request.removeAttribute(attribute.toString());
+    }
+
+
+
+
+
 }

@@ -2,10 +2,8 @@ package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
-import com.kcosic.jwp.shared.model.entities.CartEntity;
-import com.kcosic.jwp.shared.model.entities.CartItemEntity;
-import com.kcosic.jwp.shared.model.entities.CustomerEntity;
-import com.kcosic.jwp.shared.model.entities.ItemEntity;
+import com.kcosic.jwp.shared.model.entities.*;
+import jdk.jfr.Category;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -133,5 +131,23 @@ public class DbHelper {
         }
 
         return String.format("%,.2f", price.setScale(2, RoundingMode.DOWN));
+    }
+
+    public static CategoryEntity retrieveCategory(Integer categoryId) {
+        Dal dal = new Dal();
+        return dal.retrieveById(CategoryEntity.class, categoryId);
+    }
+
+    public static List<CategoryEntity> retrieveCategories() {
+        Dal dal = new Dal();
+        var data = dal.retrieveAll(CategoryEntity.class);
+        return data.toList();
+    }
+
+    public static Integer cartQuantity(Integer cartId) {
+        if(cartId == null){
+            return 0;
+        }
+        return retrieveCartItems(cartId).size();
     }
 }

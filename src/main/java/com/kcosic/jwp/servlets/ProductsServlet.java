@@ -47,15 +47,17 @@ public class ProductsServlet extends BaseServlet {
                     customer.getId(),
                     optionalItem.get(),
                     true);
-            request.setAttribute(AttributeEnum.TOTAL_PRICE.toString(), price);
 
+            var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
+            Helper.addAttribute(request,AttributeEnum.TOTAL_PRICE, price);
+            Helper.addAttribute(request,AttributeEnum.CART_ITEMS, cartItems);
         } catch (EntityNotFoundException e) {
             PrintWriter out = response.getWriter();
             e.printStackTrace(out);
         }
-        request.setAttribute(AttributeEnum.USER_DATA.toString(), customer.toString());
-        request.setAttribute(AttributeEnum.ITEMS.toString(), data);
-        request.removeAttribute(AttributeEnum.HAS_ERROR.toString());
+        Helper.addAttribute(request,AttributeEnum.USER_DATA, customer.toString());
+        Helper.addAttribute(request,AttributeEnum.ITEMS, data);
+        Helper.removeAttribute(request,AttributeEnum.HAS_ERROR);
         request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
     }
 
@@ -75,15 +77,17 @@ public class ProductsServlet extends BaseServlet {
                 Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
             }
 
-            request.setAttribute(AttributeEnum.USER_DATA.toString(), customer.toString());
+            Helper.addAttributeIfNotExists(request,AttributeEnum.USER_DATA, customer.toString());
 
-            request.setAttribute(AttributeEnum.TOTAL_PRICE.toString(),(
+            Helper.addAttribute(request,AttributeEnum.TOTAL_PRICE,(
                     customer.getCurrentCartId() != null ?
                             DbHelper.calculateTotalPrice(DbHelper.retrieveCartItems(customer.getCurrentCartId())) :
                             "0"));
-            request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
-            request.setAttribute(AttributeEnum.ITEMS.toString(), data);
-            request.setAttribute(AttributeEnum.SEARCH.toString(), search);
+            var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
+            Helper.addAttribute(request,AttributeEnum.CART_ITEMS, cartItems);
+            Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
+            Helper.addAttribute(request,AttributeEnum.ITEMS, data);
+            Helper.addAttribute(request,AttributeEnum.SEARCH, search);
             request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
         } catch (ServletException e) {
             PrintWriter out = response.getWriter();
