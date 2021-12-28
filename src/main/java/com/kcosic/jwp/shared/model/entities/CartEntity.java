@@ -1,27 +1,59 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Cart", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "cartGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="customer", subgraph = "customer"),
+                @NamedAttributeNode(value="currentCustomer", subgraph = "customer"),
+                @NamedAttributeNode(value="history"),
+                @NamedAttributeNode(value="cartItems", subgraph = "cartItems")
+        },
+        subgraphs = {
+                @NamedSubgraph(name="customer",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="currentCart"),
+                                @NamedAttributeNode(value="carts"),
+                                @NamedAttributeNode(value="addresses"),
+                                @NamedAttributeNode(value="defaultAddress")
+                        }
+                ),
+                @NamedSubgraph(name="cartItems",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="item")
+                        }
+
+                )
+        }
+)
 public class CartEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Basic
     @Column(name = "customerId", nullable = false)
     private Integer customerId;
+
     @ManyToOne
     @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private CustomerEntity customer;
-    @OneToMany(mappedBy = "cart")
-    private Collection<CartItemEntity> cartItems;
+
+    @OneToMany
+    private Collection<CartItemEntity> cartItems = new java.util.ArrayList<>();
+
     @OneToOne(mappedBy = "currentCart")
     private CustomerEntity currentCustomer;
+
     @OneToOne(mappedBy = "cart")
     private HistoryEntity history;
 
@@ -57,13 +89,15 @@ public class CartEntity extends BaseEntity {
     public CustomerEntity getCustomer() {
         return customer;
     }
+    public Collection<CartItemEntity> getCartItems() {
+        return cartItems;
+    }
+    public HistoryEntity getHistory() {
+        return history;
+    }
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
-    }
-
-    public Collection<CartItemEntity> getCartItems() {
-        return cartItems;
     }
 
     public void setCartItems(Collection<CartItemEntity> cartItems) {
@@ -78,11 +112,12 @@ public class CartEntity extends BaseEntity {
         this.currentCustomer = currentCustomer;
     }
 
-    public HistoryEntity getHistory() {
-        return history;
-    }
-
     public void setHistory(HistoryEntity history) {
         this.history = history;
+    }
+
+    @Override
+    public String getGraphName() {
+        return "cartGraph";
     }
 }

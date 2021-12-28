@@ -16,8 +16,13 @@
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>
             <property name="jakarta.persistence.jdbc.user" value="admin"/>
-            <property name="jakarta.persistence." value="admin"/>
             <property name="jakarta.persistence.jdbc.password" value="Q1w2e3qwerrr"/>
+            <property name="eclipselink.weaving" value="static"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.logging.level.sql" value="FINEST"/>
+            <property name="eclipselink.logging.level" value="FINEST" />
+            <property name="eclipselink.logging.level.cache" value="FINEST"/>
         </properties>
+
     </persistence-unit>
 </persistence>

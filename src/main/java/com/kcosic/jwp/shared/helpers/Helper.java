@@ -2,7 +2,8 @@ package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.enums.AttributeEnum;
 import com.kcosic.jwp.shared.enums.JspEnum;
-import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.entities.*;
+import jakarta.mail.Address;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,8 +12,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Helper {
+
+    private static Map<Class, Map<Class, String>> dict = null;
+
 
     public static String hash(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -65,4 +71,5 @@ public class Helper {
         guest.setRoleId(3);
         return DbHelper.createCustomer(guest);
     }
+
 }

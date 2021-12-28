@@ -1,20 +1,38 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Category", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "categoryGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="items", subgraph = "items"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name="items",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="category"),
+                                @NamedAttributeNode(value="cartItems"),
+                        }
+                )
+        }
+)
 public class CategoryEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Basic
     @Column(name = "name", nullable = false, length = 100)
     private String name;
+
     @OneToMany(mappedBy = "category")
     private Collection<ItemEntity> items;
 
@@ -53,5 +71,10 @@ public class CategoryEntity extends BaseEntity {
 
     public void setItems(Collection<ItemEntity> items) {
         this.items = items;
+    }
+
+    @Override
+    public String getGraphName() {
+        return "categoryGraph";
     }
 }

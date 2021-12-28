@@ -1,16 +1,19 @@
-
-
-
-
-function saveToLocalStorage(user){
-    localStorage.setItem('user', JSON.parse(user));
+function addToCart(itemId) {
+    let itemForm = {
+        itemId: itemId
+    };
+    $.ajax({
+        type: "POST",
+        url: "products",
+        data: itemForm,
+        dataType: "json",
+        encode: true,
+        success: (response)=>success(response),
+        error: (response)=>success(response)
+    });
 }
 
-window.onload = function () {
-    if(currentUser) {
-        saveToLocalStorage(currentUser)
-    }
-    else{
-        saveToLocalStorage('user', JSON.parse({id: 0}))
-    }
+function success(response){
+    console.log('success',response)
+    location.reload()
 }

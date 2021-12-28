@@ -19,6 +19,10 @@ public enum AttributeEnum {
     ITEMS("items"),
     ITEM_ID("itemId"),
     TOTAL_PRICE("totalPrice"),
+    SEARCH("search"),
+    SORT_ASC("sortAsc"),
+    SORT_DESC("sortDesc"),
+    ITEM("item"),
     HAS_ERROR("hasError");
 
 

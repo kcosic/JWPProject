@@ -1,12 +1,32 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Role", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "roleGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="customers", subgraph = "customer"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name="customer",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="defaultAddress"),
+                                @NamedAttributeNode(value="addresses"),
+                                @NamedAttributeNode(value="carts"),
+                                @NamedAttributeNode(value="currentCart"),
+
+                        }
+
+                )
+        }
+)
 public class RoleEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -15,6 +35,7 @@ public class RoleEntity extends BaseEntity {
     @Basic
     @Column(name = "name", nullable = false, length = 50)
     private String name;
+
     @OneToMany(mappedBy = "role")
     private Collection<CustomerEntity> customers;
 
@@ -53,5 +74,9 @@ public class RoleEntity extends BaseEntity {
 
     public void setCustomers(Collection<CustomerEntity> customers) {
         this.customers = customers;
+    }
+    @Override
+    public String getGraphName() {
+        return "roleGraph";
     }
 }

@@ -1,29 +1,53 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "History", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "historyGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="cart", subgraph = "cart"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name="cart",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="customer"),
+                                @NamedAttributeNode(value="cartItems"),
+                                @NamedAttributeNode(value="currentCustomer"),
+                        }
+
+                )
+        }
+)
 public class HistoryEntity extends BaseEntity {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Basic
     @Column(name = "cartId", nullable = true)
     private Integer cartId;
+
     @Basic
     @Column(name = "dateCreated", nullable = true)
     private Date dateCreated;
+
     @Basic
     @Column(name = "dateUpdated", nullable = true)
     private Date dateUpdated;
+
     @Basic
     @Column(name = "datePurchased", nullable = true)
     private Date datePurchased;
+
     @OneToOne
     @JoinColumn(name = "cartId", referencedColumnName = "id", insertable=false, updatable=false)
     private CartEntity cart;
@@ -87,5 +111,9 @@ public class HistoryEntity extends BaseEntity {
 
     public void setCart(CartEntity cart) {
         this.cart = cart;
+    }
+    @Override
+    public String getGraphName() {
+        return "historyGraph";
     }
 }

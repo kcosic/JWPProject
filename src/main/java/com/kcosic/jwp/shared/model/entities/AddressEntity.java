@@ -1,46 +1,77 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Address", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "addressGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="customer", subgraph = "customer"),
+                @NamedAttributeNode(value="currentCustomer", subgraph = "customer")
+        },
+        subgraphs = {
+                @NamedSubgraph(name="customer",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="currentCart"),
+                                @NamedAttributeNode(value="carts"),
+                                @NamedAttributeNode(value="addresses"),
+                                @NamedAttributeNode(value="defaultAddress")
+                        }
+                )
+        }
+)
 public class AddressEntity extends BaseEntity {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Basic
     @Column(name = "customerId", nullable = false)
     private Integer customerId;
+
     @Basic
     @Column(name = "street", nullable = false, length = 100)
     private String street;
+
     @Basic
     @Column(name = "streetNumber", nullable = false)
     private Integer streetNumber;
+
     @Basic
     @Column(name = "apartmentNumber", nullable = false)
     private Integer apartmentNumber;
+
     @Basic
     @Column(name = "floorNumber", nullable = false)
     private Integer floorNumber;
+
     @Basic
     @Column(name = "zipCode", nullable = false, length = 50)
     private String zipCode;
+
     @Basic
     @Column(name = "city", nullable = false, length = 100)
     private String city;
+
     @Basic
     @Column(name = "state", nullable = false, length = 100)
     private String state;
+
     @Basic
     @Column(name = "country", nullable = false, length = 100)
     private String country;
+
     @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private CustomerEntity customer;
+
     @OneToOne(mappedBy = "defaultAddress")
     private CustomerEntity currentCustomer;
 
@@ -137,19 +168,24 @@ public class AddressEntity extends BaseEntity {
         return Objects.hash(id, customerId, street, streetNumber, apartmentNumber, floorNumber, zipCode, city, state, country);
     }
 
-    public CustomerEntity getCustomer() {
-        return customer;
-    }
-
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
+    }
+
+    public void setCurrentCustomer(CustomerEntity currentCustomer) {
+        this.currentCustomer = currentCustomer;
     }
 
     public CustomerEntity getCurrentCustomer() {
         return currentCustomer;
     }
 
-    public void setCurrentCustomer(CustomerEntity currentCustomer) {
-        this.currentCustomer = currentCustomer;
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    @Override
+    public String getGraphName() {
+        return "addressGraph";
     }
 }

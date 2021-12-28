@@ -14,9 +14,9 @@
 <html>
 <head>
     <title>Products</title>
+    <script src="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="${contextPath}/assets/scripts/popper/popper.min.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="${contextPath}/assets/scripts/popper/popper.min.js" rel="script">
-    <link href="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" rel="script">
     <link href="${contextPath}/assets/styles/custom/products.css" rel="stylesheet" type="text/css">
     <script src="${contextPath}/assets/scripts/custom/products.js" type="text/javascript"></script>
 </head>
@@ -24,35 +24,36 @@
 <jsp:include page="header.jsp"/>
 <div class="container-fluid">
     <div class="row mt-3">
-        <div class="col-xs-12 col-6">
-            <span class="category-name">All products</span>
+        <div class="col-xs-12 col-sm-6">
+            <h1 class="category-name">All products</h1>
         </div>
-        <div class="col-xs-12 col-6 d-flex justify-content-end">
-            <form action="products" method="get" novalidate class="no-margin">
+        <div class="col-xs-12 col-sm-6 d-flex justify-content-end">
+            <form name="searchForm" action="products" method="get" novalidate class="no-margin">
                 <div class="input-group">
                     <div class="form-floating">
-                        <input name="search" type="text" class="form-control"
+                        <input name="search" type="text" class="form-control" value="${search}"
                                id="search">
                         <label for="search">Product search</label>
                     </div>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" id="searchSubmit" class="btn btn-primary">
                         <span class="material-icons">search</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    <div class="row">
+
+    <div class="products-wrapper mt-3">
         <% if (request.getAttribute(AttributeEnum.ITEMS.toString()) != null) { %>
 
         <jsp:useBean id="items" scope="request" type="java.util.List"/>
         <c:forEach var="item" items="${items}">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-xl-2">
+            <div class="product-wrapper mx-3 my-3 ">
                 <div class="card">
                     <div class="card-header">
                         <h5>${item.manufacturer} - ${item.name}</h5>
                     </div>
-                    <div class="card-image">
+                    <div class="card-image text-center">
                         <img class="item-preview" src="${contextPath}/assets/images/${item.image}" alt="No image"/>
                     </div>
                     <div class="card-body">
@@ -65,7 +66,7 @@
                                 <form action="products" method="post" novalidate>
                                     <input id="itemId" name="itemId" hidden value="${item.id}" readonly/>
                                     <div class=" d-grid gap-2">
-                                        <button class="btn btn-sm btn-secondary" type="submit">
+                                        <button class="btn btn-sm btn-secondary" onclick="addToCart(${item.id})" type="button">
                                             <span class="material-icons">add_shopping_cart</span>
                                         </button>
                                     </div>

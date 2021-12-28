@@ -8,13 +8,14 @@ import com.kcosic.jwp.shared.model.entities.CustomerEntity;
 import com.kcosic.jwp.shared.model.entities.ItemEntity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class DbHelper {
-    private DbHelper(){
+    private DbHelper() {
     }
 
-    public static List<CustomerEntity> retrieveAllCustomers(){
+    public static List<CustomerEntity> retrieveAllCustomers() {
         Dal dal = new Dal();
         return dal.retrieveAll(CustomerEntity.class).toList();
     }
@@ -23,8 +24,8 @@ public class DbHelper {
         Dal dal = new Dal();
 
         var data = dal.retrieveAll(CustomerEntity.class);
-        var filteredUser = data.filter((customer)-> customer.getEmail().equals(email)).findFirst();
-        if(filteredUser.isEmpty()){
+        var filteredUser = data.filter((customer) -> customer.getEmail().equals(email)).findFirst();
+        if (filteredUser.isEmpty()) {
             throw new EntityNotFoundException("Customer with given email doesn't exist.");
         }
         return filteredUser.get();
@@ -33,13 +34,13 @@ public class DbHelper {
     public static CustomerEntity retrieveCustomerById(int id) throws EntityNotFoundException {
         Dal dal = new Dal();
         var data = dal.retrieveById(CustomerEntity.class, id);
-        if(data == null){
+        if (data == null) {
             throw new EntityNotFoundException("Customer with given ID doesn't exist.");
         }
         return data;
     }
 
-    public static CustomerEntity createCustomer(CustomerEntity customer){
+    public static CustomerEntity createCustomer(CustomerEntity customer) {
         var dal = new Dal();
         return dal.create(CustomerEntity.class, customer);
     }
@@ -50,45 +51,56 @@ public class DbHelper {
         return dal
                 .retrieveAll(CustomerEntity.class)
                 .anyMatch(
-                        (customer)->customer.getEmail().equals(email)
+                        (customer) -> customer.getEmail().equals(email)
                 );
     }
 
 
     public static List<ItemEntity> retrieveItems() {
         Dal dal = new Dal();
-
         var data = dal.retrieveAll(ItemEntity.class);
-
         return data.toList();
     }
 
-    public static BigDecimal addToCart(int customerId, ItemEntity item, boolean getTotalPrice) throws EntityNotFoundException {
+    public static List<ItemEntity> retrieveItems(String query){
+        Dal dal = new Dal();
+        var data = dal.retrieveAll(ItemEntity.class)
+                .filter(item-> item.getName().contains(query) || item.getManufacturer().contains(query));
+        return data.toList();
+    }
+
+    public static ItemEntity retrieveItem(Integer id) {
+        Dal dal = new Dal();
+
+        var data = dal.retrieveById(ItemEntity.class, id);
+
+        return data;
+    }
+
+    public static String addToCart(int customerId, ItemEntity item, boolean getTotalPrice) throws EntityNotFoundException {
         Dal dal = new Dal();
 
         var customer = retrieveCustomerById(customerId);
 
-        if(customer.getCurrentCartId() == null){
+        if (customer.getCurrentCartId() == null) {
             var newCart = new CartEntity();
             newCart.setCustomerId(customerId);
-            newCart = dal.create(CartEntity.class,newCart);
+            newCart = dal.create(CartEntity.class, newCart);
             customer.setCurrentCartId(newCart.getId());
+            customer = dal.update(CustomerEntity.class, customer);
         }
-
-        var optionalCartItem = customer.getCurrentCart()
-                .getCartItems()
-                .stream()
-                .filter(
-                        cartItemEntity ->
-                                cartItemEntity.getItemId().equals(item.getId())
-                ).findFirst();
-
-        if(optionalCartItem.isPresent()){
-            var cartItem = optionalCartItem.get();
+        final var cartId = customer.getCurrentCartId();
+        var optCartItem = dal
+                .retrieveAll(CartItemEntity.class)
+                .filter(cartItemEntity ->
+                        cartItemEntity.getItemId().equals(item.getId()) &&
+                                cartItemEntity.getCartId().equals(cartId))
+                .findFirst();
+        if (optCartItem.isPresent()) {
+            var cartItem = optCartItem.get();
             cartItem.setCount(cartItem.getCount() + 1);
             dal.update(CartItemEntity.class, cartItem);
-        }
-        else{
+        } else {
             var newCartItem = new CartItemEntity();
             newCartItem.setCartId(customer.getCurrentCartId());
             newCartItem.setItemId(item.getId());
@@ -96,20 +108,30 @@ public class DbHelper {
             dal.create(CartItemEntity.class, newCartItem);
         }
 
-        if(getTotalPrice){
-            return calculateTotalPrice(customer.getCurrentCart());
+        if (getTotalPrice) {
+            return calculateTotalPrice(retrieveCartItems(cartId));
         }
         return null;
     }
 
-    private static BigDecimal calculateTotalPrice(CartEntity currentCart) {
+
+    public static List<CartItemEntity> retrieveCartItems(Integer cartId) {
+        Dal dal = new Dal();
+        return dal.retrieveAll(CartItemEntity.class)
+                .filter(cartItemEntity -> cartItemEntity
+                        .getCartId()
+                        .equals(cartId)).toList();
+    }
+
+    public static String calculateTotalPrice(List<CartItemEntity> currentCartItems) {
         BigDecimal price = BigDecimal.valueOf(0);
-        for (var cartItem : currentCart.getCartItems()) {
+        for (var cartItem : currentCartItems) {
+            var item = retrieveItem(cartItem.getItemId());
             price = price.add(
                     BigDecimal.valueOf(cartItem.getCount())
-                            .multiply(cartItem.getItem().getPrice()));
+                            .multiply(item.getPrice()));
         }
 
-        return price;
+        return String.format("%,.2f", price.setScale(2, RoundingMode.DOWN));
     }
 }

@@ -1,4 +1,4 @@
-package com.kcosic.jwp.register;
+package com.kcosic.jwp.servlets;
 
 import com.kcosic.jwp.shared.enums.JspEnum;
 import com.kcosic.jwp.shared.enums.AttributeEnum;

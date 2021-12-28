@@ -1,28 +1,57 @@
 package com.kcosic.jwp.shared.model.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "CartItem", schema = "dbo", catalog = "JWPProject")
+@NamedEntityGraph(name = "cartItemGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value="item", subgraph = "item"),
+                @NamedAttributeNode(value="cart", subgraph = "cart"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name="item",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="category"),
+                        }
+                ),
+                @NamedSubgraph(name="cart",
+                        attributeNodes = {
+                                @NamedAttributeNode(value="customer"),
+                                @NamedAttributeNode(value="history"),
+                                @NamedAttributeNode(value="currentCustomer"),
+                        }
+
+                )
+        }
+)
 public class CartItemEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Basic
     @Column(name = "cartId", nullable = false)
     private Integer cartId;
+
     @Basic
     @Column(name = "itemId", nullable = false)
     private Integer itemId;
+
     @Basic
     @Column(name = "count", nullable = false)
     private Integer count;
+
     @ManyToOne
     @JoinColumn(name = "cartId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private CartEntity cart;
+
     @ManyToOne
     @JoinColumn(name = "itemId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
     private ItemEntity item;
@@ -75,16 +104,20 @@ public class CartItemEntity extends BaseEntity {
     public CartEntity getCart() {
         return cart;
     }
+    public ItemEntity getItem() {
+        return item;
+    }
 
     public void setCart(CartEntity cart) {
         this.cart = cart;
     }
 
-    public ItemEntity getItem() {
-        return item;
-    }
-
     public void setItem(ItemEntity item) {
         this.item = item;
+    }
+
+    @Override
+    public String getGraphName() {
+        return "cartItemGraph";
     }
 }

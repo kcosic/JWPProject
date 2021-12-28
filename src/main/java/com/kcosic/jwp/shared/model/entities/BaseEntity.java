@@ -1,4 +1,7 @@
 package com.kcosic.jwp.shared.model.entities;
 
-public class BaseEntity {
+import java.util.List;
+
+public abstract class BaseEntity {
+    public abstract String getGraphName();
 }

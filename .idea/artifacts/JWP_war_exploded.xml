@@ -9,7 +9,6 @@
       </options>
     </properties>
     <root id="root">
-      <element id="module-output" name="JWP" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="JWP" />
@@ -36,6 +35,7 @@
           <element id="library" level="project" name="Maven: jakarta.validation:jakarta.validation-api:3.0.0" />
         </element>
       </element>
+      <element id="module-output" name="JWP" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/target/JWP-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
       </element>

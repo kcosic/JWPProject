@@ -2,12 +2,14 @@ package com.kcosic.jwp.shared.dal;
 
 import com.kcosic.jwp.shared.model.entities.BaseEntity;
 import com.kcosic.jwp.shared.singletons.Database;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.JoinType;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class Dal {
@@ -22,17 +24,38 @@ public class Dal {
     private <T extends BaseEntity> TypedQuery<T> createQuery(Class<T> clazz){
         var criteriaQuery = criteriaBuilder.createQuery(clazz);
         var from = criteriaQuery.from(clazz);
-        criteriaQuery.select(from);
-        return entityManager.createQuery(criteriaQuery);
+        return entityManager.createQuery(criteriaQuery.select(from));
     }
 
+    /**
+     * Retrieve all table data without relation data
+     * @param clazz Entity class that is queried
+     * @param <T> Type of BaseEntity
+     * @return Stream of the given class
+     */
     public <T extends BaseEntity> Stream<T> retrieveAll(Class<T> clazz){
         var query = createQuery(clazz);
         return query.getResultStream();
     }
 
     public <T extends BaseEntity> T retrieveById(Class<T> clazz, int id){
-        return entityManager.find(clazz, id);
+        return entityManager.find(clazz, id, getHints(clazz));
+    }
+
+    private <T extends BaseEntity> Map<String, Object> getHints(Class<T> clazz) {
+        var graph = entityManager.getEntityGraph(getEntityGraphName(clazz));
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("jakarta.persistence.loadgraph", graph);
+        return map;
+    }
+
+    private <T extends BaseEntity> String getEntityGraphName(Class<T> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance().getGraphName();
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public <T extends BaseEntity> T create(Class<T> clazz, T object){
@@ -40,7 +63,6 @@ public class Dal {
         entityTransaction.begin();
         entityManager.persist(object);
         entityTransaction.commit();
-        //entityManager.flush();
         return object;
     }
 
@@ -49,7 +71,6 @@ public class Dal {
         entityTransaction.begin();
         entityManager.merge(object);
         entityTransaction.commit();
-        //entityManager.flush();
         return object;
     }
 
@@ -58,7 +79,6 @@ public class Dal {
         entityTransaction.begin();
         entityManager.remove(object);
         entityTransaction.commit();
-        //entityManager.flush();
         return object;
     }
 }
