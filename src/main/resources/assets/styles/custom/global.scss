@@ -1,5 +1,5 @@
 @import "variables";
-@import "../../bundles/bootstrap/scss/functions";
+@import "../bootstrap/functions";
 
 //bootstrap variable override
 $blue:      $primary-color;
@@ -18,8 +18,8 @@ $gray-800:  $secondary-color-800;
 $gray-900:  $secondary-color-900;
 $black: $black-color;
 $white: $white-color;
-@import "../../bundles/bootstrap/scss/variables";
-@import "../../bundles/bootstrap/scss/bootstrap";
+@import "../bootstrap/variables";
+@import "../bootstrap";
 
 body {
   font-family: "Droid Sans", sans-serif;

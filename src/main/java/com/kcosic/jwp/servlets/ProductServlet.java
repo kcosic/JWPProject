@@ -41,16 +41,16 @@ public class ProductServlet extends HttpServlet {
                     item,
                     true);
             var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
-            request.setAttribute(AttributeEnum.TOTAL_PRICE.toString(), price);
-            request.setAttribute(AttributeEnum.CART_ITEMS.toString(), cartItems);
+            Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE, price);
+            Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
 
         } catch (EntityNotFoundException e) {
             PrintWriter out = response.getWriter();
             e.printStackTrace(out);
         }
 
-        request.setAttribute(AttributeEnum.USER_DATA.toString(), customer.toString());
-        request.getRequestDispatcher(JspEnum.PRODUCT.toString()).forward(request, response);
+        Helper.setSessionData(request, AttributeEnum.USER_DATA, customer.toString());
+        request.getRequestDispatcher(JspEnum.PRODUCT.getJsp()).forward(request, response);
     }
 
 
@@ -60,17 +60,15 @@ public class ProductServlet extends HttpServlet {
         try{
             itemId = Integer.parseInt(itemIdRaw);
         }catch (NumberFormatException e){
-            request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
+            request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
         }
         var item = DbHelper.retrieveItem(itemId);
         var category = DbHelper.retrieveCategory(item.getCategoryId());
         Helper.addAttribute(request,AttributeEnum.ITEM, item);
         Helper.addAttribute(request,AttributeEnum.CATEGORY, category);
-        Helper.addAttributeIfNotExists(request,AttributeEnum.CART_ITEMS, 0);
-        Helper.addAttributeIfNotExists(request,AttributeEnum.TOTAL_PRICE, "0");
-        Helper.removeAttribute(request,AttributeEnum.ITEMS);
-        Helper.removeAttribute(request,AttributeEnum.HAS_ERROR);
-        request.getRequestDispatcher(JspEnum.PRODUCT.toString()).forward(request, response);
+        Helper.setSessionIfNotExists(request,AttributeEnum.CART_ITEMS, 0);
+        Helper.setSessionIfNotExists(request,AttributeEnum.TOTAL_PRICE, "0");
 
+        request.getRequestDispatcher(JspEnum.PRODUCT.getJsp()).forward(request, response);
     }
 }

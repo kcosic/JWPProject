@@ -13,11 +13,14 @@
 <html>
 <head>
     <title>${item.manufacturer} - ${item.name}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" type="text/javascript"></script>
-    <script src="${contextPath}/assets/scripts/popper/popper.min.js" type="text/javascript"></script>
+    <script src="${contextPath}/assets/scripts/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="${contextPath}/assets/styles/custom/product.css" rel="stylesheet" type="text/css">
     <script src="${contextPath}/assets/scripts/custom/product.js" type="text/javascript"></script>
+    <script src="${contextPath}/assets/scripts/custom/header.js" type="text/javascript" ></script>
+
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -61,13 +64,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-        <div class="row">
-
-        </div>
-
     </div>
 </div>
 </body>

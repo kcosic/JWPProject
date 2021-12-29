@@ -27,16 +27,17 @@ public class RegisterServlet extends HttpServlet {
         processRegistrationPostRequest(request, response);
     }
 
-    private void processRegistrationGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void processRegistrationGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
+        var customer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
 
-        try {
-            Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
-            request.getRequestDispatcher(JspEnum.REGISTER.toString()).forward(request, response);
-        } catch (ServletException e) {
-            PrintWriter out = response.getWriter();
-            e.printStackTrace(out);
+        if(customer != null && customer.getRoleId() != 3){
+            request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
         }
+
+        Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
+        request.getRequestDispatcher(JspEnum.REGISTER.getJsp()).forward(request, response);
+
     }
 
     private void processRegistrationPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,17 +60,29 @@ public class RegisterServlet extends HttpServlet {
             sendErrorResponse(request,response,e.getMessage());
             return;
         }
+        var guestCustomer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
+        if(guestCustomer != null){
+            guestCustomer.setFirstName(firstName);
+            guestCustomer.setLastName(lastName);
+            guestCustomer.setDateOfBirth(dateOfBirth);
+            guestCustomer.setEmail(email);
+            guestCustomer.setPassword(hashedPass);
+            guestCustomer.setRoleId(2);
+            DbHelper.updateCustomer(guestCustomer);
+        }
+        else {
+            var newCustomer = new CustomerEntity();
+            newCustomer.setFirstName(firstName);
+            newCustomer.setLastName(lastName);
+            newCustomer.setDateOfBirth(dateOfBirth);
+            newCustomer.setEmail(email);
+            newCustomer.setPassword(hashedPass);
+            newCustomer.setRoleId(2);
+            newCustomer.setDefaultAddressId(null);
+            newCustomer.setCurrentCartId(null);
+            DbHelper.createCustomer(newCustomer);
+        }
 
-        var newCustomer = new CustomerEntity();
-        newCustomer.setFirstName(firstName);
-        newCustomer.setLastName(lastName);
-        newCustomer.setDateOfBirth(dateOfBirth);
-        newCustomer.setEmail(email);
-        newCustomer.setPassword(hashedPass);
-        newCustomer.setRoleId(2);
-        newCustomer.setDefaultAddressId(null);
-        newCustomer.setCurrentCartId(null);
-        DbHelper.createCustomer(newCustomer);
 
         Helper.goToPage(request,response, JspEnum.LOGIN, false);
     }
@@ -84,6 +97,6 @@ public class RegisterServlet extends HttpServlet {
     private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         Helper.addAttribute(request,AttributeEnum.HAS_ERROR, true);
         Helper.addAttribute(request,AttributeEnum.ERROR_MESSAGE, message);
-        request.getRequestDispatcher(JspEnum.REGISTER.toString()).forward(request, response);
+        request.getRequestDispatcher(JspEnum.REGISTER.getJsp()).forward(request, response);
     }
 }

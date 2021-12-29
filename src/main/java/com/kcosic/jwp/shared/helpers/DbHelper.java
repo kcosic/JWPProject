@@ -21,7 +21,7 @@ public class DbHelper {
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
         Dal dal = new Dal();
 
-        var data = dal.retrieveAll(CustomerEntity.class);
+        var data = dal.retrieveAll(CustomerEntity.class).filter((customer) -> customer.getEmail() != null);
         var filteredUser = data.filter((customer) -> customer.getEmail().equals(email)).findFirst();
         if (filteredUser.isEmpty()) {
             throw new EntityNotFoundException("Customer with given email doesn't exist.");
@@ -48,6 +48,7 @@ public class DbHelper {
 
         return dal
                 .retrieveAll(CustomerEntity.class)
+                .filter((customer)->customer.getEmail() != null)
                 .anyMatch(
                         (customer) -> customer.getEmail().equals(email)
                 );
@@ -144,10 +145,15 @@ public class DbHelper {
         return data.toList();
     }
 
-    public static Integer cartQuantity(Integer cartId) {
+    public static int cartQuantity(Integer cartId) {
         if(cartId == null){
             return 0;
         }
         return retrieveCartItems(cartId).size();
+    }
+
+    public static void updateCustomer(CustomerEntity customer) {
+        Dal dal = new Dal();
+        dal.update(CustomerEntity.class, customer);
     }
 }

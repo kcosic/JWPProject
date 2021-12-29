@@ -49,19 +49,17 @@ public class ProductsServlet extends BaseServlet {
                     true);
 
             var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
-            Helper.addAttribute(request,AttributeEnum.TOTAL_PRICE, price);
-            Helper.addAttribute(request,AttributeEnum.CART_ITEMS, cartItems);
+            Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE, price);
+            Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
         } catch (EntityNotFoundException e) {
             PrintWriter out = response.getWriter();
             e.printStackTrace(out);
         }
-        Helper.addAttribute(request,AttributeEnum.USER_DATA, customer.toString());
         Helper.addAttribute(request,AttributeEnum.ITEMS, data);
-        Helper.removeAttribute(request,AttributeEnum.HAS_ERROR);
-        request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
+        request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
     }
 
-    private void processProductsGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void processProductsGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
         var search = request.getParameter(AttributeEnum.SEARCH.toString());
         List<ItemEntity> data;
@@ -71,28 +69,20 @@ public class ProductsServlet extends BaseServlet {
             data = DbHelper.retrieveItems(search);
         }
         var customer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
-        try {
-            if (customer == null) {
-                customer = Helper.createGuestCustomer();
-                Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
-            }
-
-            Helper.addAttributeIfNotExists(request,AttributeEnum.USER_DATA, customer.toString());
-
-            Helper.addAttribute(request,AttributeEnum.TOTAL_PRICE,(
-                    customer.getCurrentCartId() != null ?
-                            DbHelper.calculateTotalPrice(DbHelper.retrieveCartItems(customer.getCurrentCartId())) :
-                            "0"));
-            var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
-            Helper.addAttribute(request,AttributeEnum.CART_ITEMS, cartItems);
-            Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
-            Helper.addAttribute(request,AttributeEnum.ITEMS, data);
-            Helper.addAttribute(request,AttributeEnum.SEARCH, search);
-            request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
-        } catch (ServletException e) {
-            PrintWriter out = response.getWriter();
-            e.printStackTrace(out);
+        if (customer == null) {
+            customer = Helper.createGuestCustomer();
+            Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
         }
+        Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE,(
+                customer.getCurrentCartId() != null ?
+                        DbHelper.calculateTotalPrice(DbHelper.retrieveCartItems(customer.getCurrentCartId())) :
+                        "0"));
+        var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
+        Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
+        Helper.addAttribute(request,AttributeEnum.ITEMS, data);
+        Helper.addAttribute(request,AttributeEnum.SEARCH, search);
+        request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
+
     }
 
 }

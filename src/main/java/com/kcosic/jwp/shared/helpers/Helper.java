@@ -39,10 +39,9 @@ public class Helper {
     }
 
     public static void goToPage(HttpServletRequest request, HttpServletResponse response, JspEnum page, boolean hasError) throws ServletException, IOException {
-        if(hasError){
-            request.setAttribute(AttributeEnum.HAS_ERROR.toString(), true);
-        }
-        request.getRequestDispatcher(page.toString()).forward(request, response);
+        request.setAttribute(AttributeEnum.HAS_ERROR.toString(), hasError);
+
+        request.getRequestDispatcher(page.getJsp()).forward(request, response);
     }
 
     public static void setSessionData(HttpServletRequest request, AttributeEnum key, Object data){
@@ -60,6 +59,12 @@ public class Helper {
             return null;
         }
         return (T)data;
+    }
+
+    public static void setSessionIfNotExists(HttpServletRequest request, AttributeEnum key, Object data){
+        if(request.getSession().getAttribute(key.toString()) == null){
+            request.setAttribute(key.toString(), data);
+        }
     }
 
     public static boolean isUserAuthenticated(String jsonUserData) {

@@ -1,5 +1,8 @@
 package com.kcosic.jwp.shared.enums;
 
+/**
+ * Contains all attributes and parameters used in the application
+ */
 public enum AttributeEnum {
     LOGIN("login"),
     PASSWORD("password"),
@@ -14,7 +17,7 @@ public enum AttributeEnum {
     COUNTRY("country"),
     COUNTY("county"),
     CITY("city"),
-    USER_DATA("user_data"),
+    USER_DATA("userData"),
     ERROR_MESSAGE("errorMessage"),
     ITEMS("items"),
     ITEM_ID("itemId"),

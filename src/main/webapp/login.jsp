@@ -1,4 +1,4 @@
-<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: Kresimir
   Date: 17/12/2021
@@ -9,28 +9,33 @@
          pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %>
+
 <html>
 <head>
     <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="${contextPath}/assets/scripts/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="${contextPath}/assets/scripts/popper/popper.min.js" rel="script">
-    <link href="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" rel="script">
-    <%--    <link href="${contextPath}/assets/styles/bootstrap/bootstrap.css" rel="stylesheet" type="text/css">--%>
-    <%--    <link href="${contextPath}/assets/styles/bootstrap/bootstrap-grid.css" rel="stylesheet" type="text/css">--%>
-    <%--    <link href="${contextPath}/assets/scripts/bootstrap/bootstrap.js" rel="script">--%>
     <link href="${contextPath}/assets/styles/custom/login.css" rel="stylesheet" type="text/css">
     <script src="${contextPath}/assets/scripts/custom/login.js" type="text/javascript" ></script>
 </head>
 <body>
+<c:if test="${userData !=  null && userData.roleId != 3}">
+    <c:redirect url="products"/>
+</c:if>
+
 <div class="container h-100 d-flex justify-content-center align-items-center">
     <form action="login" method="post" class="needs-validation" novalidate>
-        <% if ((boolean) request.getAttribute(AttributeEnum.HAS_ERROR.toString())) { %>
-        <div class="row mb-4">
-            <div class="col text-center red-border">
-                Invalid login data.
+        <jsp:useBean id="hasError" scope="request" type="java.lang.Boolean"/>
+        <c:if test="${hasError}">
+            <div class="row mb-4">
+                <div class="col text-center red-border">
+                    Invalid login data.
+                </div>
             </div>
-        </div>
-        <%}%>
+        </c:if>
         <div class="card">
             <div class="card-header">
                 <div class="row-cols-1 text-center text-uppercase">
@@ -82,7 +87,6 @@
                         <button class="btn btn-block btn-warning" type="button">Back</button>
                     </div>
                 </div>
-
             </div>
         </div>
     </form>

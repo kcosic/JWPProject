@@ -1,4 +1,5 @@
 function addToCart(itemId) {
+    toggleOverlay(true)
     let itemForm = {
         itemId: itemId
     };

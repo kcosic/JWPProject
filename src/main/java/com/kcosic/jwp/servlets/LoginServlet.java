@@ -35,11 +35,18 @@ public class LoginServlet extends BaseServlet {
             var hashedPassword = Helper.hash(password);
             if (hashedPassword.equals(customer.getPassword())) {
                 Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
-                request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
+                Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE,(
+                        customer.getCurrentCartId() != null ?
+                                DbHelper.calculateTotalPrice(DbHelper.retrieveCartItems(customer.getCurrentCartId())) :
+                                "0"));
+                var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
+                Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
+
+                response.sendRedirect(JspEnum.PRODUCTS.getUrl());
             }
         } catch (EntityNotFoundException e) {
             request.setAttribute(AttributeEnum.HAS_ERROR.toString(), true);
-            request.getRequestDispatcher(JspEnum.LOGIN.toString()).forward(request, response);
+            request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -53,11 +60,11 @@ public class LoginServlet extends BaseServlet {
 
             if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.USER_DATA.toString()))) {
                 request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
-                request.getRequestDispatcher(JspEnum.PRODUCTS.toString()).forward(request, response);
+                request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
             }
 
             request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
-            request.getRequestDispatcher(JspEnum.LOGIN.toString()).forward(request, response);
+            request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
 
         } catch (ServletException e) {
             PrintWriter out = response.getWriter();
