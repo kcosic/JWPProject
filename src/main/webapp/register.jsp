@@ -1,3 +1,4 @@
+<%--suppress HtmlUnknownTarget --%>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -5,7 +6,7 @@
   Time: 15:58
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -57,7 +58,7 @@
                     <div class="col mx-3">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
-                                <input name="dateOfBirth" type="date" class="form-control" value="${dateOfBirth}"
+                                <input name="dateOfBirth" type="date" class="form-control" value="${dateOfBirth}" maxlength="8"
                                        id="dateOfBirth" required>
                                 <label for="dateOfBirth">Date of birth</label>
                                 <div class="invalid-feedback">

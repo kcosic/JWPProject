@@ -1,10 +1,37 @@
 package com.kcosic.jwp.shared.model;
 
+import com.kcosic.jwp.shared.enums.AttributeEnum;
+import com.kcosic.jwp.shared.helpers.Helper;
+import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
-import org.hibernate.Hibernate;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 public class BaseServlet extends HttpServlet {
     public BaseServlet() {
         super();
+    }
+
+    protected CustomerEntity getOrCreateCustomer(HttpServletRequest request){
+        var customer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
+        if (customer == null) {
+            customer = Helper.createGuestCustomer();
+        }
+        Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
+        return customer;
+    }
+
+    protected void logoutCustomer(HttpServletRequest request){
+        Helper.removeSessionData(request, AttributeEnum.USER_DATA);
+        Helper.removeSessionData(request, AttributeEnum.TOTAL_PRICE);
+        Helper.removeSessionData(request, AttributeEnum.CART_ITEMS);
+        Helper.removeAttribute(request, AttributeEnum.LOGOUT);
+    }
+
+    protected void handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logoutCustomer(request);
     }
 }

@@ -11,9 +11,11 @@ public enum AttributeEnum {
     LAST_NAME("lastName"),
     DATE_OF_BIRTH("dateOfBirth"),
     ADDRESS("address"),
+    STREET_NAME("streetName"),
     STREET_NUMBER("streetNumber"),
     APT_NUMBER("aptNumber"),
     FLOOR_NUMBER("floorNumber"),
+    ZIP_CODE("zipCode"),
     COUNTRY("country"),
     COUNTY("county"),
     CITY("city"),
@@ -29,7 +31,15 @@ public enum AttributeEnum {
     ID("id"),
     CATEGORY("category"),
     CART_ITEMS("cartItems"),
-    HAS_ERROR("hasError");
+    LOGOUT("logout"),
+    TYPE("type"),
+    HAS_ERROR("hasError"),
+    DEFAULT_ADDRESS("defaultAddress"),
+    ADDRESSES("addresses"),
+    USERS("users"),
+    CATEGORIES("categories"),
+    CARTS("carts"),
+    ALL_CARTS("allCarts");
 
 
     private final String label;

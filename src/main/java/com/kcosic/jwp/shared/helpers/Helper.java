@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Helper {
-
-    private static Map<Class, Map<Class, String>> dict = null;
-
-
     public static String hash(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -91,9 +87,5 @@ public class Helper {
     public static void removeAttribute(HttpServletRequest request, AttributeEnum attribute){
         request.removeAttribute(attribute.toString());
     }
-
-
-
-
 
 }

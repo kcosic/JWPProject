@@ -7,46 +7,46 @@
 
 // scss-docs-start import-stack
 // Configuration
-@import "assets/styles/bootstrap/functions";
-@import "assets/styles/bootstrap/variables";
-@import "assets/styles/bootstrap/mixins";
-@import "assets/styles/bootstrap/utilities";
+@import "./functions";
+@import "./variables";
+@import "./mixins";
+@import "./utilities";
 
 // Layout & components
-@import "assets/styles/bootstrap/root";
-@import "assets/styles/bootstrap/reboot";
-@import "assets/styles/bootstrap/type";
-@import "assets/styles/bootstrap/images";
-@import "assets/styles/bootstrap/containers";
-@import "assets/styles/bootstrap/grid";
-@import "assets/styles/bootstrap/tables";
-@import "assets/styles/bootstrap/forms";
-@import "assets/styles/bootstrap/buttons";
-@import "assets/styles/bootstrap/transitions";
-@import "assets/styles/bootstrap/dropdown";
-@import "assets/styles/bootstrap/button-group";
-@import "assets/styles/bootstrap/nav";
-@import "assets/styles/bootstrap/navbar";
-@import "assets/styles/bootstrap/card";
-@import "assets/styles/bootstrap/accordion";
-@import "assets/styles/bootstrap/breadcrumb";
-@import "assets/styles/bootstrap/pagination";
-@import "assets/styles/bootstrap/badge";
-@import "assets/styles/bootstrap/alert";
-@import "assets/styles/bootstrap/progress";
-@import "assets/styles/bootstrap/list-group";
-@import "assets/styles/bootstrap/close";
-@import "assets/styles/bootstrap/toasts";
-@import "assets/styles/bootstrap/modal";
-@import "assets/styles/bootstrap/tooltip";
-@import "assets/styles/bootstrap/popover";
-@import "assets/styles/bootstrap/carousel";
-@import "assets/styles/bootstrap/spinners";
-@import "assets/styles/bootstrap/offcanvas";
+@import "./root";
+@import "./reboot";
+@import "./type";
+@import "./images";
+@import "./containers";
+@import "./grid";
+@import "./tables";
+@import "./forms";
+@import "./buttons";
+@import "./transitions";
+@import "./dropdown";
+@import "./button-group";
+@import "./nav";
+@import "./navbar";
+@import "./card";
+@import "./accordion";
+@import "./breadcrumb";
+@import "./pagination";
+@import "./badge";
+@import "./alert";
+@import "./progress";
+@import "./list-group";
+@import "./close";
+@import "./toasts";
+@import "./modal";
+@import "./tooltip";
+@import "./popover";
+@import "./carousel";
+@import "./spinners";
+@import "./offcanvas";
 
 // Helpers
-@import "assets/styles/bootstrap/helpers";
+@import "./helpers";
 
 // Utilities
-@import "assets/styles/bootstrap/utilities/api";
+@import "./utilities/api";
 // scss-docs-end import-stack

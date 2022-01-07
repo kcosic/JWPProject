@@ -9,12 +9,11 @@ function addToCart(itemId) {
         data: itemForm,
         dataType: "json",
         encode: true,
-        success: (response)=>success(response),
-        error: (response)=>success(response)
+        success: ()=>success(),
+        error: ()=>success()
     });
 }
 
-function success(response){
-    console.log('success',response)
+function success(){
     location.reload()
 }

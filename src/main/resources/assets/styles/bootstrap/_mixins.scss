@@ -3,40 +3,40 @@
 // Used in conjunction with global variables to enable certain theme features.
 
 // Vendor
-@import "assets/styles/bootstrap/vendor/rfs";
+@import "./vendor/rfs";
 
 // Deprecate
-@import "assets/styles/bootstrap/mixins/deprecate";
+@import "./mixins/deprecate";
 
 // Helpers
-@import "assets/styles/bootstrap/mixins/breakpoints";
-@import "assets/styles/bootstrap/mixins/color-scheme";
-@import "assets/styles/bootstrap/mixins/image";
-@import "assets/styles/bootstrap/mixins/resize";
-@import "assets/styles/bootstrap/mixins/visually-hidden";
-@import "assets/styles/bootstrap/mixins/reset-text";
-@import "assets/styles/bootstrap/mixins/text-truncate";
+@import "./mixins/breakpoints";
+@import "./mixins/color-scheme";
+@import "./mixins/image";
+@import "./mixins/resize";
+@import "./mixins/visually-hidden";
+@import "./mixins/reset-text";
+@import "./mixins/text-truncate";
 
 // Utilities
-@import "assets/styles/bootstrap/mixins/utilities";
+@import "./mixins/utilities";
 
 // Components
-@import "assets/styles/bootstrap/mixins/alert";
-@import "assets/styles/bootstrap/mixins/buttons";
-@import "assets/styles/bootstrap/mixins/caret";
-@import "assets/styles/bootstrap/mixins/pagination";
-@import "assets/styles/bootstrap/mixins/lists";
-@import "assets/styles/bootstrap/mixins/list-group";
-@import "assets/styles/bootstrap/mixins/forms";
-@import "assets/styles/bootstrap/mixins/table-variants";
+@import "./mixins/alert";
+@import "./mixins/buttons";
+@import "./mixins/caret";
+@import "./mixins/pagination";
+@import "./mixins/lists";
+@import "./mixins/list-group";
+@import "./mixins/forms";
+@import "./mixins/table-variants";
 
 // Skins
-@import "assets/styles/bootstrap/mixins/border-radius";
-@import "assets/styles/bootstrap/mixins/box-shadow";
-@import "assets/styles/bootstrap/mixins/gradients";
-@import "assets/styles/bootstrap/mixins/transition";
+@import "./mixins/border-radius";
+@import "./mixins/box-shadow";
+@import "./mixins/gradients";
+@import "./mixins/transition";
 
 // Layout
-@import "assets/styles/bootstrap/mixins/clearfix";
-@import "assets/styles/bootstrap/mixins/container";
-@import "assets/styles/bootstrap/mixins/grid";
+@import "./mixins/clearfix";
+@import "./mixins/container";
+@import "./mixins/grid";

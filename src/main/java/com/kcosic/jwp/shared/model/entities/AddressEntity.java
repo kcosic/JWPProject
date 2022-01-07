@@ -12,15 +12,12 @@ import java.util.Objects;
 @NamedEntityGraph(name = "addressGraph",
         attributeNodes = {
                 @NamedAttributeNode(value="customer", subgraph = "customer"),
-                @NamedAttributeNode(value="currentCustomer", subgraph = "customer")
         },
         subgraphs = {
                 @NamedSubgraph(name="customer",
                         attributeNodes = {
-                                @NamedAttributeNode(value="currentCart"),
                                 @NamedAttributeNode(value="carts"),
                                 @NamedAttributeNode(value="addresses"),
-                                @NamedAttributeNode(value="defaultAddress")
                         }
                 )
         }
@@ -31,49 +28,39 @@ public class AddressEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Basic
-    @Column(name = "customerId", nullable = false)
+    @Column(name = "customerId", nullable = false, insertable = false, updatable = false)
     private Integer customerId;
-
     @Basic
     @Column(name = "street", nullable = false, length = 100)
     private String street;
-
     @Basic
-    @Column(name = "streetNumber", nullable = false)
-    private Integer streetNumber;
-
+    @Column(name = "streetNumber", nullable = false, length = 100)
+    private String streetNumber;
     @Basic
-    @Column(name = "apartmentNumber", nullable = false)
-    private Integer apartmentNumber;
-
+    @Column(name = "apartmentNumber", nullable = true, length = 100)
+    private String apartmentNumber;
     @Basic
-    @Column(name = "floorNumber", nullable = false)
-    private Integer floorNumber;
-
+    @Column(name = "floorNumber", nullable = true, length = 100)
+    private String floorNumber;
     @Basic
     @Column(name = "zipCode", nullable = false, length = 50)
     private String zipCode;
-
     @Basic
     @Column(name = "city", nullable = false, length = 100)
     private String city;
-
     @Basic
-    @Column(name = "state", nullable = false, length = 100)
-    private String state;
-
+    @Column(name = "county", nullable = true, length = 100)
+    private String county;
     @Basic
     @Column(name = "country", nullable = false, length = 100)
     private String country;
-
+    @Basic
+    @Column(name = "isDefault", nullable = false)
+    private Boolean isDefault;
     @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false)
     private CustomerEntity customer;
-
-    @OneToOne(mappedBy = "defaultAddress")
-    private CustomerEntity currentCustomer;
 
     public Integer getId() {
         return id;
@@ -99,27 +86,27 @@ public class AddressEntity extends BaseEntity {
         this.street = street;
     }
 
-    public Integer getStreetNumber() {
+    public String getStreetNumber() {
         return streetNumber;
     }
 
-    public void setStreetNumber(Integer streetNumber) {
+    public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
     }
 
-    public Integer getApartmentNumber() {
+    public String getApartmentNumber() {
         return apartmentNumber;
     }
 
-    public void setApartmentNumber(Integer apartmentNumber) {
+    public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
-    public Integer getFloorNumber() {
+    public String getFloorNumber() {
         return floorNumber;
     }
 
-    public void setFloorNumber(Integer floorNumber) {
+    public void setFloorNumber(String floorNumber) {
         this.floorNumber = floorNumber;
     }
 
@@ -139,12 +126,12 @@ public class AddressEntity extends BaseEntity {
         this.city = city;
     }
 
-    public String getState() {
-        return state;
+    public String getCounty() {
+        return county;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setCounty(String county) {
+        this.county = county;
     }
 
     public String getCountry() {
@@ -155,29 +142,25 @@ public class AddressEntity extends BaseEntity {
         this.country = country;
     }
 
+    public Boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean aDefault) {
+        isDefault = aDefault;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AddressEntity that = (AddressEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(street, that.street) && Objects.equals(streetNumber, that.streetNumber) && Objects.equals(apartmentNumber, that.apartmentNumber) && Objects.equals(floorNumber, that.floorNumber) && Objects.equals(zipCode, that.zipCode) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(country, that.country);
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(street, that.street) && Objects.equals(streetNumber, that.streetNumber) && Objects.equals(apartmentNumber, that.apartmentNumber) && Objects.equals(floorNumber, that.floorNumber) && Objects.equals(zipCode, that.zipCode) && Objects.equals(city, that.city) && Objects.equals(county, that.county) && Objects.equals(country, that.country) && Objects.equals(isDefault, that.isDefault);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, street, streetNumber, apartmentNumber, floorNumber, zipCode, city, state, country);
-    }
-
-    public void setCustomer(CustomerEntity customer) {
-        this.customer = customer;
-    }
-
-    public void setCurrentCustomer(CustomerEntity currentCustomer) {
-        this.currentCustomer = currentCustomer;
-    }
-
-    public CustomerEntity getCurrentCustomer() {
-        return currentCustomer;
+        return Objects.hash(id, customerId, street, streetNumber, apartmentNumber, floorNumber, zipCode, city, county, country, isDefault);
     }
 
     public CustomerEntity getCustomer() {
@@ -187,5 +170,21 @@ public class AddressEntity extends BaseEntity {
     @Override
     public String getGraphName() {
         return "addressGraph";
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+    }
+
+    @Override
+    public String toString() {
+        return street + " " +
+                streetNumber + ", "+
+                (apartmentNumber != null && !apartmentNumber.isEmpty() ? "apt " + apartmentNumber + ", " : "") +
+                (floorNumber != null && !floorNumber.isEmpty() ? "floor " + floorNumber + ", " : "") +
+                zipCode + " " +
+                city + ", " +
+                county + ", " +
+                country;
     }
 }

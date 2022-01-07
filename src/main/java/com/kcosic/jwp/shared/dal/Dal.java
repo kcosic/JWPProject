@@ -4,9 +4,14 @@ import com.kcosic.jwp.shared.model.entities.BaseEntity;
 import com.kcosic.jwp.shared.singletons.Database;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +23,7 @@ public class Dal {
 
     public Dal(){
         entityManager= Database.getInstance();
+        entityManager.setFlushMode(FlushModeType.COMMIT);
         criteriaBuilder= entityManager.getCriteriaBuilder();
     }
 
@@ -32,6 +38,7 @@ public class Dal {
         var from = criteriaQuery.from(clazz);
         return entityManager.createQuery(criteriaQuery.select(from));
     }
+
 
     /**
      * Retrieve all table data without relation data
@@ -52,7 +59,18 @@ public class Dal {
      * @return Casted entity to wanted type.
      */
     public <T extends BaseEntity> T retrieveById(Class<T> clazz, int id){
+
         return entityManager.find(clazz, id, getHints(clazz));
+
+
+       /* var entityGraph = entityManager.getEntityGraph(getEntityGraphName(clazz));
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
+        Root<T> root = criteriaQuery.from(clazz);
+        criteriaQuery.where(criteriaBuilder.equal(root.<Integer>get("id"), id));
+        TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setHint("jakarta.persistence.loadgraph", entityGraph);
+        return typedQuery.getSingleResult();*/
     }
 
     /**
@@ -93,6 +111,7 @@ public class Dal {
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         entityManager.persist(object);
+        entityManager.flush();
         entityTransaction.commit();
         return object;
     }
@@ -106,9 +125,10 @@ public class Dal {
     public <T extends BaseEntity> T update(Class<T> clazz, T object){
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
-        entityManager.merge(object);
+        var referencedObject = entityManager.merge(object);
+        entityManager.flush();
         entityTransaction.commit();
-        return object;
+        return referencedObject;
     }
 
     /**
@@ -120,6 +140,23 @@ public class Dal {
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         entityManager.remove(object);
+        entityManager.flush();
         entityTransaction.commit();
     }
+
+    /**
+     * Removes objects from the database
+     * @param clazz Type of object that is passed
+     * @param objects Collection of values that is passed
+     */
+    public <T extends BaseEntity> void bulkDelete(Class<T> clazz, Collection<T> objects){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        for (var object: objects) {
+            entityManager.remove(object);
+        }
+        entityManager.flush();
+        entityTransaction.commit();
+    }
+
 }

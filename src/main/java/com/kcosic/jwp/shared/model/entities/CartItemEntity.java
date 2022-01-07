@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,8 +24,6 @@ import java.util.Objects;
                 @NamedSubgraph(name="cart",
                         attributeNodes = {
                                 @NamedAttributeNode(value="customer"),
-                                @NamedAttributeNode(value="history"),
-                                @NamedAttributeNode(value="currentCustomer"),
                         }
 
                 )
@@ -35,25 +34,23 @@ public class CartItemEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Basic
-    @Column(name = "cartId", nullable = false)
+    @Column(name = "cartId", nullable = false, insertable=false, updatable=false)
     private Integer cartId;
-
     @Basic
-    @Column(name = "itemId", nullable = false)
+    @Column(name = "itemId", nullable = false, insertable=false, updatable=false)
     private Integer itemId;
-
     @Basic
     @Column(name = "count", nullable = false)
     private Integer count;
-
-    @ManyToOne
-    @JoinColumn(name = "cartId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    @Basic
+    @Column(name = "price", nullable = false, precision = 2)
+    private BigDecimal price;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "cartId", referencedColumnName = "id", nullable = false)
     private CartEntity cart;
-
-    @ManyToOne
-    @JoinColumn(name = "itemId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "itemId", referencedColumnName = "id", nullable = false)
     private ItemEntity item;
 
     public Integer getId() {
@@ -88,36 +85,44 @@ public class CartItemEntity extends BaseEntity {
         this.count = count;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItemEntity that = (CartItemEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(cartId, that.cartId) && Objects.equals(itemId, that.itemId) && Objects.equals(count, that.count);
+        return Objects.equals(id, that.id) && Objects.equals(cartId, that.cartId) && Objects.equals(itemId, that.itemId) && Objects.equals(count, that.count) && Objects.equals(price, that.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cartId, itemId, count);
+        return Objects.hash(id, cartId, itemId, count, price);
     }
 
     public CartEntity getCart() {
         return cart;
-    }
-    public ItemEntity getItem() {
-        return item;
     }
 
     public void setCart(CartEntity cart) {
         this.cart = cart;
     }
 
-    public void setItem(ItemEntity item) {
-        this.item = item;
+    public ItemEntity getItem() {
+        return item;
     }
 
     @Override
     public String getGraphName() {
         return "cartItemGraph";
+    }
+    public void setItem(ItemEntity item) {
+        this.item = item;
     }
 }

@@ -4,18 +4,18 @@ import com.kcosic.jwp.shared.enums.JspEnum;
 import com.kcosic.jwp.shared.enums.AttributeEnum;
 import com.kcosic.jwp.shared.helpers.DbHelper;
 import com.kcosic.jwp.shared.helpers.Helper;
-import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.BaseServlet;
+import com.kcosic.jwp.shared.model.entities.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
-public class RegisterServlet extends HttpServlet {
+public class RegisterServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRegistrationGetRequest(request, response);
@@ -78,11 +78,8 @@ public class RegisterServlet extends HttpServlet {
             newCustomer.setEmail(email);
             newCustomer.setPassword(hashedPass);
             newCustomer.setRoleId(2);
-            newCustomer.setDefaultAddressId(null);
-            newCustomer.setCurrentCartId(null);
             DbHelper.createCustomer(newCustomer);
         }
-
 
         Helper.goToPage(request,response, JspEnum.LOGIN, false);
     }

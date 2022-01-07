@@ -101,7 +101,7 @@
                         <c:otherwise>
                             <li>
 
-                                <button type="submit" form="login" class="d-flex justify-content-between align-content-center">
+                                <button type="submit" form="login" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Login&nbsp;
                                     <span class="material-icons">
                                     login
@@ -111,7 +111,7 @@
                             </li>
                             <li>
 
-                                <button type="submit" form="register" class=" d-flex justify-content-between align-content-center">
+                                <button type="submit" form="register" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Register&nbsp;
                                     <span class="material-icons">
                                     how_to_reg

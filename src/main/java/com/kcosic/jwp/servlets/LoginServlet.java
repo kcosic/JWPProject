@@ -29,41 +29,43 @@ public class LoginServlet extends BaseServlet {
     private void processLoginPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter(AttributeEnum.LOGIN.toString());
         String password = request.getParameter(AttributeEnum.PASSWORD.toString());
-
+        var customer = getOrCreateCustomer(request);
         try {
-            var customer = DbHelper.retrieveCustomerByEmail(username);
+            var loggedInCustomer = DbHelper.retrieveCustomerByEmail(username);
             var hashedPassword = Helper.hash(password);
-            if (hashedPassword.equals(customer.getPassword())) {
-                Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
+            if (hashedPassword.equals(loggedInCustomer.getPassword())) {
+                var currentCart = DbHelper.retrieveCurrentCart(loggedInCustomer.getId());
+                Helper.setSessionData(request, AttributeEnum.USER_DATA, loggedInCustomer);
                 Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE,(
-                        customer.getCurrentCartId() != null ?
-                                DbHelper.calculateTotalPrice(DbHelper.retrieveCartItems(customer.getCurrentCartId())) :
-                                "0"));
-                var cartItems = DbHelper.cartQuantity(customer.getCurrentCartId());
+                        currentCart != null ? currentCart.getTotalPriceString() : "0"));
+                var cartItems = DbHelper.cartQuantity(loggedInCustomer.getId());
                 Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
+                Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
 
-                response.sendRedirect(JspEnum.PRODUCTS.getUrl());
+                DbHelper.deleteCustomer(customer);
+            }
+            else {
+                Helper.addAttribute(request,AttributeEnum.HAS_ERROR, true);
             }
         } catch (EntityNotFoundException e) {
-            request.setAttribute(AttributeEnum.HAS_ERROR.toString(), true);
-            request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
-
+            Helper.addAttribute(request,AttributeEnum.HAS_ERROR, true);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-    }
 
+        request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
+    }
 
     private void processLoginGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             response.setContentType("text/html");
 
             if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.USER_DATA.toString()))) {
-                request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
+                Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
                 request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
             }
 
-            request.setAttribute(AttributeEnum.HAS_ERROR.toString(), false);
+            Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
 
         } catch (ServletException e) {

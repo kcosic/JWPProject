@@ -24,7 +24,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container-fluid">
+<div class="container-fluid mx-4 my-4">
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-6">
             <h1 class="category-name">All products</h1>

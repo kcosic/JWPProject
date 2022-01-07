@@ -3,10 +3,11 @@ package com.kcosic.jwp.shared.helpers;
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
 import com.kcosic.jwp.shared.model.entities.*;
-import jdk.jfr.Category;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public class DbHelper {
@@ -14,12 +15,12 @@ public class DbHelper {
     }
 
     public static List<CustomerEntity> retrieveAllCustomers() {
-        Dal dal = new Dal();
+        var dal = new Dal();
         return dal.retrieveAll(CustomerEntity.class).toList();
     }
 
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
-        Dal dal = new Dal();
+        var dal = new Dal();
 
         var data = dal.retrieveAll(CustomerEntity.class).filter((customer) -> customer.getEmail() != null);
         var filteredUser = data.filter((customer) -> customer.getEmail().equals(email)).findFirst();
@@ -29,13 +30,16 @@ public class DbHelper {
         return filteredUser.get();
     }
 
-    public static CustomerEntity retrieveCustomerById(int id) throws EntityNotFoundException {
-        Dal dal = new Dal();
-        var data = dal.retrieveById(CustomerEntity.class, id);
-        if (data == null) {
-            throw new EntityNotFoundException("Customer with given ID doesn't exist.");
-        }
-        return data;
+    public static CustomerEntity retrieveCustomerById(int id){
+        var dal = new Dal();
+
+        return dal.retrieveById(CustomerEntity.class, id);
+    }
+
+    public static AddressEntity retrieveAddressById(int id){
+        var dal = new Dal();
+
+        return dal.retrieveById(AddressEntity.class, id);
     }
 
     public static CustomerEntity createCustomer(CustomerEntity customer) {
@@ -44,7 +48,7 @@ public class DbHelper {
     }
 
     public static boolean doesEmailExist(String email) {
-        Dal dal = new Dal();
+        var dal = new Dal();
 
         return dal
                 .retrieveAll(CustomerEntity.class)
@@ -56,44 +60,42 @@ public class DbHelper {
 
 
     public static List<ItemEntity> retrieveItems() {
-        Dal dal = new Dal();
+        var dal = new Dal();
         var data = dal.retrieveAll(ItemEntity.class);
         return data.toList();
     }
 
     public static List<ItemEntity> retrieveItems(String query){
-        Dal dal = new Dal();
-        var data = dal.retrieveAll(ItemEntity.class)
-                .filter(item-> item.getName().contains(query) || item.getManufacturer().contains(query));
+        var data = retrieveItems()
+                .stream()
+                .filter(item-> item.getName().contains(query) || item.getManufacturer().contains(query) || item.getCategory().getName().contains(query));
         return data.toList();
     }
 
     public static ItemEntity retrieveItem(Integer id) {
-        Dal dal = new Dal();
+        var dal = new Dal();
 
-        var data = dal.retrieveById(ItemEntity.class, id);
-
-        return data;
+        return dal.retrieveById(ItemEntity.class, id);
     }
 
-    public static String addToCart(int customerId, ItemEntity item, boolean getTotalPrice) throws EntityNotFoundException {
-        Dal dal = new Dal();
-
+    public static String addToCart(int customerId, ItemEntity item, boolean getTotalPrice) {
+        var dal = new Dal();
         var customer = retrieveCustomerById(customerId);
-
-        if (customer.getCurrentCartId() == null) {
+        var currentCart = retrieveCurrentCart(customerId);
+        if (currentCart == null) {
             var newCart = new CartEntity();
-            newCart.setCustomerId(customerId);
-            newCart = dal.create(CartEntity.class, newCart);
-            customer.setCurrentCartId(newCart.getId());
-            customer = dal.update(CustomerEntity.class, customer);
+            newCart.setCustomer(customer);
+            newCart.setDateCreated(Date.valueOf(LocalDate.now()));
+            newCart.setTotalPrice(BigDecimal.valueOf(0));
+            newCart.setCurrent(true);
+            currentCart = dal.create(CartEntity.class, newCart);
         }
-        final var cartId = customer.getCurrentCartId();
+        var currentCartId = currentCart.getId();
         var optCartItem = dal
                 .retrieveAll(CartItemEntity.class)
                 .filter(cartItemEntity ->
-                        cartItemEntity.getItemId().equals(item.getId()) &&
-                                cartItemEntity.getCartId().equals(cartId))
+                        cartItemEntity.getItem().equals(item) &&
+                                cartItemEntity.getCart().getId().equals(currentCartId))
                 .findFirst();
         if (optCartItem.isPresent()) {
             var cartItem = optCartItem.get();
@@ -101,59 +103,163 @@ public class DbHelper {
             dal.update(CartItemEntity.class, cartItem);
         } else {
             var newCartItem = new CartItemEntity();
-            newCartItem.setCartId(customer.getCurrentCartId());
-            newCartItem.setItemId(item.getId());
+            newCartItem.setCart(currentCart);
+            newCartItem.setItem(item);
             newCartItem.setCount(1);
-            dal.create(CartItemEntity.class, newCartItem);
+            newCartItem.setPrice(item.getPrice());
+            newCartItem.getCart().addCartItem(newCartItem);
         }
+        currentCart.setTotalPrice(calculateTotalPrice(currentCart.getCartItems()));
+        dal.update(CartEntity.class, currentCart);
 
         if (getTotalPrice) {
-            return calculateTotalPrice(retrieveCartItems(cartId));
+            return currentCart.getTotalPriceString();
         }
+
         return null;
     }
 
 
     public static List<CartItemEntity> retrieveCartItems(Integer cartId) {
-        Dal dal = new Dal();
+        var dal = new Dal();
         return dal.retrieveAll(CartItemEntity.class)
                 .filter(cartItemEntity -> cartItemEntity
-                        .getCartId()
+                        .getCart().getId()
                         .equals(cartId)).toList();
     }
 
-    public static String calculateTotalPrice(List<CartItemEntity> currentCartItems) {
-        BigDecimal price = BigDecimal.valueOf(0);
-        for (var cartItem : currentCartItems) {
-            var item = retrieveItem(cartItem.getItemId());
+    public static BigDecimal calculateTotalPrice(Collection<CartItemEntity> currentCartItems) {
+        var price = BigDecimal.valueOf(0);
+        for (var cartItem : currentCartItems) {;
             price = price.add(
                     BigDecimal.valueOf(cartItem.getCount())
-                            .multiply(item.getPrice()));
+                            .multiply(cartItem.getItem().getPrice()));
         }
 
-        return String.format("%,.2f", price.setScale(2, RoundingMode.DOWN));
+        return price.setScale(2, RoundingMode.DOWN);
     }
 
     public static CategoryEntity retrieveCategory(Integer categoryId) {
-        Dal dal = new Dal();
+        var dal = new Dal();
         return dal.retrieveById(CategoryEntity.class, categoryId);
     }
 
     public static List<CategoryEntity> retrieveCategories() {
-        Dal dal = new Dal();
+        var dal = new Dal();
         var data = dal.retrieveAll(CategoryEntity.class);
         return data.toList();
     }
 
-    public static int cartQuantity(Integer cartId) {
-        if(cartId == null){
+    public static int cartQuantity(int customerId) {
+        var cart = retrieveCurrentCart(customerId);
+        if(cart == null){
             return 0;
         }
-        return retrieveCartItems(cartId).size();
+        var quantity = 0;
+
+        for (var cartItem: cart.getCartItems()) {
+            quantity += cartItem.getCount();
+        }
+
+        return quantity;
     }
 
     public static void updateCustomer(CustomerEntity customer) {
-        Dal dal = new Dal();
+        var dal = new Dal();
         dal.update(CustomerEntity.class, customer);
+    }
+
+    public static List<AddressEntity> retrieveAddresses(int customerId) {
+        var dal = new Dal();
+        return dal
+                .retrieveAll(AddressEntity.class)
+                .filter((addressEntity -> addressEntity.getCustomer().getId() == customerId))
+                .toList();
+    }
+
+    public static AddressEntity createAddress(AddressEntity newAddress) {
+        var dal = new Dal();
+        return dal.create(AddressEntity.class, newAddress);
+    }
+
+    public static void updateAddress(AddressEntity address) {
+        var dal = new Dal();
+        dal.update(AddressEntity.class, address);
+    }
+
+    public static List<CartEntity> retrieveAllCarts(boolean onlyPurchased) {
+        var dal = new Dal();
+
+        var carts = dal.retrieveAll(CartEntity.class);
+
+        if(onlyPurchased){
+            carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
+        }
+
+        return carts.toList();
+
+    }
+
+    public static List<CartEntity> retrieveCarts(Integer customerId, boolean onlyPurchased) {
+        var dal = new Dal();
+
+        var carts = dal.retrieveAll(CartEntity.class).filter((cartEntity -> cartEntity.getCustomerId() == customerId));
+
+        if(onlyPurchased){
+            carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
+        }
+
+        return carts.toList();
+    }
+
+    public static  List<CartEntity> retrieveCustomerCarts(int customerId) {
+        var dal = new Dal();
+        return dal.retrieveAll(CartEntity.class).filter(cartEntity -> cartEntity.getCustomer().getId() == customerId).toList();
+    }
+
+    public static CartEntity retrieveCurrentCart(int customerId){
+        var data = retrieveCustomerCarts(customerId).stream().filter(CartEntity::getCurrent).findFirst();
+        return data.orElse(null);
+    }
+
+
+    public static void updateCart(CartEntity cartEntity) {
+        var dal = new Dal();
+        dal.update(CartEntity.class, cartEntity);
+    }
+
+    public static void deleteCustomer(CustomerEntity customer) {
+        var dal = new Dal();
+        deleteCustomerAddresses(customer);
+        deleteCustomerCarts(customer);
+        dal.delete(CustomerEntity.class, customer);
+    }
+
+    private static void deleteCustomerAddresses(CustomerEntity customer) {
+        var addresses = retrieveAddresses(customer.getId());
+        if(addresses != null){
+            var dal = new Dal();
+            dal.bulkDelete(AddressEntity.class, addresses);
+        }
+    }
+
+    private static void deleteCustomerCarts(CustomerEntity customer) {
+        var carts = retrieveCustomerCarts(customer.getId());
+        if(carts != null){
+            for (var cart :
+                    carts) {
+                deleteCartsCartItems(cart);
+            }
+            var dal = new Dal();
+            dal.bulkDelete(CartEntity.class, carts);
+        }
+    }
+
+    private static void deleteCartsCartItems(CartEntity cart) {
+        var cartItems = retrieveCartItems(cart.getId());
+        if(cartItems != null){
+            var dal = new Dal();
+            dal.bulkDelete(CartItemEntity.class, cartItems);
+        }
     }
 }

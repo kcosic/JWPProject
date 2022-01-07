@@ -32,36 +32,28 @@ public class ItemEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Basic
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-
     @Basic
     @Column(name = "manufacturer", nullable = true, length = 100)
     private String manufacturer;
-
     @Basic
     @Column(name = "description", nullable = true, length = 1000)
     private String description;
-
     @Basic
     @Column(name = "price", nullable = false, precision = 2)
     private BigDecimal price;
-
     @Basic
     @Column(name = "image", nullable = true, length = 100)
     private String image;
-
     @Basic
-    @Column(name = "categoryId", nullable = false)
+    @Column(name = "categoryId", nullable = false, insertable = false, updatable = false)
     private Integer categoryId;
-
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE)
     private Collection<CartItemEntity> cartItems;
-
-    @ManyToOne
-    @JoinColumn(name = "categoryId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "categoryId", referencedColumnName = "id", nullable = false)
     private CategoryEntity category;
 
     public Integer getId() {
@@ -136,18 +128,18 @@ public class ItemEntity extends BaseEntity {
     public Collection<CartItemEntity> getCartItems() {
         return cartItems;
     }
-    public CategoryEntity getCategory() {
-        return category;
-    }
 
     public void setCartItems(Collection<CartItemEntity> cartItems) {
         this.cartItems = cartItems;
     }
 
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
-
     @Override
     public String getGraphName() {
         return "itemGraph";

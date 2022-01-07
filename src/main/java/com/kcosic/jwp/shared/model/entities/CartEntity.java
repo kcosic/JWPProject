@@ -1,34 +1,32 @@
 package com.kcosic.jwp.shared.model.entities;
 
+import com.kcosic.jwp.shared.helpers.DbHelper;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Cart", schema = "dbo", catalog = "JWPProject")
 @NamedEntityGraph(name = "cartGraph",
         attributeNodes = {
-                @NamedAttributeNode(value="customer", subgraph = "customer"),
-                @NamedAttributeNode(value="currentCustomer", subgraph = "customer"),
-                @NamedAttributeNode(value="history"),
-                @NamedAttributeNode(value="cartItems", subgraph = "cartItems")
+                @NamedAttributeNode(value = "customer", subgraph = "customer"),
+                @NamedAttributeNode(value = "cartItems", subgraph = "cartItems")
         },
         subgraphs = {
-                @NamedSubgraph(name="customer",
+                @NamedSubgraph(name = "customer",
                         attributeNodes = {
-                                @NamedAttributeNode(value="currentCart"),
-                                @NamedAttributeNode(value="carts"),
-                                @NamedAttributeNode(value="addresses"),
-                                @NamedAttributeNode(value="defaultAddress")
+                                @NamedAttributeNode(value = "carts"),
+                                @NamedAttributeNode(value = "addresses"),
                         }
                 ),
-                @NamedSubgraph(name="cartItems",
+                @NamedSubgraph(name = "cartItems",
                         attributeNodes = {
-                                @NamedAttributeNode(value="item")
+                                @NamedAttributeNode(value = "item")
                         }
 
                 )
@@ -39,23 +37,29 @@ public class CartEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Basic
-    @Column(name = "customerId", nullable = false)
+    @Column(name = "customerId", nullable = false, insertable = false, updatable = false)
     private Integer customerId;
-
-    @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false, insertable=false, updatable=false)
+    @Basic
+    @Column(name = "totalPrice", precision = 2)
+    private BigDecimal totalPrice;
+    @Basic
+    @Column(name = "dateOfPurchase")
+    private Date dateOfPurchase;
+    @Basic
+    @Column(name = "dateCreated")
+    private Date dateCreated;
+    @Basic
+    @Column(name = "isCurrent", nullable = false)
+    private Boolean isCurrent;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false)
     private CustomerEntity customer;
+    @OneToMany(mappedBy = "cart", orphanRemoval = true)
+    private Collection<CartItemEntity> cartItems;
 
-    @OneToMany
-    private Collection<CartItemEntity> cartItems = new java.util.ArrayList<>();
-
-    @OneToOne(mappedBy = "currentCart")
-    private CustomerEntity currentCustomer;
-
-    @OneToOne(mappedBy = "cart")
-    private HistoryEntity history;
+    @Transient
+    private String totalPriceString;
 
     public Integer getId() {
         return id;
@@ -73,51 +77,95 @@ public class CartEntity extends BaseEntity {
         this.customerId = customerId;
     }
 
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+        if (totalPrice != null) {
+            this.totalPriceString = String.format("%,.2f", totalPrice.setScale(2, RoundingMode.DOWN));
+        } else {
+            this.totalPriceString = "0";
+        }
+    }
+
+    public String getTotalPriceString() {
+
+        if (totalPrice != null) {
+            if (totalPriceString == null) {
+                totalPriceString = String.format("%,.2f", totalPrice.setScale(2, RoundingMode.DOWN));
+            }
+            return totalPriceString;
+        } else {
+            return "0";
+        }
+
+    }
+
+    public Date getDateOfPurchase() {
+        return dateOfPurchase;
+    }
+
+    public void setDateOfPurchase(Date dateOfPurchase) {
+        this.dateOfPurchase = dateOfPurchase;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Boolean getCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(Boolean current) {
+        isCurrent = current;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartEntity that = (CartEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId);
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(totalPrice, that.totalPrice) && Objects.equals(dateOfPurchase, that.dateOfPurchase) && Objects.equals(dateCreated, that.dateCreated) && Objects.equals(isCurrent, that.isCurrent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId);
+        return Objects.hash(id, customerId, totalPrice, dateOfPurchase, dateCreated, isCurrent);
     }
 
     public CustomerEntity getCustomer() {
         return customer;
-    }
-    public Collection<CartItemEntity> getCartItems() {
-        return cartItems;
-    }
-    public HistoryEntity getHistory() {
-        return history;
     }
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
     }
 
-    public void setCartItems(Collection<CartItemEntity> cartItems) {
-        this.cartItems = cartItems;
-    }
-
-    public CustomerEntity getCurrentCustomer() {
-        return currentCustomer;
-    }
-
-    public void setCurrentCustomer(CustomerEntity currentCustomer) {
-        this.currentCustomer = currentCustomer;
-    }
-
-    public void setHistory(HistoryEntity history) {
-        this.history = history;
+    public Collection<CartItemEntity> getCartItems() {
+        return cartItems;
     }
 
     @Override
     public String getGraphName() {
         return "cartGraph";
+    }
+
+    public void setCartItems(Collection<CartItemEntity> cartItems) {
+        this.cartItems = cartItems;
+    }
+
+    public void addCartItem(CartItemEntity cartItem){
+        if(cartItems == null){
+            cartItems = new ArrayList<>();
+        }
+        cartItems.add(cartItem);
+        DbHelper.updateCart(this);
     }
 }

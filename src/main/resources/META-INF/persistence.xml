@@ -9,7 +9,6 @@
         <class>com.kcosic.jwp.shared.model.entities.CartItemEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.CategoryEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.CustomerEntity</class>
-        <class>com.kcosic.jwp.shared.model.entities.HistoryEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.ItemEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.RoleEntity</class>
         <properties>
@@ -19,9 +18,12 @@
             <property name="jakarta.persistence.jdbc.password" value="Q1w2e3qwerrr"/>
             <property name="eclipselink.weaving" value="static"/>
             <property name="eclipselink.logging.parameters" value="true"/>
-            <property name="eclipselink.logging.level.sql" value="FINEST"/>
-            <property name="eclipselink.logging.level" value="FINEST" />
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.level" value="FINE" />
             <property name="eclipselink.logging.level.cache" value="FINEST"/>
+<!--            <property name="eclipselink.jdbc.url"-->
+<!--                      value="jdbc:jtds:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433/JWPProject"/>-->
+<!--            <property name="eclipselink.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>-->
         </properties>
 
     </persistence-unit>

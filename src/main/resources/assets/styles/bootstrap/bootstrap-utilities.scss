@@ -6,13 +6,13 @@
  */
 
 // Configuration
-@import "assets/styles/bootstrap/functions";
-@import "assets/styles/bootstrap/variables";
-@import "assets/styles/bootstrap/mixins";
-@import "assets/styles/bootstrap/utilities";
+@import "./functions";
+@import "./variables";
+@import "./mixins";
+@import "./utilities";
 
 // Helpers
-@import "assets/styles/bootstrap/helpers";
+@import "./helpers";
 
 // Utilities
-@import "assets/styles/bootstrap/utilities/api";
+@import "./utilities/api";

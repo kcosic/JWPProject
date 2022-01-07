@@ -33,7 +33,7 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.MERGE)
     private Collection<ItemEntity> items;
 
     public Integer getId() {

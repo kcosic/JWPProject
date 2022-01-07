@@ -1,3 +1,4 @@
+<%--suppress HtmlUnknownTarget --%>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -5,11 +6,10 @@
   Time: 11:05
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %>
 
 <html>
 <head>
@@ -23,11 +23,11 @@
 </head>
 <body>
 <c:if test="${userData !=  null && userData.roleId != 3}">
-    <c:redirect url="products"/>
+    <c:redirect url="/products"/>
 </c:if>
 
 <div class="container h-100 d-flex justify-content-center align-items-center">
-    <form action="login" method="post" class="needs-validation" novalidate>
+    <form action="login" method="post"  class="needs-validation" novalidate>
         <jsp:useBean id="hasError" scope="request" type="java.lang.Boolean"/>
         <c:if test="${hasError}">
             <div class="row mb-4">
@@ -84,13 +84,12 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col d-grid gap-2">
-                        <button class="btn btn-block btn-warning" type="button">Back</button>
+                        <a class="btn btn-block btn-warning" href="register" type="button">Back</a>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-
 </body>
 </html>

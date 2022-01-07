@@ -17,11 +17,8 @@ import java.util.Objects;
         subgraphs = {
                 @NamedSubgraph(name="customer",
                         attributeNodes = {
-                                @NamedAttributeNode(value="defaultAddress"),
                                 @NamedAttributeNode(value="addresses"),
                                 @NamedAttributeNode(value="carts"),
-                                @NamedAttributeNode(value="currentCart"),
-
                         }
 
                 )
@@ -36,7 +33,7 @@ public class RoleEntity extends BaseEntity {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.MERGE)
     private Collection<CustomerEntity> customers;
 
     public Integer getId() {
