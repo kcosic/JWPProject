@@ -21,7 +21,7 @@ public class AccountServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processAccountGetRequest(request, response);
     }
-
+//TODO File upload, provjeriti sto se uploada
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +70,7 @@ public class AccountServlet extends BaseServlet {
         var carts = DbHelper.retrieveAllCarts(true);
         Helper.addAttribute(request, AttributeEnum.ALL_CARTS, carts);
 
-        var items = DbHelper.retrieveItems();
+        var items = DbHelper.retrieveItems(false);
         Helper.addAttribute(request, AttributeEnum.ITEMS, items);
 
         var categories = DbHelper.retrieveCategories();

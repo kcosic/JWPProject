@@ -47,6 +47,11 @@ public class ItemEntity extends BaseEntity {
     @Basic
     @Column(name = "image", nullable = true, length = 100)
     private String image;
+
+
+    @Basic
+    @Column(name = "isActive")
+    private boolean isActive;
     @Basic
     @Column(name = "categoryId", nullable = false, insertable = false, updatable = false)
     private Integer categoryId;
@@ -104,6 +109,13 @@ public class ItemEntity extends BaseEntity {
         this.image = image;
     }
 
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
     public Integer getCategoryId() {
         return categoryId;
     }

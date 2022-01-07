@@ -79,8 +79,253 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12" id="admin-history">admin history</div>
-                        <div class="col-12" id="admin-items">admin items</div>
+                        <div class="col-12" id="admin-history">
+                            <c:choose>
+                                <c:when test="${allCarts == null}">
+                                    <span>There are no transactions to show.</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>User Email</th>
+                                            <th>Date of purchase</th>
+                                            <th>Total price</th>
+                                            <th>Details</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach var="cart" items="${allCarts}" varStatus="loop">
+                                            <tr>
+                                                <td>${cart.customer.email}</td>
+                                                <td>${cart.dateOfPurchase}</td>
+                                                <td>${cart.totalPriceString}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-primary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#adminHistoryModal${loop.index}">
+                                                        <span class="material-icons">edit</span>&nbsp;Edit
+                                                    </button>
+                                                    <div class="modal fade" id="adminHistoryModal${loop.index}"
+                                                         data-bs-backdrop="static"
+                                                         data-bs-keyboard="false" tabindex="-1"
+                                                         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Purchase details</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Item</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Price per item</th>
+                                                                            <th>Total price</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <c:forEach var="cartItem"
+                                                                                   items="${cart.cartItems}">
+                                                                            <tr>
+                                                                                <td>${cartItem.item.name}</td>
+                                                                                <td>${cartItem.quantity}</td>
+                                                                                <td>${cartItem.price}kn</td>
+                                                                                <td>${cartItem.price * cartItem.count}kn</td>
+                                                                            </tr>
+                                                                        </c:forEach>
+                                                                        </tbody>
+                                                                        <tfoot>
+                                                                        <span>Total cost: ${cart.totalPriceString}</span>
+                                                                        </tfoot>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <div class="col-12" id="admin-items">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h2>Items</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-bs-target="#newItemModal" data-bs-toggle="modal">Add new item</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Manufacturer</th>
+                                                    <th>Price</th>
+                                                    <th>Category</th>
+                                                    <th>Active</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:forEach var="item" items="${items}" varStatus="loop">
+                                                    <tr>
+                                                        <td>${item.name}</td>
+                                                        <td>${item.manufacturer}</td>
+                                                        <td>${item.price}kn</td>
+                                                        <td>${item.category.name}</td>
+                                                        <td>
+                                                            <span class="material-icons ${item.isActive ? "green" : "red"}">${item.isActive ? "check" : "remove"}</span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal${loop.index}">
+                                                                <span class="material-icons">edit</span>
+                                                            </button>
+                                                            <div class="modal fade" id="editItemModal${loop.index}"
+                                                                 data-bs-backdrop="static"
+                                                                 data-bs-keyboard="false" tabindex="-1"
+                                                                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Edit Item</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                        </div>
+                                                                        <form id="editItem${loop.index}" method="post"
+                                                                              action="account?type=item">
+                                                                            <input id="id${loop.index}" name="id"
+                                                                                   value="${item.id}" hidden readonly required/>
+                                                                            <div class="modal-body">
+                                                                                <div class="row">
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="form-floating w-100">
+                                                                                                <input name="itemName" type="text"
+                                                                                                       class="form-control"
+                                                                                                       value="${item.name}"
+                                                                                                       id="eItemName${loop.index}"
+                                                                                                       required>
+                                                                                                <label for="eItemName${loop.index}">Item name</label>
+                                                                                                <div class="invalid-feedback">
+                                                                                                    Item name is required
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="form-floating w-100">
+                                                                                                <input name="manufacturer" type="text"
+                                                                                                       class="form-control"
+                                                                                                       value="${item.manufacturer}"
+                                                                                                       id="eManufacturer${loop.index}"
+                                                                                                       >
+                                                                                                <label for="eManufacturer${loop.index}">Manufacturer</label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="form-floating w-100">
+                                                                                                <textarea name="description" rows="8" maxlength="999"
+                                                                                                       class="form-control"
+                                                                                                       value="${item.description}"
+                                                                                                          id="eDescription${loop.index}">
+
+                                                                                                </textarea>
+                                                                                                <label for="eDescription${loop.index}">Description</label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="form-floating w-100">
+                                                                                                <input name="floor" type="text"
+                                                                                                       class="form-control"
+                                                                                                       pattern="/^[+-]?([0-9]+\.?[0-9]*|\.[0-2]+)$/"
+                                                                                                       value="${item.price}"
+                                                                                                       id="ePrice${loop.index}" required>
+                                                                                                <label for="ePrice${loop.index}">Price</label>
+                                                                                                <div class="invalid-feedback">
+                                                                                                    Price is required
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="mb-3">
+                                                                                                <label for="eImage${loop.index}">Image</label>                                                                                                <input name="image" type="file" accept=".jpg,.jpeg,.png"
+                                                                                                       class="form-control"
+                                                                                                       id="eImage${loop.index}" required>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="input-group">
+                                                                                            <div class="form-floating w-100">
+
+                                                                                                <select class="form-select" name="category" required id="eCategories${loop.index}">
+                                                                                                    <c:forEach var="category" items="${categories}">
+                                                                                                        <option value="${category.id}" ${category.id == item.category.id ? "selected" : ""}>${category.name}</option>
+                                                                                                    </c:forEach>
+                                                                                                </select>
+                                                                                                <label for="eCategories${loop.index}">Category</label>                                                                                                <input name="image" type="file" accept=".jpg,.jpeg,.png"
+
+                                                                                                <div class="invalid-feedback">
+                                                                                                    Category is required
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 my-3 mx-3">
+                                                                                        <div class="form-check">
+                                                                                            <input class="" name="active" type="checkbox"
+                                                                                                   checked="${item.isActive}"
+                                                                                                   id="eActive${loop.index}" required>
+                                                                                            <label class="form-check-label" for="eActive${loop.index}">
+                                                                                                Active
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-danger"
+                                                                                    data-bs-dismiss="modal">Close
+                                                                            </button>
+                                                                            <button type="submit" form="editItem${loop.index}"
+                                                                                    class="btn btn-success">Save
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-12" id="admin-categories">admin categories</div>
                         <div class="col-12" id="admin-customers">admin customers</div>
                     </div>
@@ -398,25 +643,25 @@
                                                         <div class="modal-body">
                                                             <table class="table table-striped">
                                                                 <thead>
-                                                                    <tr>
-                                                                        <th>Item</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Price per item</th>
-                                                                        <th>Total price</th>
-                                                                    </tr>
+                                                                <tr>
+                                                                    <th>Item</th>
+                                                                    <th>Quantity</th>
+                                                                    <th>Price per item</th>
+                                                                    <th>Total price</th>
+                                                                </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <c:forEach var="cartItem" items="${cart.cartItems}">
-                                                                        <tr>
-                                                                            <td>${cartItem.item.name}</td>
-                                                                            <td>${cartItem.quantity}</td>
-                                                                            <td>${cartItem.price}kn</td>
-                                                                            <td>${cartItem.price * cartItem.count}kn</td>
-                                                                        </tr>
-                                                                    </c:forEach>
+                                                                <c:forEach var="cartItem" items="${cart.cartItems}">
+                                                                    <tr>
+                                                                        <td>${cartItem.item.name}</td>
+                                                                        <td>${cartItem.quantity}</td>
+                                                                        <td>${cartItem.price}kn</td>
+                                                                        <td>${cartItem.price * cartItem.count}kn</td>
+                                                                    </tr>
+                                                                </c:forEach>
                                                                 </tbody>
                                                                 <tfoot>
-                                                                    <span>Total cost: ${cart.totalPriceString}</span>
+                                                                <span>Total cost: ${cart.totalPriceString}</span>
                                                                 </tfoot>
                                                             </table>
                                                         </div>

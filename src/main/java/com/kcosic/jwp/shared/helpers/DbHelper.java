@@ -59,14 +59,17 @@ public class DbHelper {
     }
 
 
-    public static List<ItemEntity> retrieveItems() {
+    public static List<ItemEntity> retrieveItems(boolean activeOnly) {
         var dal = new Dal();
         var data = dal.retrieveAll(ItemEntity.class);
+        if(activeOnly){
+           data = data.filter(ItemEntity::getIsActive);
+        }
         return data.toList();
     }
 
-    public static List<ItemEntity> retrieveItems(String query){
-        var data = retrieveItems()
+    public static List<ItemEntity> retrieveItems(String query, boolean activeOnly){
+        var data = retrieveItems(activeOnly)
                 .stream()
                 .filter(item-> item.getName().contains(query) || item.getManufacturer().contains(query) || item.getCategory().getName().contains(query));
         return data.toList();

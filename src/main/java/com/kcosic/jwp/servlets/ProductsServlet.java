@@ -37,7 +37,7 @@ public class ProductsServlet extends BaseServlet {
     private void processProductsPostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         var customer = getOrCreateCustomer(request);
         var itemId = Integer.parseInt(request.getParameter(AttributeEnum.ITEM_ID.toString()));
-        var data = DbHelper.retrieveItems();
+        var data = DbHelper.retrieveItems(true);
 
         try {
 
@@ -66,9 +66,9 @@ public class ProductsServlet extends BaseServlet {
         var search = request.getParameter(AttributeEnum.SEARCH.toString());
         List<ItemEntity> data;
         if(search == null){
-            data = DbHelper.retrieveItems();
+            data = DbHelper.retrieveItems(true);
         }else {
-            data = DbHelper.retrieveItems(search);
+            data = DbHelper.retrieveItems(search, true);
         }
         var customer = getOrCreateCustomer(request);
         var currentCart = DbHelper.retrieveCurrentCart(customer.getId());
