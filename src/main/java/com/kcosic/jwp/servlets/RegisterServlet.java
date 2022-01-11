@@ -29,9 +29,9 @@ public class RegisterServlet extends BaseServlet {
 
     private void processRegistrationGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
-        var customer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
+        var customer = Helper.getSessionData(request, AttributeEnum.CUSTOMER_DATA, CustomerEntity.class);
 
-        if(customer != null && customer.getRoleId() != 3){
+        if(customer != null && customer.getRole().getId() != 3){
             request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
         }
 
@@ -60,14 +60,14 @@ public class RegisterServlet extends BaseServlet {
             sendErrorResponse(request,response,e.getMessage());
             return;
         }
-        var guestCustomer = Helper.getSessionData(request, AttributeEnum.USER_DATA, CustomerEntity.class);
+        var guestCustomer = Helper.getSessionData(request, AttributeEnum.CUSTOMER_DATA, CustomerEntity.class);
         if(guestCustomer != null){
             guestCustomer.setFirstName(firstName);
             guestCustomer.setLastName(lastName);
             guestCustomer.setDateOfBirth(dateOfBirth);
             guestCustomer.setEmail(email);
             guestCustomer.setPassword(hashedPass);
-            guestCustomer.setRoleId(2);
+            guestCustomer.setRole(DbHelper.retrieveRole(2));
             DbHelper.updateCustomer(guestCustomer);
         }
         else {
@@ -77,7 +77,7 @@ public class RegisterServlet extends BaseServlet {
             newCustomer.setDateOfBirth(dateOfBirth);
             newCustomer.setEmail(email);
             newCustomer.setPassword(hashedPass);
-            newCustomer.setRoleId(2);
+            newCustomer.setRole(DbHelper.retrieveRole(2));
             DbHelper.createCustomer(newCustomer);
         }
 

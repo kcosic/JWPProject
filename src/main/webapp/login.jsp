@@ -22,7 +22,7 @@
     <script src="${contextPath}/assets/scripts/custom/login.js" type="text/javascript" ></script>
 </head>
 <body>
-<c:if test="${userData !=  null && userData.roleId != 3}">
+<c:if test="${customerData !=  null && customerData.role.id != 3}">
     <c:redirect url="/products"/>
 </c:if>
 

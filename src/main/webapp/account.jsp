@@ -21,6 +21,10 @@
     <script src="${contextPath}/assets/scripts/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="${contextPath}/assets/styles/custom/account.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        let passedView = '${passedView}';
+        let passedAdminView = '${passedAdminView}';
+    </script>
     <script src="${contextPath}/assets/scripts/custom/account.js" type="text/javascript"></script>
     <script src="${contextPath}/assets/scripts/custom/header.js" type="text/javascript"></script>
 </head>
@@ -41,7 +45,7 @@
                 <li class="nav-item w-100 d-grid gap-2">
                     <button id="btn-history" class="btn" onclick="display('history')">History</button>
                 </li>
-                <c:if test="${userData.roleId == 1}">
+                <c:if test="${customerData.roleId == 1}">
                     <li class="nav-item w-100 d-grid gap-2">
                         <button id="btn-admin" class="btn" onclick="display('admin')">Admin</button>
                     </li>
@@ -49,7 +53,7 @@
             </ul>
         </div>
         <%-- CONTENT --%>
-        <c:if test="${userData.roleId == 1}">
+        <c:if test="${customerData.roleId == 1}">
             <div id="admin" class="col">
                 <div class="container-fluid">
                     <div class="row">
@@ -85,7 +89,7 @@
                                     <span>There are no transactions to show.</span>
                                 </c:when>
                                 <c:otherwise>
-                                    <table class="table table-striped">
+                                    <table class="table table-striped table-responsive">
                                         <thead>
                                         <tr>
                                             <th>User Email</th>
@@ -119,7 +123,7 @@
                                                                             aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <table class="table table-striped">
+                                                                    <table class="table table-striped table-responsive">
                                                                         <thead>
                                                                         <tr>
                                                                             <th>Item</th>
@@ -164,170 +168,573 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-md-6">
-                                        <button type="button" data-bs-target="#newItemModal" data-bs-toggle="modal">Add new item</button>
+                                        <button type="button" class="btn btn-primary" data-bs-target="#newItemModal"
+                                                data-bs-toggle="modal">Add
+                                            new item
+                                        </button>
+                                        <div class="modal fade" id="newItemModal"
+                                             data-bs-backdrop="static"
+                                             data-bs-keyboard="false" tabindex="-1"
+                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Item</h5>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form id="addItem" method="post" enctype="multipart/form-data"
+                                                          action="account?type=admin-items">
+
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+                                                                            <input name="itemName"
+                                                                                   type="text"
+                                                                                   class="form-control"
+                                                                                   id="cItemName"
+                                                                                   required>
+                                                                            <label for="cItemName">Item
+                                                                                name</label>
+                                                                            <div class="invalid-feedback">
+                                                                                Item name is required
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+                                                                            <input name="manufacturer"
+                                                                                   type="text"
+                                                                                   class="form-control"
+                                                                                   id="cManufacturer"
+                                                                            >
+                                                                            <label for="cManufacturer">Manufacturer</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+                                                                                                <textarea
+                                                                                                        name="description"
+                                                                                                        rows="8"
+                                                                                                        maxlength="999"
+                                                                                                        class="form-control"
+                                                                                                        id="cDescription"></textarea>
+                                                                            <label for="cDescription">Description</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+                                                                            <input name="itemPrice"
+                                                                                   type="text"
+                                                                                   class="form-control"
+                                                                                   pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-2]+)$"
+                                                                                   id="cPrice"
+                                                                                   required>
+                                                                            <label for="cPrice">Price</label>
+                                                                            <div class="invalid-feedback">
+                                                                                Price is required
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="mb-3">
+                                                                            <label for="cImage">Image</label>
+                                                                            <input name="image"
+                                                                                   type="file"
+                                                                                   accept=".jpg,.jpeg,.png"
+                                                                                   class="form-control"
+                                                                                   id="cImage" required
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+
+                                                                            <select class="form-select"
+                                                                                    name="category"
+                                                                                    required
+                                                                                    id="cCategories">
+                                                                                <option>Select category</option>
+                                                                                <c:forEach
+                                                                                        var="category"
+                                                                                        items="${categories}">
+                                                                                    <option value="${category.id}">${category.name}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                            <label for="cCategories">Category</label>
+                                                                            <div class="invalid-feedback">
+                                                                                Category is required
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 my-3">
+                                                                    <div class="form-check">
+                                                                        <input class="" name="active"
+                                                                               type="checkbox"
+                                                                               value="true"
+                                                                               id="cActive"/>
+                                                                        <label class="form-check-label"
+                                                                               for="cActive">
+                                                                            Active
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="btn btn-outline-danger"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit"
+                                                                form="addItem"
+                                                                class="btn btn-success">Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped table-responsive">
                                             <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Manufacturer</th>
-                                                    <th>Price</th>
-                                                    <th>Category</th>
-                                                    <th>Active</th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Manufacturer</th>
+                                                <th>Price</th>
+                                                <th>Category</th>
+                                                <th>Active</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="item" items="${items}" varStatus="loop">
-                                                    <tr>
-                                                        <td>${item.name}</td>
-                                                        <td>${item.manufacturer}</td>
-                                                        <td>${item.price}kn</td>
-                                                        <td>${item.category.name}</td>
-                                                        <td>
-                                                            <span class="material-icons ${item.isActive ? "green" : "red"}">${item.isActive ? "check" : "remove"}</span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal${loop.index}">
-                                                                <span class="material-icons">edit</span>
-                                                            </button>
-                                                            <div class="modal fade" id="editItemModal${loop.index}"
-                                                                 data-bs-backdrop="static"
-                                                                 data-bs-keyboard="false" tabindex="-1"
-                                                                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Item</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                    aria-label="Close"></button>
-                                                                        </div>
-                                                                        <form id="editItem${loop.index}" method="post"
-                                                                              action="account?type=item">
-                                                                            <input id="id${loop.index}" name="id"
-                                                                                   value="${item.id}" hidden readonly required/>
-                                                                            <div class="modal-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="form-floating w-100">
-                                                                                                <input name="itemName" type="text"
-                                                                                                       class="form-control"
-                                                                                                       value="${item.name}"
-                                                                                                       id="eItemName${loop.index}"
-                                                                                                       required>
-                                                                                                <label for="eItemName${loop.index}">Item name</label>
-                                                                                                <div class="invalid-feedback">
-                                                                                                    Item name is required
-                                                                                                </div>
+                                            <c:forEach var="item" items="${items}" varStatus="loop">
+                                                <tr>
+                                                    <td>${item.name}</td>
+                                                    <td>${item.manufacturer}</td>
+                                                    <td>${item.price}kn</td>
+                                                    <td>${item.category.name}</td>
+                                                    <td>
+                                                        <span class="material-icons ${item.isActive ? "green" : "red"}">${item.isActive ? "check" : "remove"}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-warning" type="button"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editItemModal${loop.index}">
+                                                            <span class="material-icons">edit</span>
+                                                        </button>
+                                                        <div class="modal fade" id="editItemModal${loop.index}"
+                                                             data-bs-backdrop="static"
+                                                             data-bs-keyboard="false" tabindex="-1"
+                                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Edit Item</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                    </div>
+                                                                    <form id="editItem${loop.index}" method="post"
+                                                                          enctype="multipart/form-data"
+                                                                          action="account?type=admin-items">
+                                                                        <input id="id${loop.index}" name="id"
+                                                                               value="${item.id}" hidden readonly
+                                                                               required/>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                            <input name="itemName"
+                                                                                                   type="text"
+                                                                                                   class="form-control"
+                                                                                                   value="${item.name}"
+                                                                                                   id="eItemName${loop.index}"
+                                                                                                   required>
+                                                                                            <label for="eItemName${loop.index}">Item
+                                                                                                name</label>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Item name is required
                                                                                             </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="form-floating w-100">
-                                                                                                <input name="manufacturer" type="text"
-                                                                                                       class="form-control"
-                                                                                                       value="${item.manufacturer}"
-                                                                                                       id="eManufacturer${loop.index}"
-                                                                                                       >
-                                                                                                <label for="eManufacturer${loop.index}">Manufacturer</label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="form-floating w-100">
-                                                                                                <textarea name="description" rows="8" maxlength="999"
-                                                                                                       class="form-control"
-                                                                                                       value="${item.description}"
-                                                                                                          id="eDescription${loop.index}">
-
-                                                                                                </textarea>
-                                                                                                <label for="eDescription${loop.index}">Description</label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="form-floating w-100">
-                                                                                                <input name="floor" type="text"
-                                                                                                       class="form-control"
-                                                                                                       pattern="/^[+-]?([0-9]+\.?[0-9]*|\.[0-2]+)$/"
-                                                                                                       value="${item.price}"
-                                                                                                       id="ePrice${loop.index}" required>
-                                                                                                <label for="ePrice${loop.index}">Price</label>
-                                                                                                <div class="invalid-feedback">
-                                                                                                    Price is required
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="mb-3">
-                                                                                                <label for="eImage${loop.index}">Image</label>                                                                                                <input name="image" type="file" accept=".jpg,.jpeg,.png"
-                                                                                                       class="form-control"
-                                                                                                       id="eImage${loop.index}" required>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="input-group">
-                                                                                            <div class="form-floating w-100">
-
-                                                                                                <select class="form-select" name="category" required id="eCategories${loop.index}">
-                                                                                                    <c:forEach var="category" items="${categories}">
-                                                                                                        <option value="${category.id}" ${category.id == item.category.id ? "selected" : ""}>${category.name}</option>
-                                                                                                    </c:forEach>
-                                                                                                </select>
-                                                                                                <label for="eCategories${loop.index}">Category</label>                                                                                                <input name="image" type="file" accept=".jpg,.jpeg,.png"
-
-                                                                                                <div class="invalid-feedback">
-                                                                                                    Category is required
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 my-3 mx-3">
-                                                                                        <div class="form-check">
-                                                                                            <input class="" name="active" type="checkbox"
-                                                                                                   checked="${item.isActive}"
-                                                                                                   id="eActive${loop.index}" required>
-                                                                                            <label class="form-check-label" for="eActive${loop.index}">
-                                                                                                Active
-                                                                                            </label>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                            <input name="manufacturer"
+                                                                                                   type="text"
+                                                                                                   class="form-control"
+                                                                                                   value="${item.manufacturer}"
+                                                                                                   id="eManufacturer${loop.index}"
+                                                                                            >
+                                                                                            <label for="eManufacturer${loop.index}">Manufacturer</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                                <textarea
+                                                                                                        name="description"
+                                                                                                        rows="8"
+                                                                                                        maxlength="999"
+                                                                                                        class="form-control"
+                                                                                                        id="eDescription${loop.index}">${item.description}</textarea>
+                                                                                            <label for="eDescription${loop.index}">Description</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                            <input name="itemPrice"
+                                                                                                   type="text"
+                                                                                                   class="form-control"
+                                                                                                   pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-2]+)$"
+                                                                                                   value="${item.price}"
+                                                                                                   id="ePrice${loop.index}"
+                                                                                                   required>
+                                                                                            <label for="ePrice${loop.index}">Price</label>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Price is required
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="mb-3">
+                                                                                            <label for="eImage${loop.index}">Image</label>
+                                                                                            <input name="image"
+                                                                                                   type="file"
+                                                                                                   accept=".jpg,.jpeg,.png"
+                                                                                                   class="form-control"
+                                                                                                   id="eImage${loop.index}"
+                                                                                            >
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+
+                                                                                            <select class="form-select"
+                                                                                                    name="category"
+                                                                                                    required
+                                                                                                    id="eCategories${loop.index}">
+                                                                                                <c:forEach
+                                                                                                        var="category"
+                                                                                                        items="${categories}">
+                                                                                                    <option value="${category.id}" ${category.id == item.category.id ? "selected" : ""}>${category.name}</option>
+                                                                                                </c:forEach>
+                                                                                            </select>
+                                                                                            <label for="eCategories${loop.index}">Category</label>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Category is required
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="form-check">
+                                                                                        <input class="" name="active"
+                                                                                               type="checkbox"
+                                                                                               value="true"
+                                                                                               checked="${item.isActive}"
+                                                                                               id="eActive${loop.index}"
+                                                                                        >
+                                                                                        <label class="form-check-label"
+                                                                                               for="eActive${loop.index}">
+                                                                                            Active
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                        </form>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-outline-danger"
-                                                                                    data-bs-dismiss="modal">Close
-                                                                            </button>
-                                                                            <button type="submit" form="editItem${loop.index}"
-                                                                                    class="btn btn-success">Save
-                                                                            </button>
                                                                         </div>
+                                                                    </form>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button"
+                                                                                class="btn btn-outline-danger"
+                                                                                data-bs-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button type="submit"
+                                                                                form="editItem${loop.index}"
+                                                                                class="btn btn-success">Save
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12" id="admin-categories">admin categories</div>
-                        <div class="col-12" id="admin-customers">admin customers</div>
+                        <div class="col-12" id="admin-categories">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h2>Categories</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" class="btn btn-primary" data-bs-target="#newCategoryModal"
+                                                data-bs-toggle="modal">Add
+                                            new item
+                                        </button>
+                                        <div class="modal fade" id="newCategoryModal"
+                                             data-bs-backdrop="static"
+                                             data-bs-keyboard="false" tabindex="-1"
+                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Add Category</h5>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form id="addCategory" method="post"
+                                                          action="account?type=admin-categories">
+
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-12 my-3">
+                                                                    <div class="input-group">
+                                                                        <div class="form-floating w-100">
+                                                                            <input name="categoryName"
+                                                                                   type="text"
+                                                                                   class="form-control"
+                                                                                   id="cCategoryName"
+                                                                                   required>
+                                                                            <label for="cCategoryName">Category
+                                                                                name</label>
+                                                                            <div class="invalid-feedback">
+                                                                                Name is required
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="btn btn-outline-danger"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit"
+                                                                form="addCategory"
+                                                                class="btn btn-success">Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-striped table-responsive">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="category" items="${categories}" varStatus="loop">
+                                                <tr>
+                                                    <td>${category.name}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning" type="button"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editCategoryModal${loop.index}">
+                                                            <span class="material-icons">edit</span>
+                                                        </button>
+                                                        <div class="modal fade" id="editCategoryModal${loop.index}"
+                                                             data-bs-backdrop="static"
+                                                             data-bs-keyboard="false" tabindex="-1"
+                                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Edit Category</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                    </div>
+                                                                    <form id="editCategory${loop.index}" method="post"
+                                                                          action="account?type=admin-categories">
+                                                                        <input id="id${loop.index}" name="id"
+                                                                               value="${category.id}" hidden readonly
+                                                                               required/>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                            <input name="categoryName"
+                                                                                                   type="text"
+                                                                                                   class="form-control"
+                                                                                                   value="${category.name}"
+                                                                                                   id="eCategoryName${loop.index}"
+                                                                                                   required>
+                                                                                            <label for="eCategoryName${loop.index}">Category
+                                                                                                name</label>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Name is required
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button"
+                                                                                class="btn btn-outline-danger"
+                                                                                data-bs-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button type="submit"
+                                                                                form="editCategory${loop.index}"
+                                                                                class="btn btn-success">Save
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" id="admin-customers">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h2>Customers</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-striped table-responsive">
+                                            <thead>
+                                            <tr>
+                                                <th>First name</th>
+                                                <th>Last name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="customer" items="${customers}" varStatus="loop">
+                                                <tr>
+                                                    <td>${customer.firstName}</td>
+                                                    <td>${customer.lastName}</td>
+                                                    <td>${customer.email}</td>
+                                                    <td>${customer.role.name}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning" type="button"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editCustomerModal${loop.index}">
+                                                            <span class="material-icons">edit</span>
+                                                        </button>
+                                                        <div class="modal fade" id="editCustomerModal${loop.index}"
+                                                             data-bs-backdrop="static"
+                                                             data-bs-keyboard="false" tabindex="-1"
+                                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Change customer
+                                                                            role</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                    </div>
+                                                                    <form id="editCustomer${loop.index}" method="post"
+                                                                          action="account?type=admin-customers">
+                                                                        <input id="id${loop.index}" name="id"
+                                                                               value="${category.id}" hidden readonly
+                                                                               required/>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-12 my-3">
+                                                                                    <div class="input-group">
+                                                                                        <div class="form-floating w-100">
+                                                                                            <select class="form-select"
+                                                                                                    name="role"
+                                                                                                    required
+                                                                                                    id="eRoles">
+                                                                                                <c:forEach
+                                                                                                        var="role"
+                                                                                                        items="${roles}">
+                                                                                                    <option value="${role.id}">${role.name}</option>
+                                                                                                </c:forEach>
+                                                                                            </select>
+                                                                                            <label for="eRoles">Roles</label>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Role is required
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button"
+                                                                                class="btn btn-outline-danger"
+                                                                                data-bs-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button type="submit"
+                                                                                form="editCustomer${loop.index}"
+                                                                                class="btn btn-success">Save
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -344,7 +751,7 @@
                         <div class="col-xs-12 col-md-6 my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
                                 <input id="firstName" name="firstName" maxlength="100" required class="form-control"
-                                       type="text" value="${userData.firstName}" disabled="true"/>
+                                       type="text" value="${customerData.firstName}" disabled="true"/>
                                 <label for="firstName">First name</label>
 
                             </div>
@@ -352,20 +759,20 @@
                         <div class="col-xs-12 col-md-6  my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
                                 <input id="lastName" name="lastName" class="form-control" required minlength="2"
-                                       maxlength="100" type="text" value="${userData.lastName}" disabled/>
+                                       maxlength="100" type="text" value="${customerData.lastName}" disabled/>
                                 <label for="lastName">Last name</label>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6  my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
                                 <input id="dateOfBirth" name="dateOfBirth" class="form-control" required maxlength="8"
-                                       type="date" value="${userData.dateOfBirth}" disabled="true"/>
+                                       type="date" value="${customerData.dateOfBirth}" disabled="true"/>
                                 <label for="dateOfBirth">Date of birth</label>
                             </div>
                         </div>
                         <div id="emailWrapper" class="col-xs-12 col-md-6  my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
-                                <input id="email" class="form-control" type="email" value="${userData.email}" disabled/>
+                                <input id="email" class="form-control" type="email" value="${customerData.email}" disabled/>
                                 <label for="email">Email</label>
                             </div>
                         </div>
@@ -414,7 +821,7 @@
             <div class="row">
                 <div class="col-12">
                     <c:if test="${addresses != null}">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-responsive">
                             <thead>
                             <tr>
                                 <th>Street</th>
@@ -610,7 +1017,7 @@
                             <span>You have no purchases to show.</span>
                         </c:when>
                         <c:otherwise>
-                            <table class="table table-striped">
+                            <table class="table table-striped table-responsive">
                                 <thead>
                                 <tr>
                                     <th>Date of purchase</th>
@@ -641,7 +1048,7 @@
                                                                     aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <table class="table table-striped">
+                                                            <table class="table table-striped table-responsive">
                                                                 <thead>
                                                                 <tr>
                                                                     <th>Item</th>

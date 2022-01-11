@@ -166,6 +166,43 @@ public class CartEntity extends BaseEntity {
             cartItems = new ArrayList<>();
         }
         cartItems.add(cartItem);
+        setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
+        DbHelper.updateCart(this);
+    }
+
+    public void removeCartItem(CartItemEntity cartItem){
+        if(cartItems == null){
+            cartItems = new ArrayList<>();
+        }
+        cartItems.remove(cartItem);
+        setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
+        DbHelper.updateCart(this);
+    }
+    public void removeCartItem(Integer cartItemId){
+        if(cartItems == null){
+            cartItems = new ArrayList<>();
+        }
+        cartItems.removeIf(cartItemEntity -> Objects.equals(cartItemEntity.getId(), cartItemId));
+        setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
+
+        DbHelper.updateCart(this);
+    }
+    public void updateCartItem(CartItemEntity cartItem){
+        if(cartItems == null){
+            cartItems = new ArrayList<>();
+        }
+        cartItems.forEach(cartItemEntity -> {
+          if(Objects.equals(cartItemEntity.getId(), cartItem.getId())){
+              cartItemEntity.setCount(cartItem.getCount());
+          }
+        });
+        setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
+        DbHelper.updateCart(this);
+    }
+
+    public void clearCart() {
+        cartItems.clear();
+        setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
         DbHelper.updateCart(this);
     }
 }

@@ -66,7 +66,7 @@
                     </button>
                 </form>
             </div>
-            <jsp:useBean id="userData" class="com.kcosic.jwp.shared.model.entities.CustomerEntity" scope="session"/>
+            <jsp:useBean id="customerData" class="com.kcosic.jwp.shared.model.entities.CustomerEntity" scope="session"/>
             <div class="btn-group d-flex justify-content-end  m-sm-3 m-md-2">
                 <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="material-icons">
@@ -75,7 +75,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="settingsDropdown">
                     <c:choose>
-                        <c:when test="${userData != null && userData.roleId != 3}">
+                        <c:when test="${customerData != null && customerData.role.id != 3}">
                             <li>
                                 <button form="account" type="submit" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Settings

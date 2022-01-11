@@ -1,0 +1,18 @@
+@import "global";
+
+.quantity-cell{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-min-width {
+  min-width: 1000px;
+}
+
+.overflow-x-auto{
+  overflow-x: auto;
+}

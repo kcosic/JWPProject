@@ -1,8 +1,8 @@
 let allViews = ["details", "address", "history", "admin"];
 let allAdminViews = ["admin-history", "admin-items", "admin-categories", "admin-customers"];
 let allDetailsField = ["firstName", "lastName","dateOfBirth"];
-let currentView = allViews[0];
-let currentAdminView = allAdminViews[0];
+let currentView = passedView !== undefined && passedView !== "" ? passedView : allViews[0];
+let currentAdminView = passedAdminView !== undefined && passedAdminView !== "" ? passedAdminView :allAdminViews[0];
 let enableDetailsEdit;
 function toggleViews() {
     allViews.forEach((type)=>{

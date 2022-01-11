@@ -49,14 +49,14 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "dateOfBirth", nullable = true)
     private Date dateOfBirth;
     @Basic
-    @Column(name = "roleId", nullable = false)
+    @Column(name = "roleId", nullable = false, insertable = false, updatable = false)
     private Integer roleId;
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL)
     private Collection<AddressEntity> addresses;
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL)
     private Collection<CartEntity> carts;
     @ManyToOne
-    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false)
     private RoleEntity role;
 
     public Integer getId() {

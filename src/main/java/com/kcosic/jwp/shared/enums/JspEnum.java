@@ -8,6 +8,7 @@ public enum JspEnum {
     REGISTER("register.jsp","/register"),
     PRODUCT("product.jsp","/product"),
     ACCOUNT("account.jsp","/account"),
+    CART("cart.jsp","/cart"),
     PRODUCTS("products.jsp","/products");
 
 

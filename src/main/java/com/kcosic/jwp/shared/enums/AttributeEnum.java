@@ -9,6 +9,7 @@ public enum AttributeEnum {
     EMAIL("email"),
     FIRST_NAME("firstName"),
     LAST_NAME("lastName"),
+    ITEM_NAME("itemName"),
     DATE_OF_BIRTH("dateOfBirth"),
     ADDRESS("address"),
     STREET_NAME("streetName"),
@@ -19,10 +20,15 @@ public enum AttributeEnum {
     COUNTRY("country"),
     COUNTY("county"),
     CITY("city"),
-    USER_DATA("userData"),
+    CUSTOMER_DATA("customerData"),
     ERROR_MESSAGE("errorMessage"),
     ITEMS("items"),
     ITEM_ID("itemId"),
+    MANUFACTURER("manufacturer"),
+    ITEM_PRICE("itemPrice"),
+    DESCRIPTION("description"),
+    IMAGE("image"),
+    ACTIVE("active"),
     TOTAL_PRICE("totalPrice"),
     SEARCH("search"),
     SORT_ASC("sortAsc"),
@@ -36,15 +42,24 @@ public enum AttributeEnum {
     HAS_ERROR("hasError"),
     DEFAULT_ADDRESS("defaultAddress"),
     ADDRESSES("addresses"),
-    USERS("users"),
+    CUSTOMERS("customers"),
     CATEGORIES("categories"),
     CARTS("carts"),
-    ALL_CARTS("allCarts");
-
+    ALL_CARTS("allCarts"),
+    PASSED_VIEW("passedView"),
+    PASSED_ADMIN_VIEW("passedAdminView"),
+    CATEGORY_NAME("categoryName"),
+    ROLE_ID("roleId"),
+    ROLES("roles"),
+    CART("cart"),
+    REMOVE_ITEM("removeItem"),
+    COUNT("count"),
+    CART_ITEM_ID("cartItemId"),
+    CLEAR_CART("clearCart");
 
     private final String label;
 
-    private AttributeEnum(String label) {
+    AttributeEnum(String label) {
         this.label = label;
     }
 

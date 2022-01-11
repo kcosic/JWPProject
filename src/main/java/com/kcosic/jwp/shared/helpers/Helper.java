@@ -4,10 +4,12 @@ import com.kcosic.jwp.shared.enums.AttributeEnum;
 import com.kcosic.jwp.shared.enums.JspEnum;
 import com.kcosic.jwp.shared.model.entities.*;
 import jakarta.mail.Address;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -16,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Helper {
-    public static String hash(String password) throws NoSuchAlgorithmException {
+    public static String hash(String plainText) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        byte[] encodedHash = digest.digest(plainText.getBytes(StandardCharsets.UTF_8));
         return bytesToHex(encodedHash);
     }
 
@@ -40,25 +42,25 @@ public class Helper {
         request.getRequestDispatcher(page.getJsp()).forward(request, response);
     }
 
-    public static void setSessionData(HttpServletRequest request, AttributeEnum key, Object data){
+    public static void setSessionData(HttpServletRequest request, AttributeEnum key, Object data) {
         request.getSession().setAttribute(key.toString(), data); // add to session
     }
 
-    public static void removeSessionData(HttpServletRequest request, AttributeEnum key){
+    public static void removeSessionData(HttpServletRequest request, AttributeEnum key) {
         request.getSession().removeAttribute(key.toString());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getSessionData(HttpServletRequest request, AttributeEnum key, Class<T> type){
+    public static <T> T getSessionData(HttpServletRequest request, AttributeEnum key, Class<T> type) {
         var data = request.getSession().getAttribute(key.toString());
-        if(data == null){
+        if (data == null) {
             return null;
         }
-        return (T)data;
+        return (T) data;
     }
 
-    public static void setSessionIfNotExists(HttpServletRequest request, AttributeEnum key, Object data){
-        if(request.getSession().getAttribute(key.toString()) == null){
+    public static void setSessionIfNotExists(HttpServletRequest request, AttributeEnum key, Object data) {
+        if (request.getSession().getAttribute(key.toString()) == null) {
             request.setAttribute(key.toString(), data);
         }
     }
@@ -69,23 +71,35 @@ public class Helper {
 
     public static CustomerEntity createGuestCustomer() {
         var guest = new CustomerEntity();
-        guest.setRoleId(3);
+        guest.setRole(DbHelper.retrieveRole(3));
         return DbHelper.createCustomer(guest);
     }
 
-    public static void addAttributeIfNotExists(HttpServletRequest request, AttributeEnum attribute, Object value){
-        if(request.getAttribute(attribute.toString()) == null){
+    public static void addAttributeIfNotExists(HttpServletRequest request, AttributeEnum attribute, Object value) {
+        if (request.getAttribute(attribute.toString()) == null) {
             request.setAttribute(attribute.toString(), value);
         }
     }
 
 
-    public static void addAttribute(HttpServletRequest request, AttributeEnum attribute, Object value){
+    public static void addAttribute(HttpServletRequest request, AttributeEnum attribute, Object value) {
         request.setAttribute(attribute.toString(), value);
     }
 
-    public static void removeAttribute(HttpServletRequest request, AttributeEnum attribute){
+    public static void removeAttribute(HttpServletRequest request, AttributeEnum attribute) {
         request.removeAttribute(attribute.toString());
     }
 
+    public static String getUploadPath(ServletContext context) {
+        String uploadPath = context.getRealPath("") + File.separator + "assets" + File.separator + "images";
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
+        return uploadPath;
+    }
+
+    public static boolean isNullOrEmpty(String string) {
+        return !(string != null && !string.isEmpty());
+    }
 }

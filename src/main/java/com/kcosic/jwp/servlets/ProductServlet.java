@@ -45,7 +45,7 @@ public class ProductServlet extends BaseServlet {
         var cartItems = DbHelper.cartQuantity(customer.getId());
         Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE, price);
         Helper.setSessionData(request,AttributeEnum.CART_ITEMS, cartItems);
-        Helper.setSessionData(request, AttributeEnum.USER_DATA, customer.toString());
+        Helper.setSessionData(request, AttributeEnum.CUSTOMER_DATA, customer.toString());
         request.getRequestDispatcher(JspEnum.PRODUCT.getJsp()).forward(request, response);
     }
 

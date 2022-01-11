@@ -35,7 +35,7 @@ public class LoginServlet extends BaseServlet {
             var hashedPassword = Helper.hash(password);
             if (hashedPassword.equals(loggedInCustomer.getPassword())) {
                 var currentCart = DbHelper.retrieveCurrentCart(loggedInCustomer.getId());
-                Helper.setSessionData(request, AttributeEnum.USER_DATA, loggedInCustomer);
+                Helper.setSessionData(request, AttributeEnum.CUSTOMER_DATA, loggedInCustomer);
                 Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE,(
                         currentCart != null ? currentCart.getTotalPriceString() : "0"));
                 var cartItems = DbHelper.cartQuantity(loggedInCustomer.getId());
@@ -60,7 +60,7 @@ public class LoginServlet extends BaseServlet {
         try {
             response.setContentType("text/html");
 
-            if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.USER_DATA.toString()))) {
+            if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.CUSTOMER_DATA.toString()))) {
                 Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
                 request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
             }

@@ -3,6 +3,8 @@ package com.kcosic.jwp.shared.helpers;
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
 import com.kcosic.jwp.shared.model.entities.*;
+import jdk.jfr.Category;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
@@ -265,4 +267,43 @@ public class DbHelper {
             dal.bulkDelete(CartItemEntity.class, cartItems);
         }
     }
+
+    public static void updateItem(ItemEntity item) {
+        var dal = new Dal();
+        dal.update(ItemEntity.class, item);
+    }
+
+    public static void createItem(ItemEntity item) {
+        var dal = new Dal();
+        dal.create(ItemEntity.class, item);
+    }
+    public static void updateCategory(CategoryEntity category) {
+        var dal = new Dal();
+        dal.update(CategoryEntity.class, category);
+    }
+
+    public static void createCategory(CategoryEntity category) {
+        var dal = new Dal();
+        dal.create(CategoryEntity.class, category);
+    }
+
+    public static RoleEntity retrieveRole(int roleId) {
+        var dal = new Dal();
+        return dal.retrieveById(RoleEntity.class, roleId);
+    }
+
+
+    public static List<RoleEntity> retrieveRoles() {
+        var dal = new Dal();
+        return dal
+                .retrieveAll(RoleEntity.class)
+                .filter((roleEntity -> roleEntity.getId() != 3))
+                .toList();
+    }
+
+    public static void deleteCartItem(int itemId) {
+        var dal = new Dal();
+        dal.delete(CartItemEntity.class, dal.retrieveById(CartItemEntity.class, itemId));
+    }
+
 }

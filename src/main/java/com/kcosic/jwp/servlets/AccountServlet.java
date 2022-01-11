@@ -6,22 +6,30 @@ import com.kcosic.jwp.shared.helpers.DbHelper;
 import com.kcosic.jwp.shared.helpers.Helper;
 import com.kcosic.jwp.shared.model.BaseServlet;
 import com.kcosic.jwp.shared.model.entities.AddressEntity;
+import com.kcosic.jwp.shared.model.entities.CategoryEntity;
 import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.entities.ItemEntity;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-import java.io.IOException;
+import java.io.*;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
-import java.util.Objects;
+import java.time.Instant;
 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 5 * 5,
+        location = "assets\\images")
 @WebServlet(name = "AccountServlet", value = "/account")
 public class AccountServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processAccountGetRequest(request, response);
     }
-//TODO File upload, provjeriti sto se uploada
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,16 +50,16 @@ public class AccountServlet extends BaseServlet {
     private void processAccountGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         var customer = getOrCreateCustomer(request);
 
-        if(customer.getRoleId() == 3){
+        if (customer.getRoleId() == 3) {
             Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
             return;
         }
-        Helper.addAttributeIfNotExists(request, AttributeEnum.USER_DATA, customer);
+        Helper.addAttributeIfNotExists(request, AttributeEnum.CUSTOMER_DATA, customer);
 
         processDefaultAccountData(request, customer);
 
-        if(customer.getRoleId() == 1){
+        if (customer.getRoleId() == 1) {
             processAdminAccountData(request, customer);
         }
 
@@ -59,13 +67,14 @@ public class AccountServlet extends BaseServlet {
     }
 
     /**
-     * Processes administrator only data that is shown to only to admins
-     * @param request Current Http request
+     * Processes administrator only data that is shown only to admins
+     *
+     * @param request  Current Http request
      * @param customer Current customer
      */
     private void processAdminAccountData(HttpServletRequest request, CustomerEntity customer) {
-        var customers = DbHelper.retrieveAllCustomers();
-        Helper.addAttribute(request, AttributeEnum.USERS, customers);
+        var customers = DbHelper.retrieveAllCustomers().stream().filter(customerEntity -> customerEntity.getRole().getId() != 3).toList();
+        Helper.addAttribute(request, AttributeEnum.CUSTOMERS, customers);
 
         var carts = DbHelper.retrieveAllCarts(true);
         Helper.addAttribute(request, AttributeEnum.ALL_CARTS, carts);
@@ -75,11 +84,15 @@ public class AccountServlet extends BaseServlet {
 
         var categories = DbHelper.retrieveCategories();
         Helper.addAttribute(request, AttributeEnum.CATEGORIES, categories);
+
+        var roles = DbHelper.retrieveRoles();
+        Helper.addAttribute(request, AttributeEnum.ROLES, roles);
     }
 
     /**
      * Processes default data that is shown to every customer
-     * @param request Current Http request
+     *
+     * @param request  Current Http request
      * @param customer Current customer
      */
     private void processDefaultAccountData(HttpServletRequest request, CustomerEntity customer) {
@@ -99,7 +112,7 @@ public class AccountServlet extends BaseServlet {
     private void processAccountPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var customer = getOrCreateCustomer(request);
 
-        if(customer.getRoleId() == 3){
+        if (customer.getRoleId() == 3) {
             Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
             return;
@@ -107,36 +120,154 @@ public class AccountServlet extends BaseServlet {
 
         processDefaultAccountData(request, customer);
 
-        if(customer.getRoleId() == 1){
+        if (customer.getRoleId() == 1) {
             processAdminAccountData(request, customer);
         }
 
-        request.setAttribute(AttributeEnum.USER_DATA.toString(), customer);
+        request.setAttribute(AttributeEnum.CUSTOMER_DATA.toString(), customer);
         request.getRequestDispatcher(JspEnum.ACCOUNT.getJsp()).forward(request, response);
     }
 
-
+    /**
+     * Handles changes on categories by admin
+     * @param request
+     */
     private void handleAdminCategoryChange(HttpServletRequest request) {
+        var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
+        var category = new CategoryEntity();
+        if (exists) {
+            var id = Integer.parseInt(request.getParameter(AttributeEnum.ID.toString()));
+            category = DbHelper.retrieveCategory(id);
+        }
 
+        var name = request.getParameter(AttributeEnum.CATEGORY_NAME.toString());
+
+        if(!Helper.isNullOrEmpty(name)){
+            category.setName(name);
+        }
+
+        if(exists){
+            DbHelper.updateCategory(category);
+        }
+        else {
+            DbHelper.createCategory(category);
+        }
+        Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-categories");
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
     }
 
-    private void handleAdminItemsChange(HttpServletRequest request) {
+    /**
+     * Handles changes on items by admin
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
+    private void handleAdminItemsChange(HttpServletRequest request) throws ServletException, IOException {
+        var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
+        var item = new ItemEntity();
+        if (exists) {
+            var id = Integer.parseInt(request.getParameter(AttributeEnum.ID.toString()));
+            item = DbHelper.retrieveItem(id);
+        }
 
+        var optPart = request.getParts().stream().filter(part1 -> part1.getSubmittedFileName() != null && !part1.getSubmittedFileName().isEmpty()).findFirst();
+
+        if (optPart.isPresent()) {
+            var part = optPart.get();
+            try {
+                var name = Helper.hash(part.getSubmittedFileName() + Date.from(Instant.now())) + part.getSubmittedFileName().substring(part.getSubmittedFileName().lastIndexOf('.'));
+
+                var path = Helper.getUploadPath(getServletContext()) +
+                        File.separator + name;
+                var file = new File(path);
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+                Files.copy(part.getInputStream(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                item.setImage(name);
+            } catch (NoSuchAlgorithmException e) {
+                //TODO proper error page
+                e.printStackTrace();
+            }
+        }
+
+        var name = request.getParameter(AttributeEnum.ITEM_NAME.toString());
+        var manufacturer = request.getParameter(AttributeEnum.MANUFACTURER.toString());
+        var description = request.getParameter(AttributeEnum.DESCRIPTION.toString());
+        var price = BigDecimal.valueOf(Double.parseDouble(request.getParameter(AttributeEnum.ITEM_PRICE.toString())));
+        var categoryId = Integer.parseInt(request.getParameter(AttributeEnum.CATEGORY.toString()));
+
+
+        var active = request.getParameter(AttributeEnum.ACTIVE.toString());
+
+        item.setIsActive(active != null && active.equals("true"));
+
+        if (!Helper.isNullOrEmpty(name)) {
+            item.setName(name);
+        }
+        if (!Helper.isNullOrEmpty(manufacturer)) {
+            item.setManufacturer(manufacturer);
+        }
+        if (!Helper.isNullOrEmpty(description)) {
+            item.setDescription(description);
+        }
+        item.setPrice(price);
+
+
+        item.setCategory(DbHelper.retrieveCategory(categoryId));
+
+
+        if (exists) {
+            DbHelper.updateItem(item);
+        } else {
+            DbHelper.createItem(item);
+        }
+
+        Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-items");
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
     }
 
-    private void handleAdminCustomerChange(HttpServletRequest request) {
+    /**
+     * Handles changes on customers by admin
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
+    private void handleAdminCustomerChange(HttpServletRequest request) throws ServletException, IOException {
+        var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
+        var customer = new CustomerEntity();
+        if (exists) {
+            var id = Integer.parseInt(request.getParameter(AttributeEnum.ID.toString()));
+            customer = DbHelper.retrieveCustomerById(id);
+        }
 
+        var roleId = Integer.parseInt(request.getParameter(AttributeEnum.ROLE_ID.toString()));
+
+        customer.setRole(DbHelper.retrieveRole(roleId));
+
+        if(exists){
+            DbHelper.updateCustomer(customer);
+        }
+        else {
+            DbHelper.createCustomer(customer);
+        }
+
+        Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-customers");
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
     }
 
+    /**
+     * Handles create and update of the customer addresses
+     * @param request
+     */
     private void handleAddressChange(HttpServletRequest request) {
         var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
         var address = new AddressEntity();
         var customer = getOrCreateCustomer(request);
-        if(exists){
+        if (exists) {
             var id = Integer.parseInt(request.getParameter(AttributeEnum.ID.toString()));
             address = DbHelper.retrieveAddressById(id);
-        }
-        else{
+        } else {
             address.setCustomer(customer);
         }
         var street = request.getParameter(AttributeEnum.STREET_NAME.toString());
@@ -158,31 +289,39 @@ public class AccountServlet extends BaseServlet {
         address.setCountry(country);
         address.setDefault(false);
 
-        if(exists){
+        if (exists) {
             DbHelper.updateAddress(address);
-        }
-        else {
+        } else {
             DbHelper.createAddress(address);
         }
+        Helper.removeAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW);
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "address");
     }
 
+    /**
+     * Handles customer default address change
+     * @param request
+     */
     private void handleDefaultAddressChange(HttpServletRequest request) {
         var addressId = Integer.parseInt(request.getParameter(AttributeEnum.ADDRESS.toString()));
         var addresses = DbHelper.retrieveAddresses(getOrCreateCustomer(request).getId());
-        for (var address:
-             addresses) {
-            if(address.getId() == addressId){
+        for (var address :
+                addresses) {
+            if (address.getId() == addressId) {
                 address.setDefault(true);
                 DbHelper.updateAddress(address);
-            } else if (address.getDefault()){
+            } else if (address.getDefault()) {
                 address.setDefault(false);
                 DbHelper.updateAddress(address);
             }
         }
+        Helper.removeAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW);
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "address");
     }
 
     /**
      * Handles customer details change
+     *
      * @param request Incoming request
      */
     private void handleDetailsChange(HttpServletRequest request) {
@@ -196,6 +335,8 @@ public class AccountServlet extends BaseServlet {
         customer.setDateOfBirth(newDateOfBirth);
 
         DbHelper.updateCustomer(customer);
+        Helper.removeAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW);
+        Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "details");
     }
 
 }

@@ -72,7 +72,7 @@ public class ProductsServlet extends BaseServlet {
         }
         var customer = getOrCreateCustomer(request);
         var currentCart = DbHelper.retrieveCurrentCart(customer.getId());
-        Helper.setSessionData(request, AttributeEnum.USER_DATA, customer);
+        Helper.setSessionData(request, AttributeEnum.CUSTOMER_DATA, customer);
         Helper.setSessionData(request,AttributeEnum.TOTAL_PRICE,(
                 currentCart != null ? currentCart.getTotalPriceString() : "0"));
         var cartItems = DbHelper.cartQuantity(customer.getId());
