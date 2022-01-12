@@ -1,5 +1,5 @@
 let allViews = ["details", "address", "history", "admin"];
-let allAdminViews = ["admin-history", "admin-items", "admin-categories", "admin-customers"];
+let allAdminViews = ["admin-history", "admin-items", "admin-categories", "admin-customers", "admin-logs"];
 let allDetailsField = ["firstName", "lastName","dateOfBirth"];
 let currentView = passedView !== undefined && passedView !== "" ? passedView : allViews[0];
 let currentAdminView = passedAdminView !== undefined && passedAdminView !== "" ? passedAdminView :allAdminViews[0];

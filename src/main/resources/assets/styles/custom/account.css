@@ -10752,7 +10752,8 @@ body {
   color: #393E41 !important;
 }
 
-.details-value {
+.details-value,
+.search-wrapper {
   display: flex;
   flex-direction: row;
 }

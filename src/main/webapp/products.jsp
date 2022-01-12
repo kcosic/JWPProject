@@ -52,7 +52,7 @@
                 <c:forEach var="item" items="${items}">
                     <div class="product-wrapper mx-3 my-3 ">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header fixed-height">
                                 <h5>${item.manufacturer} - ${item.name}</h5>
                             </div>
                             <div class="card-image text-center">

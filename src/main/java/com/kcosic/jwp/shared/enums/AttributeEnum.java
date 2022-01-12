@@ -55,7 +55,14 @@ public enum AttributeEnum {
     REMOVE_ITEM("removeItem"),
     COUNT("count"),
     CART_ITEM_ID("cartItemId"),
-    CLEAR_CART("clearCart"), PAYMENT("payment");
+    CLEAR_CART("clearCart"),
+    PAYMENT("payment"),
+    LOGS("logs"),
+    LOG_SEARCH_QUERY("logSearchQuery"),
+    CATEGORY_SEARCH_QUERY("categorySearchQuery"),
+    ITEM_SEARCH_QUERY("itemSearchQuery"),
+    CUSTOMER_SEARCH_QUERY("customerSearchQuery"),
+    HISTORY_SEARCH_QUERY("historySearchQuery"), ACTION("action");
 
     private final String label;
 

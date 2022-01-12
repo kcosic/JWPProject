@@ -4,7 +4,6 @@ import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.enums.PaymentEnum;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
 import com.kcosic.jwp.shared.model.entities.*;
-import jdk.jfr.Category;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,14 +11,21 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class DbHelper {
     private DbHelper() {
     }
 
-    public static List<CustomerEntity> retrieveAllCustomers() {
+    public static List<CustomerEntity> retrieveCustomers() {
         var dal = new Dal();
         return dal.retrieveAll(CustomerEntity.class).toList();
+    }
+    public static List<CustomerEntity> retrieveCustomers(String searchQuery) {
+        var dal = new Dal();
+        return dal.retrieveAll(CustomerEntity.class).filter(
+                customerEntity ->
+                        customerEntity.getEmail().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT))).toList();
     }
 
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
@@ -74,7 +80,11 @@ public class DbHelper {
     public static List<ItemEntity> retrieveItems(String query, boolean activeOnly){
         var data = retrieveItems(activeOnly)
                 .stream()
-                .filter(item-> item.getName().contains(query) || item.getManufacturer().contains(query) || item.getCategory().getName().contains(query));
+                .filter(item->
+                        item.getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                        item.getManufacturer().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                        item.getCategory().getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+                );
         return data.toList();
     }
 
@@ -211,6 +221,24 @@ public class DbHelper {
 
     }
 
+    public static List<CartEntity> retrieveAllCarts(String searchQuery, boolean onlyPurchased) {
+        var dal = new Dal();
+
+        var carts = dal.retrieveAll(CartEntity.class).filter(
+                cartEntity ->
+                        cartEntity.getCustomer().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
+                        cartEntity.getCustomer().getEmail().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
+                                (cartEntity.getDateOfPurchase() != null && cartEntity.getDateOfPurchase().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)))
+        );
+
+        if(onlyPurchased){
+            carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
+        }
+
+        return carts.toList();
+
+    }
+
     public static List<CartEntity> retrieveCarts(Integer customerId, boolean onlyPurchased) {
         var dal = new Dal();
 
@@ -322,5 +350,26 @@ public class DbHelper {
     public static void addLog(LogEntity log) {
         var dal = new Dal();
         dal.create(LogEntity.class, log);
+    }
+
+    public static List<LogEntity> retrieveLogs() {
+        var dal = new Dal();
+        return dal.retrieveAll(LogEntity.class).toList();
+    }
+    public static List<LogEntity> retrieveLogs(String query) {
+        var dal = new Dal();
+        return dal.retrieveAll(LogEntity.class).filter(logEntity ->
+                logEntity.getCustomer().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                logEntity.getActionName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                logEntity.getActionTime().toString().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                logEntity.getIpAddress().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+                ).toList();
+    }
+
+    public static List<CategoryEntity> retrieveCategories(String categoryQuery) {
+        var dal = new Dal();
+        return dal.retrieveAll(CategoryEntity.class).filter(
+                categoryEntity ->
+                        categoryEntity.getName().toLowerCase(Locale.ROOT).contains(categoryQuery.toLowerCase(Locale.ROOT))).toList();
     }
 }

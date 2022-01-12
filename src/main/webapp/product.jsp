@@ -26,7 +26,7 @@
 <jsp:include page="header.jsp"/>
 
 
-<div class="container-fluid mx-4 my-4">
+<div class="container my-4">
     <div class="card w-100">
         <div class="card-header">
             <div class="row">
