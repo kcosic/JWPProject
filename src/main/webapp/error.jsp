@@ -11,7 +11,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-    <title>${item.manufacturer} - ${item.name}</title>
+    <title>Error</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script src="${contextPath}/assets/scripts/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>

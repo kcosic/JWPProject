@@ -55,7 +55,7 @@ public enum AttributeEnum {
     REMOVE_ITEM("removeItem"),
     COUNT("count"),
     CART_ITEM_ID("cartItemId"),
-    CLEAR_CART("clearCart");
+    CLEAR_CART("clearCart"), PAYMENT("payment");
 
     private final String label;
 

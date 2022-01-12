@@ -128,6 +128,11 @@ public class CustomerEntity extends BaseEntity {
         return Objects.hash(id, firstName, lastName, email, password, dateOfBirth, roleId);
     }
 
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
+
     public Collection<AddressEntity> getAddresses() {
         return addresses;
     }

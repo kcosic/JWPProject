@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,5 +104,14 @@ public class Helper {
 
     public static boolean isNullOrEmpty(String string) {
         return !(string != null && !string.isEmpty());
+    }
+
+    public static void log(HttpServletRequest request, String customerMail, String actionName){
+        var newLog = new LogEntity();
+        newLog.setCustomer(customerMail);
+        newLog.setActionTime(Date.valueOf(LocalDate.now()));
+        newLog.setActionName(actionName);
+        newLog.setIpAddress(request.getRemoteAddr());
+        DbHelper.addLog(newLog);
     }
 }

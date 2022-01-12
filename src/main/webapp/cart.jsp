@@ -13,7 +13,7 @@
 
 <html>
 <head>
-    <title>My Account</title>
+    <title>Cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="${contextPath}/assets/scripts/jQuery/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script src="${contextPath}/assets/scripts/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
@@ -110,7 +110,7 @@
                                 </button>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-2">
-                                <form action="payment" method="post" id="submitCart" novalidate></form>
+                                <form action="payment" method="get" id="submitCart" novalidate></form>
                                 <button type="submit" form="submitCart" class="btn btn-success">
                                     <span class="material-icons">shopping_cart_checkout</span>&nbsp;Checkout
                                 </button>

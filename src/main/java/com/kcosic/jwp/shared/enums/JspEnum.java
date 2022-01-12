@@ -9,7 +9,8 @@ public enum JspEnum {
     PRODUCT("product.jsp","/product"),
     ACCOUNT("account.jsp","/account"),
     CART("cart.jsp","/cart"),
-    PRODUCTS("products.jsp","/products");
+    PRODUCTS("products.jsp","/products"),
+    PAYMENT("payment.jsp", "/payment"), PAYMENT_SUCCESS("paymentSuccess.jsp", "/paymentSuccess"), PAYMENT_ERROR("paymentError.jsp", "/paymentError");
 
 
     private final String jsp;

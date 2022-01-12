@@ -11,6 +11,7 @@
         <class>com.kcosic.jwp.shared.model.entities.CustomerEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.ItemEntity</class>
         <class>com.kcosic.jwp.shared.model.entities.RoleEntity</class>
+        <class>com.kcosic.jwp.shared.model.entities.LogEntity</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>

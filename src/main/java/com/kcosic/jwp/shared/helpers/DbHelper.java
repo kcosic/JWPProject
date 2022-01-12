@@ -1,6 +1,7 @@
 package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.dal.Dal;
+import com.kcosic.jwp.shared.enums.PaymentEnum;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
 import com.kcosic.jwp.shared.model.entities.*;
 import jdk.jfr.Category;
@@ -93,14 +94,19 @@ public class DbHelper {
             newCart.setDateCreated(Date.valueOf(LocalDate.now()));
             newCart.setTotalPrice(BigDecimal.valueOf(0));
             newCart.setCurrent(true);
+            newCart.setPaidWith(PaymentEnum.UNPAID);
             currentCart = dal.create(CartEntity.class, newCart);
         }
-        var currentCartId = currentCart.getId();
+        /*var currentCartId = currentCart.getId();
         var optCartItem = dal
                 .retrieveAll(CartItemEntity.class)
                 .filter(cartItemEntity ->
                         cartItemEntity.getItem().equals(item) &&
                                 cartItemEntity.getCart().getId().equals(currentCartId))
+                .findFirst();*/
+         var optCartItem = currentCart.getCartItems().stream()
+                .filter(cartItemEntity ->
+                        cartItemEntity.getItem().equals(item) )
                 .findFirst();
         if (optCartItem.isPresent()) {
             var cartItem = optCartItem.get();
@@ -306,4 +312,15 @@ public class DbHelper {
         dal.delete(CartItemEntity.class, dal.retrieveById(CartItemEntity.class, itemId));
     }
 
+    public static AddressEntity retrieveDefaultAddress(CustomerEntity customer) {
+        var dal = new Dal();
+        var address = dal.retrieveAll(AddressEntity.class).filter(addressEntity ->addressEntity.getCustomer().getId() == customer.getId() && addressEntity.getDefault()).findFirst();
+        return address.orElse(null);
+
+    }
+
+    public static void addLog(LogEntity log) {
+        var dal = new Dal();
+        dal.create(LogEntity.class, log);
+    }
 }

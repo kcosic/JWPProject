@@ -1,5 +1,7 @@
 package com.kcosic.jwp.shared.model.entities;
 
+import com.kcosic.jwp.servlets.PaymentServlet;
+import com.kcosic.jwp.shared.enums.PaymentEnum;
 import com.kcosic.jwp.shared.helpers.DbHelper;
 import jakarta.persistence.*;
 
@@ -52,6 +54,11 @@ public class CartEntity extends BaseEntity {
     @Basic
     @Column(name = "isCurrent", nullable = false)
     private Boolean isCurrent;
+
+
+    @Basic
+    @Column(name = "paidWith", nullable = false)
+    private Integer paidWith;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false)
     private CustomerEntity customer;
@@ -204,5 +211,21 @@ public class CartEntity extends BaseEntity {
         cartItems.clear();
         setTotalPrice(DbHelper.calculateTotalPrice(cartItems));
         DbHelper.updateCart(this);
+    }
+
+
+    public PaymentEnum getPaidWith() {
+        switch (paidWith){
+            case 1:
+                return PaymentEnum.CASH;
+            case 2:
+                return PaymentEnum.PAYPAL;
+            default:
+                return PaymentEnum.UNPAID;
+        }
+    }
+
+    public void setPaidWith(PaymentEnum payment) {
+        this.paidWith = payment.ordinal();
     }
 }
