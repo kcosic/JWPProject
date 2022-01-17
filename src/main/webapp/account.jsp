@@ -96,8 +96,10 @@
                                     </div>
                                     <c:if test="${allCarts != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-history" class="search-wrapper" method="post">
-                                                <input name="historySearchQuery" value="${historySearchQuery}" class="form-control w-50"/>
+                                            <form action="account?type=admin-history" class="search-wrapper"
+                                                  method="post">
+                                                <input name="historySearchQuery" value="${historySearchQuery}"
+                                                       class="form-control w-50"/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -106,13 +108,13 @@
                                     </c:if>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 table-responsive">
                                         <c:choose>
                                             <c:when test="${allCarts == null}">
                                                 <span>There are no transactions to show.</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <table class="table table-striped table-responsive">
+                                                <table class="table table-sm table-striped">
                                                     <thead>
                                                     <tr>
                                                         <th>User Email</th>
@@ -148,8 +150,8 @@
                                                                                         data-bs-dismiss="modal"
                                                                                         aria-label="Close"></button>
                                                                             </div>
-                                                                            <div class="modal-body">
-                                                                                <table class="table table-striped table-responsive">
+                                                                            <div class="modal-body table-responsive">
+                                                                                <table class="table table-striped">
                                                                                     <thead>
                                                                                     <tr>
                                                                                         <th>Item</th>
@@ -181,6 +183,17 @@
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
+                                                    <tfoot>
+                                                        <nav aria-label="Pagination">
+                                                            <ul class="pagination">
+                                                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                                            </ul>
+                                                        </nav>
+                                                    </tfoot>
                                                 </table>
                                             </c:otherwise>
                                         </c:choose>
@@ -197,9 +210,11 @@
                                     </div>
                                     <c:if test="${items != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-items" class="search-wrapper" method="post">
+                                            <form action="account?type=admin-items" class="search-wrapper"
+                                                  method="post">
                                                 <input name="action" value="search" required hidden readonly/>
-                                                <input name="itemSearchQuery" value="${itemSearchQuery}" class="form-control w-50"/>
+                                                <input name="itemSearchQuery" value="${itemSearchQuery}"
+                                                       class="form-control w-50"/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -354,8 +369,8 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <table class="table table-striped table-responsive">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-striped">
                                             <thead>
                                             <tr>
                                                 <th>Name</th>
@@ -398,7 +413,8 @@
                                                                     <form id="editItem${loop.index}" method="post"
                                                                           enctype="multipart/form-data"
                                                                           action="account?type=admin-items">
-                                                                        <input name="action" value="data" required hidden readonly/>
+                                                                        <input name="action" value="data" required
+                                                                               hidden readonly/>
 
                                                                         <input id="id${loop.index}" name="id"
                                                                                value="${item.id}" hidden readonly
@@ -546,8 +562,10 @@
                                     </div>
                                     <c:if test="${categories != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-categories" class="search-wrapper" method="post">
-                                                <input name="categorySearchQuery" value="${categorySearchQuery}" class="form-control w-50"/>
+                                            <form action="account?type=admin-categories" class="search-wrapper"
+                                                  method="post">
+                                                <input name="categorySearchQuery" value="${categorySearchQuery}"
+                                                       class="form-control w-50"/>
                                                 <input name="action" value="search" required hidden readonly/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
@@ -615,8 +633,8 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <table class="table table-striped table-responsive">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-striped">
                                             <thead>
                                             <tr>
                                                 <th>Name</th>
@@ -647,7 +665,8 @@
                                                                     </div>
                                                                     <form id="editCategory${loop.index}" method="post"
                                                                           action="account?type=admin-categories">
-                                                                        <input name="action" value="data" required hidden readonly/>
+                                                                        <input name="action" value="data" required
+                                                                               hidden readonly/>
 
                                                                         <input id="id${loop.index}" name="id"
                                                                                value="${category.id}" hidden readonly
@@ -704,9 +723,11 @@
                                     </div>
                                     <c:if test="${customers != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-customers" class="search-wrapper" method="post">
+                                            <form action="account?type=admin-customers" class="search-wrapper"
+                                                  method="post">
                                                 <input name="action" value="search" required hidden readonly/>
-                                                <input name="customerSearchQuery" value="${customerSearchQuery}" class="form-control w-50"/>
+                                                <input name="customerSearchQuery" value="${customerSearchQuery}"
+                                                       class="form-control w-50"/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -715,8 +736,8 @@
                                     </c:if>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <table class="table table-striped table-responsive">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-striped">
                                             <thead>
                                             <tr>
                                                 <th>First name</th>
@@ -754,7 +775,8 @@
                                                                     </div>
                                                                     <form id="editCustomer${loop.index}" method="post"
                                                                           action="account?type=admin-customers">
-                                                                        <input name="action" value="data" required hidden readonly/>
+                                                                        <input name="action" value="data" required
+                                                                               hidden readonly/>
 
                                                                         <input id="id${loop.index}" name="id"
                                                                                value="${category.id}" hidden readonly
@@ -815,7 +837,8 @@
                                     <c:if test="${logs == null}">
                                         <div class="col-xs-12 col-md-6">
                                             <form action="account?type=admin-logs" class="search-wrapper" method="post">
-                                                <input name="logSearch" value="${logSearchQuery}" class="form-control w-50"/>
+                                                <input name="logSearch" value="${logSearchQuery}"
+                                                       class="form-control w-50"/>
                                                 <input name="action" value="search" required hidden readonly/>
 
                                                 <button type="submit" class="btn btn-sm btn-primary">
@@ -826,13 +849,13 @@
                                     </c:if>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-6  table-responsive">
                                         <c:choose>
                                             <c:when test="${logs == null}">
                                                 <span>There are no logs to show.</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <table class="table table-striped table-responsive">
+                                                <table class="table table-striped">
                                                     <thead>
                                                     <tr>
                                                         <th>Customer</th>
@@ -943,9 +966,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12">
+                <div class="col-12  table-responsive">
                     <c:if test="${addresses != null}">
-                        <table class="table table-striped table-responsive">
+                        <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>Street</th>
@@ -1135,77 +1158,79 @@
         <div id="history" class="col">
             <div class="container-fluid">
                 <div class="row">
-
-                    <c:choose>
-                        <c:when test="${carts == null}">
-                            <span>You have no purchases to show.</span>
-                        </c:when>
-                        <c:otherwise>
-                            <table class="table table-striped table-responsive">
-                                <thead>
-                                <tr>
-                                    <th>Date of purchase</th>
-                                    <th>Total price</th>
-                                    <th>Details</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="cart" items="${carts}" varStatus="loop">
+                    <div class="col-12 table-responsive">
+                        <c:choose>
+                            <c:when test="${carts == null}">
+                                <span>You have no purchases to show.</span>
+                            </c:when>
+                            <c:otherwise>
+                                <table class="table table-striped">
+                                    <thead>
                                     <tr>
-                                        <td>${cart.dateOfPurchase}</td>
-                                        <td>${cart.totalPriceString}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#historyModal${loop.index}">
-                                                <span class="material-icons">preview</span>&nbsp;View
-                                            </button>
-                                            <div class="modal fade" id="historyModal${loop.index}"
-                                                 data-bs-backdrop="static"
-                                                 data-bs-keyboard="false" tabindex="-1"
-                                                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Purchase details</h5>
-                                                            <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal"
-                                                                    aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <table class="table table-striped table-responsive">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Item</th>
-                                                                    <th>Quantity</th>
-                                                                    <th>Price per item</th>
-                                                                    <th>Total price</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <c:forEach var="cartItem" items="${cart.cartItems}">
+                                        <th>Date of purchase</th>
+                                        <th>Total price</th>
+                                        <th>Details</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="cart" items="${carts}" varStatus="loop">
+                                        <tr>
+                                            <td>${cart.dateOfPurchase}</td>
+                                            <td>${cart.totalPriceString}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#historyModal${loop.index}">
+                                                    <span class="material-icons">preview</span>&nbsp;View
+                                                </button>
+                                                <div class="modal fade" id="historyModal${loop.index}"
+                                                     data-bs-backdrop="static"
+                                                     data-bs-keyboard="false" tabindex="-1"
+                                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Purchase details</h5>
+                                                                <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <table class="table table-striped">
+                                                                    <thead>
                                                                     <tr>
-                                                                        <td>${cartItem.item.name}</td>
-                                                                        <td>${cartItem.count}</td>
-                                                                        <td>${cartItem.price}kn</td>
-                                                                        <td>${cartItem.price * cartItem.count}kn</td>
+                                                                        <th>Item</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Price per item</th>
+                                                                        <th>Total price</th>
                                                                     </tr>
-                                                                </c:forEach>
-                                                                </tbody>
-                                                                <tfoot>
-                                                                <span>Total cost: ${cart.totalPriceString}</span>
-                                                                </tfoot>
-                                                            </table>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <c:forEach var="cartItem" items="${cart.cartItems}">
+                                                                        <tr>
+                                                                            <td>${cartItem.item.name}</td>
+                                                                            <td>${cartItem.count}</td>
+                                                                            <td>${cartItem.price}kn</td>
+                                                                            <td>${cartItem.price * cartItem.count}kn</td>
+                                                                        </tr>
+                                                                    </c:forEach>
+                                                                    </tbody>
+                                                                    <tfoot>
+                                                                    <span>Total cost: ${cart.totalPriceString}</span>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </c:otherwise>
-                    </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
         </div>

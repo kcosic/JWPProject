@@ -68,7 +68,7 @@
             </div>
             <jsp:useBean id="customerData" class="com.kcosic.jwp.shared.model.entities.CustomerEntity" scope="session"/>
             <div class="btn-group d-flex justify-content-end  m-sm-3 m-md-2">
-                <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-sm btn-dark dropdown-toggle text-md-center text-lg-center text-xl-center text-xxl-center  text-end" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="material-icons">
                         account_circle
                     </span>

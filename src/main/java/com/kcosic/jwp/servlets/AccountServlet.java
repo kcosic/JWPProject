@@ -51,7 +51,7 @@ public class AccountServlet extends BaseServlet {
     private void processAccountGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         var customer = getOrCreateCustomer(request);
 
-        if (customer.getRoleId() == 3) {
+        if (customer.getRole().getId() == 3) {
             Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
             return;
@@ -60,7 +60,7 @@ public class AccountServlet extends BaseServlet {
 
         processDefaultAccountData(request, customer);
 
-        if (customer.getRoleId() == 1) {
+        if (customer.getRole().getId() == 1) {
             processAdminAccountData(request, customer);
         }
 

@@ -5,6 +5,7 @@ let currentView = passedView !== undefined && passedView !== "" ? passedView : a
 let currentAdminView = passedAdminView !== undefined && passedAdminView !== "" ? passedAdminView :allAdminViews[0];
 let enableDetailsEdit;
 function toggleViews() {
+    enableDetailsEdit = false;
     allViews.forEach((type)=>{
         if(type === currentView){
             $("#" + type).show();

@@ -24,12 +24,12 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container-fluid mx-4 my-4">
+<div class="container-fluid my-4">
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-6">
             <h1 class="category-name">All products</h1>
         </div>
-        <div class="col-xs-12 col-sm-6 d-flex justify-content-end">
+        <div class="col-xs-12 col-sm-6 d-flex justify-content-around">
             <form name="searchForm" action="products" method="get" novalidate class="no-margin">
                 <div class="input-group">
                     <div class="form-floating">

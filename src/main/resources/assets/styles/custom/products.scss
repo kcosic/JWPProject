@@ -13,8 +13,9 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
+
   border-top: $black-color;
   border-top-style: solid;
   border-top-width: 1px;
