@@ -26,11 +26,13 @@ public class PaymentServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
         processPaymentGetRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         processPostPaymentRequest(request, response);
     }
 
@@ -83,7 +85,7 @@ public class PaymentServlet extends BaseServlet {
         Helper.addAttribute(request, AttributeEnum.DEFAULT_ADDRESS, defaultAddress);
 
         var totalPrice = DbHelper.retrieveCurrentCart(customer.getId()).getTotalPriceString();
-        Helper.addAttribute(request, AttributeEnum.TOTAL_PRICE, totalPrice);
+        Helper.addAttribute(request, AttributeEnum.TOTAL_PRICE, Helper.formatAmount(totalPrice));
 
         request.getRequestDispatcher(JspEnum.PAYMENT.getJsp()).forward(request, response);
     }

@@ -18,12 +18,14 @@ import java.sql.Date;
 public class RegisterServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
         processRegistrationGetRequest(request, response);
     }
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         processRegistrationPostRequest(request, response);
     }
 

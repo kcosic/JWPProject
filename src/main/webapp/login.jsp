@@ -1,4 +1,4 @@
-<%--suppress HtmlUnknownTarget --%>
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--suppress HtmlUnknownTarget --%>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -6,11 +6,10 @@
   Time: 11:05
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+<c:set var="customerData" scope="session" value="<%= request.getSession().getAttribute(AttributeEnum.CUSTOMER_DATA.toString())%>"/>
 <html>
 <head>
     <title>Login</title>

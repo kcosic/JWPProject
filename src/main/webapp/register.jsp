@@ -1,4 +1,4 @@
-<%--suppress HtmlUnknownTarget --%>
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--suppress HtmlUnknownTarget --%>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -6,10 +6,14 @@
   Time: 15:58
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="firstName" value="<%= request.getAttribute(AttributeEnum.FIRST_NAME.toString())%>"/>
+<c:set var="lastName" value="<%= request.getAttribute(AttributeEnum.LAST_NAME.toString())%>"/>
+<c:set var="email" value="<%= request.getAttribute(AttributeEnum.EMAIL.toString())%>"/>
+<c:set var="dateOfBirth" value="<%= request.getAttribute(AttributeEnum.DATE_OF_BIRTH.toString())%>"/>
+<c:set var="errorMessage" value="<%= request.getAttribute(AttributeEnum.ERROR_MESSAGE.toString())%>"/>
 <html>
 <head>
     <title>Register</title>
@@ -28,8 +32,8 @@
         </div>
         <div class="card-body">
             <form action="register" class="needs-validation" method="post" novalidate>
-                <div class="row my-3">
-                    <div class="col mx-3">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="firstName" type="text" class="form-control" value="${firstName}"
@@ -41,7 +45,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col mx-3">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="lastName" type="text" class="form-control" value="${lastName}"
@@ -53,12 +57,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col mx-3">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
-                                <input name="dateOfBirth" type="date" class="form-control" value="${dateOfBirth}" maxlength="8"
+                                <input name="dateOfBirth" type="date" class="form-control" value="${dateOfBirth}"
+                                       maxlength="8"
                                        id="dateOfBirth" required>
                                 <label for="dateOfBirth">Date of birth</label>
                                 <div class="invalid-feedback">
@@ -67,7 +70,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col mx-3">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="email" type="email" class="form-control" value="${email}"
@@ -79,27 +82,24 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col mx-3">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="password" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-                                       class="form-control" value="Pa$$w0rd"
+                                       class="form-control"
                                        id="password" required>
                                 <label for="password">Password</label>
                                 <div class="invalid-feedback">
-                                    Password is required
+                                    Password is required. Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col mx-3">
+                    <div class="col-xs-12 col-md-6">
                         <div class="input-group has-validation mb-3">
                             <div class="form-floating w-100">
                                 <input name="repeatPassword" type="password" class="form-control"
-                                       value="Pa$$w0rd"
                                        id="repeatPassword" required>
                                 <label for="repeatPassword">Repeat password</label>
                                 <div class="invalid-feedback">

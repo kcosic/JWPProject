@@ -10758,6 +10758,7 @@ body {
 
 .item-preview {
   height: 150px;
+  max-width: 100%;
 }
 
 .products-wrapper {
@@ -10765,7 +10766,7 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   border-top: #393E41;
   border-top-style: solid;

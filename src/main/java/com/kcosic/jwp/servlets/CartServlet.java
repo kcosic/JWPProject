@@ -17,12 +17,14 @@ import java.io.IOException;
 public class CartServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
         processCartGetRequest(request, response);
     }
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         processCartPostRequest(request, response);
     }
 

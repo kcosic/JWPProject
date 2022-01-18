@@ -18,7 +18,7 @@ $(document).ready(function(){
                 }]
             });
         },
-        onApprove: function(data, actions) {
+        onApprove: function() {
             let form = {
                 payment: 'paypal'
             };
@@ -37,9 +37,9 @@ $(document).ready(function(){
                 },
             });
         },
-        onError: function (err) {
+        onError: function () {
             // For example, redirect to a specific error page
-            window.location.replace("paymentError");
+            window.location.replace("cart");
         }
     }).render('#paypal-button-container');
 })

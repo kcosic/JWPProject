@@ -20,11 +20,13 @@ import java.util.List;
 public class ProductsServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       processProductsGetRequest(request, response);
+        super.doGet(request, response);
+        processProductsGetRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         var isLoggedOut = request.getParameter(AttributeEnum.LOGOUT.toString()) != null;
         if(isLoggedOut){
             handleLogoutRequest(request, response);

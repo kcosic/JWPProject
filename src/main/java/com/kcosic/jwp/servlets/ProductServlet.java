@@ -16,11 +16,13 @@ import java.io.IOException;
 public class ProductServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
         processProductGetRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         processProductPostRequest(request,response);
     }
 
@@ -66,7 +68,7 @@ public class ProductServlet extends BaseServlet {
             request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
         }
         var item = DbHelper.retrieveItem(itemId);
-        var category = DbHelper.retrieveCategory(item.getCategoryId());
+        var category = DbHelper.retrieveCategory(item.getCategory().getId());
         Helper.addAttribute(request,AttributeEnum.ITEM, item);
         Helper.addAttribute(request,AttributeEnum.CATEGORY, category);
         Helper.setSessionIfNotExists(request,AttributeEnum.CART_ITEMS, 0);

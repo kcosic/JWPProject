@@ -1,18 +1,39 @@
-<%@ page import="java.math.BigDecimal" %>
-<%@ page import="java.math.RoundingMode" %>
-<%@ page import="java.util.List" %>
-<%@ page import="com.kcosic.jwp.shared.model.entities.CartEntity" %><%--
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--
   Created by IntelliJ IDEA.
   User: Kresimir
   Date: 29/12/2021
   Time: 14:34
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+<c:set var="customerData" scope="session"
+       value="<%= request.getSession().getAttribute(AttributeEnum.CUSTOMER_DATA.toString())%>"/>
+<c:set var="roles" scope="request" value="<%= request.getAttribute(AttributeEnum.ROLES.toString())%>"/>
+<c:set var="passedView" scope="request" value="<%= request.getAttribute(AttributeEnum.PASSED_VIEW.toString())%>"/>
+<c:set var="passedAdminView" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.PASSED_ADMIN_VIEW.toString())%>"/>
+<c:set var="allCarts" scope="request" value="<%= request.getAttribute(AttributeEnum.ALL_CARTS.toString())%>"/>
+<c:set var="historySearchQuery" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.HISTORY_SEARCH_QUERY.toString())%>"/>
+<c:set var="items" scope="request" value="<%= request.getAttribute(AttributeEnum.ITEMS.toString())%>"/>
+<c:set var="itemSearchQuery" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.ITEM_SEARCH_QUERY.toString())%>"/>
+<c:set var="categories" scope="request" value="<%= request.getAttribute(AttributeEnum.CATEGORIES.toString())%>"/>
+<c:set var="categorySearchQuery" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.CATEGORY_SEARCH_QUERY.toString())%>"/>
+<c:set var="allCategories" scope="request" value="<%= request.getAttribute(AttributeEnum.ALL_CATEGORIES.toString())%>"/>
+<c:set var="customers" scope="request" value="<%= request.getAttribute(AttributeEnum.CUSTOMERS.toString())%>"/>
+<c:set var="customerSearchQuery" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.CUSTOMER_SEARCH_QUERY.toString())%>"/>
+<c:set var="logs" scope="request" value="<%= request.getAttribute(AttributeEnum.LOGS.toString())%>"/>
+<c:set var="logSearchQuery" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.LOG_SEARCH_QUERY.toString())%>"/>
+<c:set var="addresses" scope="request" value="<%= request.getAttribute(AttributeEnum.ADDRESSES.toString())%>"/>
+<c:set var="defaultAddress" scope="request"
+       value="<%= request.getAttribute(AttributeEnum.DEFAULT_ADDRESS.toString())%>"/>
+<c:set var="carts" scope="request" value="<%= request.getAttribute(AttributeEnum.CARTS.toString())%>"/>
 <html>
 <head>
     <title>My Account</title>
@@ -45,7 +66,7 @@
                 <li class="nav-item w-100 d-grid gap-2">
                     <button id="btn-history" class="btn" onclick="display('history')">History</button>
                 </li>
-                <c:if test="${customerData.roleId == 1}">
+                <c:if test="${customerData.role.id == 1}">
                     <li class="nav-item w-100 d-grid gap-2">
                         <button id="btn-admin" class="btn" onclick="display('admin')">Admin</button>
                     </li>
@@ -53,7 +74,7 @@
             </ul>
         </div>
         <%-- CONTENT --%>
-        <c:if test="${customerData.roleId == 1}">
+        <c:if test="${customerData.role.id == 1}">
             <div id="admin" class="col">
                 <div class="container-fluid">
                     <div class="row">
@@ -92,14 +113,15 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-6">
-                                        <h2>Logs</h2>
+                                        <h2>History</h2>
                                     </div>
-                                    <c:if test="${allCarts != null}">
+                                    <c:if test="${allCarts.data != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-history" class="search-wrapper"
-                                                  method="post">
+                                            <form action="account" class="search-wrapper"
+                                                  method="get">
                                                 <input name="historySearchQuery" value="${historySearchQuery}"
                                                        class="form-control w-50"/>
+                                                <input name="type" value="admin-history" readonly required hidden/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -107,10 +129,10 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <div class="row">
+                                <div class="row my-3">
                                     <div class="col-12 table-responsive">
                                         <c:choose>
-                                            <c:when test="${allCarts == null}">
+                                            <c:when test="${allCarts.data == null}">
                                                 <span>There are no transactions to show.</span>
                                             </c:when>
                                             <c:otherwise>
@@ -124,7 +146,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <c:forEach var="cart" items="${allCarts}" varStatus="loop">
+                                                    <c:forEach var="cart" items="${allCarts.data}" varStatus="loop">
                                                         <tr>
                                                             <td>${cart.customer.email}</td>
                                                             <td>${cart.dateOfPurchase}</td>
@@ -172,7 +194,7 @@
                                                                                     </c:forEach>
                                                                                     </tbody>
                                                                                     <tfoot>
-                                                                                    <span>Total cost: ${cart.totalPriceString}</span>
+                                                                                    Total cost: ${cart.totalPriceString}
                                                                                     </tfoot>
                                                                                 </table>
                                                                             </div>
@@ -183,17 +205,27 @@
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
-                                                    <tfoot>
+                                                    <caption>
                                                         <nav aria-label="Pagination">
                                                             <ul class="pagination">
-                                                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                                                <li class="page-item ${!allCarts.canGoPrev ? 'disabled':''}">
+                                                                    <a class="page-link"
+                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage - 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">Previous</a>
+                                                                </li>
+
+                                                                <c:forEach begin="1" end="${allCarts.pages}" var="i">
+                                                                    <li class="page-item ${allCarts.currentPage == i ? 'active': ""}">
+                                                                        <a class="page-link"
+                                                                           href="account?type=admin-history&historyPagination=${i}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">${i}</a>
+                                                                    </li>
+                                                                </c:forEach>
+                                                                <li class="page-item ${!allCarts.canGoNext ? 'disabled':''}">
+                                                                    <a class="page-link"
+                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage + 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">Next</a>
+                                                                </li>
                                                             </ul>
                                                         </nav>
-                                                    </tfoot>
+                                                    </caption>
                                                 </table>
                                             </c:otherwise>
                                         </c:choose>
@@ -208,10 +240,11 @@
                                     <div class="col-xs-12 col-md-6">
                                         <h2>Items</h2>
                                     </div>
-                                    <c:if test="${items != null}">
+                                    <c:if test="${items.data != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-items" class="search-wrapper"
-                                                  method="post">
+                                            <form action="account" class="search-wrapper"
+                                                  method="get">
+                                                <input name="type" value="admin-items" required hidden readonly/>
                                                 <input name="action" value="search" required hidden readonly/>
                                                 <input name="itemSearchQuery" value="${itemSearchQuery}"
                                                        class="form-control w-50"/>
@@ -222,7 +255,7 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <div class="row">
+                                <div class="row my-3">
                                     <div class="col-xs-12 col-md-6">
                                         <button type="button" class="btn btn-primary" data-bs-target="#newItemModal"
                                                 data-bs-toggle="modal">Add
@@ -280,7 +313,7 @@
                                                                                                 <textarea
                                                                                                         name="description"
                                                                                                         rows="8"
-                                                                                                        maxlength="999"
+                                                                                                        maxlength="3999"
                                                                                                         class="form-control"
                                                                                                         id="cDescription"></textarea>
                                                                             <label for="cDescription">Description</label>
@@ -327,7 +360,7 @@
                                                                                 <option>Select category</option>
                                                                                 <c:forEach
                                                                                         var="category"
-                                                                                        items="${categories}">
+                                                                                        items="${allCategories}">
                                                                                     <option value="${category.id}">${category.name}</option>
                                                                                 </c:forEach>
                                                                             </select>
@@ -383,7 +416,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <c:forEach var="item" items="${items}" varStatus="loop">
+                                            <c:forEach var="item" items="${items.data}" varStatus="loop">
                                                 <tr>
                                                     <td>${item.name}</td>
                                                     <td>${item.manufacturer}</td>
@@ -457,7 +490,7 @@
                                                                                                 <textarea
                                                                                                         name="description"
                                                                                                         rows="8"
-                                                                                                        maxlength="999"
+                                                                                                        maxlength="3999"
                                                                                                         class="form-control"
                                                                                                         id="eDescription${loop.index}">${item.description}</textarea>
                                                                                             <label for="eDescription${loop.index}">Description</label>
@@ -504,7 +537,7 @@
                                                                                                     id="eCategories${loop.index}">
                                                                                                 <c:forEach
                                                                                                         var="category"
-                                                                                                        items="${categories}">
+                                                                                                        items="${allCategories}">
                                                                                                     <option value="${category.id}" ${category.id == item.category.id ? "selected" : ""}>${category.name}</option>
                                                                                                 </c:forEach>
                                                                                             </select>
@@ -549,6 +582,26 @@
                                                 </tr>
                                             </c:forEach>
                                             </tbody>
+                                            <caption>
+                                                <nav aria-label="Pagination">
+                                                    <ul class="pagination">
+                                                        <li class="page-item ${!items.canGoPrev ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?type=admin-items&itemPagination=${items.currentPage - 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">Previous</a>
+                                                        </li>
+                                                        <c:forEach begin="1" end="${items.pages}" var="i">
+                                                            <li class="page-item ${items.currentPage == i ? 'active': ""}">
+                                                                <a class="page-link"
+                                                                   href="account?type=admin-items&itemPagination=${i}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">${i}</a>
+                                                            </li>
+                                                        </c:forEach>
+                                                        <li class="page-item ${!items.canGoNext ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?type=admin-items&itemPagination=${items.currentPage + 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </caption>
                                         </table>
                                     </div>
                                 </div>
@@ -560,13 +613,14 @@
                                     <div class="col-xs-12 col-md-6">
                                         <h2>Categories</h2>
                                     </div>
-                                    <c:if test="${categories != null}">
+                                    <c:if test="${categories.data != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-categories" class="search-wrapper"
-                                                  method="post">
+                                            <form action="account" class="search-wrapper"
+                                                  method="get">
                                                 <input name="categorySearchQuery" value="${categorySearchQuery}"
                                                        class="form-control w-50"/>
                                                 <input name="action" value="search" required hidden readonly/>
+                                                <input name="type" value="admin-categories" required hidden readonly/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -574,11 +628,11 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <div class="row">
+                                <div class="row  my-3">
                                     <div class="col-xs-12 col-md-6">
                                         <button type="button" class="btn btn-primary" data-bs-target="#newCategoryModal"
                                                 data-bs-toggle="modal">Add
-                                            new item
+                                            new category
                                         </button>
                                         <div class="modal fade" id="newCategoryModal"
                                              data-bs-backdrop="static"
@@ -642,7 +696,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <c:forEach var="category" items="${categories}" varStatus="loop">
+                                            <c:forEach var="category" items="${categories.data}" varStatus="loop">
                                                 <tr>
                                                     <td>${category.name}</td>
                                                     <td>
@@ -710,6 +764,29 @@
                                                 </tr>
                                             </c:forEach>
                                             </tbody>
+
+                                            <caption>
+                                                <nav aria-label="Pagination">
+                                                    <ul class="pagination">
+                                                        <li class="page-item ${!categories.canGoPrev ? 'disabled':''}">
+                                                            <a
+                                                                    class="page-link"
+                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage - 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">Previous</a>
+                                                        </li>
+                                                        <c:forEach begin="1" end="${categories.pages}" var="i">
+                                                            <li class="page-item ${categories.currentPage == i ? 'active': ""}">
+                                                                <a class="page-link"
+                                                                   href="account?type=admin-categories&categoryPagination=${i}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">${i}</a>
+                                                            </li>
+                                                        </c:forEach>
+                                                        <li class="page-item ${!categories.canGoNext ? 'disabled':''}">
+                                                            <a
+                                                                    class="page-link"
+                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage + 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </caption>
                                         </table>
                                     </div>
                                 </div>
@@ -721,10 +798,11 @@
                                     <div class="col-xs-12 col-md-6">
                                         <h2>Customers</h2>
                                     </div>
-                                    <c:if test="${customers != null}">
+                                    <c:if test="${customers.data != null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-customers" class="search-wrapper"
-                                                  method="post">
+                                            <form action="account" class="search-wrapper"
+                                                  method="get">
+                                                <input name="type" value="admin-customers" required hidden readonly/>
                                                 <input name="action" value="search" required hidden readonly/>
                                                 <input name="customerSearchQuery" value="${customerSearchQuery}"
                                                        class="form-control w-50"/>
@@ -735,7 +813,7 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <div class="row">
+                                <div class="row  my-3">
                                     <div class="col-12 table-responsive">
                                         <table class="table table-striped">
                                             <thead>
@@ -748,7 +826,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <c:forEach var="customer" items="${customers}" varStatus="loop">
+                                            <c:forEach var="customer" items="${customers.data}" varStatus="loop">
                                                 <tr>
                                                     <td>${customer.firstName}</td>
                                                     <td>${customer.lastName}</td>
@@ -779,7 +857,7 @@
                                                                                hidden readonly/>
 
                                                                         <input id="id${loop.index}" name="id"
-                                                                               value="${category.id}" hidden readonly
+                                                                               value="${customer.id}" hidden readonly
                                                                                required/>
                                                                         <div class="modal-body">
                                                                             <div class="row">
@@ -823,6 +901,26 @@
                                                 </tr>
                                             </c:forEach>
                                             </tbody>
+                                            <caption>
+                                                <nav aria-label="Pagination">
+                                                    <ul class="pagination">
+                                                        <li class="page-item ${!customers.canGoPrev ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage - 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">Previous</a>
+                                                        </li>
+                                                        <c:forEach begin="1" end="${customers.pages}" var="i">
+                                                            <li class="page-item ${customers.currentPage == i ? 'active': ""}">
+                                                                <a class="page-link"
+                                                                   href="account?action=admin-customers&customerPagination=${i}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">${i}</a>
+                                                            </li>
+                                                        </c:forEach>
+                                                        <li class="page-item ${!customers.canGoNext ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage + 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery): ""}">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </caption>
                                         </table>
                                     </div>
                                 </div>
@@ -834,13 +932,13 @@
                                     <div class="col-xs-12 col-md-6">
                                         <h2>Logs</h2>
                                     </div>
-                                    <c:if test="${logs == null}">
+                                    <c:if test="${logs.data == null}">
                                         <div class="col-xs-12 col-md-6">
-                                            <form action="account?type=admin-logs" class="search-wrapper" method="post">
+                                            <form action="account" class="search-wrapper" method="get">
                                                 <input name="logSearch" value="${logSearchQuery}"
                                                        class="form-control w-50"/>
                                                 <input name="action" value="search" required hidden readonly/>
-
+                                                <input name="type" value="admin-logs" required hidden readonly/>
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <span class="material-icons">search</span>
                                                 </button>
@@ -848,10 +946,10 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <div class="row">
+                                <div class="row  my-3">
                                     <div class="col-xs-12 col-md-6  table-responsive">
                                         <c:choose>
-                                            <c:when test="${logs == null}">
+                                            <c:when test="${logs.data == null}">
                                                 <span>There are no logs to show.</span>
                                             </c:when>
                                             <c:otherwise>
@@ -865,7 +963,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <c:forEach var="log" items="${logs}" varStatus="loop">
+                                                    <c:forEach var="log" items="${logs.data}" varStatus="loop">
                                                         <tr>
                                                             <td>${log.customer}</td>
                                                             <td>${log.ipAddress}</td>
@@ -874,6 +972,28 @@
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
+                                                    <caption>
+                                                        <nav aria-label="Pagination">
+                                                            <ul class="pagination">
+                                                                <li class="page-item ${!logs.canGoPrev ? 'disabled':''}">
+                                                                    <a
+                                                                            class="page-link"
+                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage - 1}">Previous</a>
+                                                                </li>
+                                                                <c:forEach begin="1" end="${logs.pages}" var="i">
+                                                                    <li class="page-item ${logs.currentPage == i ? 'active': ""}">
+                                                                        <a class="page-link"
+                                                                           href="account?type=admin-logs&logPagination=${i}">${i}</a>
+                                                                    </li>
+                                                                </c:forEach>
+                                                                <li class="page-item ${!logs.canGoNext ? 'disabled':''}">
+                                                                    <a
+                                                                            class="page-link"
+                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage + 1}">Next</a>
+                                                                </li>
+                                                            </ul>
+                                                        </nav>
+                                                    </caption>
                                                 </table>
                                             </c:otherwise>
                                         </c:choose>
@@ -897,7 +1017,7 @@
                         <div class="col-xs-12 col-md-6 my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
                                 <input id="firstName" name="firstName" maxlength="100" required class="form-control"
-                                       type="text" value="${customerData.firstName}" disabled="true"/>
+                                       type="text" value="${customerData.firstName}" disabled/>
                                 <label for="firstName">First name</label>
 
                             </div>
@@ -912,7 +1032,7 @@
                         <div class="col-xs-12 col-md-6  my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">
                                 <input id="dateOfBirth" name="dateOfBirth" class="form-control" required maxlength="8"
-                                       type="date" value="${customerData.dateOfBirth}" disabled="true"/>
+                                       type="date" value="${customerData.dateOfBirth}" disabled/>
                                 <label for="dateOfBirth">Date of birth</label>
                             </div>
                         </div>
@@ -943,7 +1063,7 @@
                             <span>You have no addresses</span>
                         </c:when>
                         <c:otherwise>
-                            <form action="account?type=default-address" method="post">
+                            <form action="account?type=default-address" class="d-flex flex-row" method="post">
                                 <select class="form-select" name="address" aria-label="Default address">
                                     <c:if test="${defaultAddress == null}">
                                         <option selected>Select Default Address</option>
@@ -1215,9 +1335,9 @@
                                                                         </tr>
                                                                     </c:forEach>
                                                                     </tbody>
-                                                                    <tfoot>
+                                                                    <caption>
                                                                     <span>Total cost: ${cart.totalPriceString}</span>
-                                                                    </tfoot>
+                                                                    </caption>
                                                                 </table>
                                                             </div>
                                                         </div>

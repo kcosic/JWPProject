@@ -1,15 +1,17 @@
-<%--
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--
   Created by IntelliJ IDEA.
   User: Kresimir
   Date: 25/12/2021
   Time: 08:55
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="items" value="<%= request.getAttribute(AttributeEnum.ITEMS.toString())%>"/>
+<c:set var="selectedCategory" value="<%= request.getAttribute(AttributeEnum.SELECTED_CATEGORY.toString())%>"/>
+<c:set var="search" value="<%= request.getAttribute(AttributeEnum.SEARCH.toString())%>"/>
 <html>
 <head>
     <title>Products</title>
@@ -27,7 +29,7 @@
 <div class="container-fluid my-4">
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-6">
-            <h1 class="category-name">All products</h1>
+            <h1 class="category-name">${selectedCategory != null ? selectedCategory : "All products"}</h1>
         </div>
         <div class="col-xs-12 col-sm-6 d-flex justify-content-around">
             <form name="searchForm" action="products" method="get" novalidate class="no-margin">
@@ -46,7 +48,6 @@
     </div>
 
     <div class="products-wrapper mt-3">
-        <jsp:useBean id="items" scope="request" type="java.util.List"/>
         <c:choose>
             <c:when test="${items != null}">
                 <c:forEach var="item" items="${items}">

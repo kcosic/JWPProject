@@ -3,6 +3,7 @@ package com.kcosic.jwp.shared.helpers;
 import com.kcosic.jwp.shared.dal.Dal;
 import com.kcosic.jwp.shared.enums.PaymentEnum;
 import com.kcosic.jwp.shared.exceptions.EntityNotFoundException;
+import com.kcosic.jwp.shared.model.PaginationResponse;
 import com.kcosic.jwp.shared.model.entities.*;
 
 import java.math.BigDecimal;
@@ -12,20 +13,30 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class DbHelper {
     private DbHelper() {
     }
 
-    public static List<CustomerEntity> retrieveCustomers() {
+    public static List<CustomerEntity> retrieveCustomers(boolean ignoreGuests) {
         var dal = new Dal();
-        return dal.retrieveAll(CustomerEntity.class).toList();
+        var data = dal.retrieveAll(CustomerEntity.class);
+        if (ignoreGuests) {
+            data = data.filter(customerEntity -> customerEntity.getRole().getId() != 3);
+        }
+        return data.toList();
     }
-    public static List<CustomerEntity> retrieveCustomers(String searchQuery) {
-        var dal = new Dal();
-        return dal.retrieveAll(CustomerEntity.class).filter(
+
+    public static List<CustomerEntity> retrieveCustomers(String searchQuery, boolean ignoreGuests) {
+        return retrieveCustomers(ignoreGuests).stream().filter(
                 customerEntity ->
-                        customerEntity.getEmail().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT))).toList();
+                        customerEntity.getEmail() != null &&
+                                customerEntity
+                                        .getEmail()
+                                        .toLowerCase(Locale.ROOT)
+                                        .contains(searchQuery.toLowerCase(Locale.ROOT))
+        ).toList();
     }
 
     public static CustomerEntity retrieveCustomerByEmail(String email) throws EntityNotFoundException {
@@ -39,13 +50,13 @@ public class DbHelper {
         return filteredUser.get();
     }
 
-    public static CustomerEntity retrieveCustomerById(int id){
+    public static CustomerEntity retrieveCustomerById(int id) {
         var dal = new Dal();
 
         return dal.retrieveById(CustomerEntity.class, id);
     }
 
-    public static AddressEntity retrieveAddressById(int id){
+    public static AddressEntity retrieveAddressById(int id) {
         var dal = new Dal();
 
         return dal.retrieveById(AddressEntity.class, id);
@@ -61,7 +72,7 @@ public class DbHelper {
 
         return dal
                 .retrieveAll(CustomerEntity.class)
-                .filter((customer)->customer.getEmail() != null)
+                .filter((customer) -> customer.getEmail() != null)
                 .anyMatch(
                         (customer) -> customer.getEmail().equals(email)
                 );
@@ -71,19 +82,19 @@ public class DbHelper {
     public static List<ItemEntity> retrieveItems(boolean activeOnly) {
         var dal = new Dal();
         var data = dal.retrieveAll(ItemEntity.class);
-        if(activeOnly){
-           data = data.filter(ItemEntity::getIsActive);
+        if (activeOnly) {
+            data = data.filter(ItemEntity::getIsActive);
         }
         return data.toList();
     }
 
-    public static List<ItemEntity> retrieveItems(String query, boolean activeOnly){
+    public static List<ItemEntity> retrieveItems(String query, boolean activeOnly) {
         var data = retrieveItems(activeOnly)
                 .stream()
-                .filter(item->
+                .filter(item ->
                         item.getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
-                        item.getManufacturer().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
-                        item.getCategory().getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+                                item.getManufacturer().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                                item.getCategory().getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
                 );
         return data.toList();
     }
@@ -114,9 +125,9 @@ public class DbHelper {
                         cartItemEntity.getItem().equals(item) &&
                                 cartItemEntity.getCart().getId().equals(currentCartId))
                 .findFirst();*/
-         var optCartItem = currentCart.getCartItems().stream()
+        var optCartItem = currentCart.getCartItems().stream()
                 .filter(cartItemEntity ->
-                        cartItemEntity.getItem().equals(item) )
+                        cartItemEntity.getItem().equals(item))
                 .findFirst();
         if (optCartItem.isPresent()) {
             var cartItem = optCartItem.get();
@@ -151,7 +162,7 @@ public class DbHelper {
 
     public static BigDecimal calculateTotalPrice(Collection<CartItemEntity> currentCartItems) {
         var price = BigDecimal.valueOf(0);
-        for (var cartItem : currentCartItems) {;
+        for (var cartItem : currentCartItems) {
             price = price.add(
                     BigDecimal.valueOf(cartItem.getCount())
                             .multiply(cartItem.getItem().getPrice()));
@@ -173,12 +184,12 @@ public class DbHelper {
 
     public static int cartQuantity(int customerId) {
         var cart = retrieveCurrentCart(customerId);
-        if(cart == null){
+        if (cart == null) {
             return 0;
         }
         var quantity = 0;
 
-        for (var cartItem: cart.getCartItems()) {
+        for (var cartItem : cart.getCartItems()) {
             quantity += cartItem.getCount();
         }
 
@@ -198,9 +209,9 @@ public class DbHelper {
                 .toList();
     }
 
-    public static AddressEntity createAddress(AddressEntity newAddress) {
+    public static void createAddress(AddressEntity newAddress) {
         var dal = new Dal();
-        return dal.create(AddressEntity.class, newAddress);
+        dal.create(AddressEntity.class, newAddress);
     }
 
     public static void updateAddress(AddressEntity address) {
@@ -213,7 +224,7 @@ public class DbHelper {
 
         var carts = dal.retrieveAll(CartEntity.class);
 
-        if(onlyPurchased){
+        if (onlyPurchased) {
             carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
         }
 
@@ -221,17 +232,35 @@ public class DbHelper {
 
     }
 
+    public static <T extends BaseEntity> PaginationResponse<T> paginateData(List<T> rawData, int wantedPage, int perPage) {
+        var total = rawData.size();
+        var pages = (total / perPage) + 1;
+        var toSkip = (wantedPage - 1) * perPage;
+        var filteredData = rawData.stream().skip(toSkip).limit(perPage).toList();
+
+        return new PaginationResponse<>(
+                filteredData,
+                pages,
+                perPage,
+                total,
+                pages > wantedPage,
+                wantedPage > 1,
+                wantedPage);
+    }
+
     public static List<CartEntity> retrieveAllCarts(String searchQuery, boolean onlyPurchased) {
         var dal = new Dal();
 
         var carts = dal.retrieveAll(CartEntity.class).filter(
                 cartEntity ->
-                        cartEntity.getCustomer().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
-                        cartEntity.getCustomer().getEmail().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
-                                (cartEntity.getDateOfPurchase() != null && cartEntity.getDateOfPurchase().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)))
+                        cartEntity.getCustomer().getRole().getId() != 3
         );
 
-        if(onlyPurchased){
+        carts = carts.filter(cartEntity -> cartEntity.getCustomer().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
+                cartEntity.getCustomer().getEmail().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)) ||
+                (cartEntity.getDateOfPurchase() != null && cartEntity.getDateOfPurchase().toString().toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT))));
+
+        if (onlyPurchased) {
             carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
         }
 
@@ -242,21 +271,21 @@ public class DbHelper {
     public static List<CartEntity> retrieveCarts(Integer customerId, boolean onlyPurchased) {
         var dal = new Dal();
 
-        var carts = dal.retrieveAll(CartEntity.class).filter((cartEntity -> cartEntity.getCustomerId() == customerId));
+        var carts = dal.retrieveAll(CartEntity.class).filter((cartEntity -> Objects.equals(cartEntity.getCustomerId(), customerId)));
 
-        if(onlyPurchased){
+        if (onlyPurchased) {
             carts = carts.filter((cart) -> cart.getDateOfPurchase() != null);
         }
 
         return carts.toList();
     }
 
-    public static  List<CartEntity> retrieveCustomerCarts(int customerId) {
+    public static List<CartEntity> retrieveCustomerCarts(int customerId) {
         var dal = new Dal();
         return dal.retrieveAll(CartEntity.class).filter(cartEntity -> cartEntity.getCustomer().getId() == customerId).toList();
     }
 
-    public static CartEntity retrieveCurrentCart(int customerId){
+    public static CartEntity retrieveCurrentCart(int customerId) {
         var data = retrieveCustomerCarts(customerId).stream().filter(CartEntity::getCurrent).findFirst();
         return data.orElse(null);
     }
@@ -276,7 +305,7 @@ public class DbHelper {
 
     private static void deleteCustomerAddresses(CustomerEntity customer) {
         var addresses = retrieveAddresses(customer.getId());
-        if(addresses != null){
+        if (addresses != null) {
             var dal = new Dal();
             dal.bulkDelete(AddressEntity.class, addresses);
         }
@@ -284,7 +313,7 @@ public class DbHelper {
 
     private static void deleteCustomerCarts(CustomerEntity customer) {
         var carts = retrieveCustomerCarts(customer.getId());
-        if(carts != null){
+        if (carts != null) {
             for (var cart :
                     carts) {
                 deleteCartsCartItems(cart);
@@ -296,7 +325,7 @@ public class DbHelper {
 
     private static void deleteCartsCartItems(CartEntity cart) {
         var cartItems = retrieveCartItems(cart.getId());
-        if(cartItems != null){
+        if (cartItems != null) {
             var dal = new Dal();
             dal.bulkDelete(CartItemEntity.class, cartItems);
         }
@@ -311,6 +340,7 @@ public class DbHelper {
         var dal = new Dal();
         dal.create(ItemEntity.class, item);
     }
+
     public static void updateCategory(CategoryEntity category) {
         var dal = new Dal();
         dal.update(CategoryEntity.class, category);
@@ -342,7 +372,7 @@ public class DbHelper {
 
     public static AddressEntity retrieveDefaultAddress(CustomerEntity customer) {
         var dal = new Dal();
-        var address = dal.retrieveAll(AddressEntity.class).filter(addressEntity ->addressEntity.getCustomer().getId() == customer.getId() && addressEntity.getDefault()).findFirst();
+        var address = dal.retrieveAll(AddressEntity.class).filter(addressEntity -> Objects.equals(addressEntity.getCustomer().getId(), customer.getId()) && addressEntity.getDefault()).findFirst();
         return address.orElse(null);
 
     }
@@ -356,14 +386,15 @@ public class DbHelper {
         var dal = new Dal();
         return dal.retrieveAll(LogEntity.class).toList();
     }
+
     public static List<LogEntity> retrieveLogs(String query) {
         var dal = new Dal();
         return dal.retrieveAll(LogEntity.class).filter(logEntity ->
                 logEntity.getCustomer().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
-                logEntity.getActionName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
-                logEntity.getActionTime().toString().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
-                logEntity.getIpAddress().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
-                ).toList();
+                        logEntity.getActionName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                        logEntity.getActionTime().toString().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) ||
+                        logEntity.getIpAddress().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+        ).toList();
     }
 
     public static List<CategoryEntity> retrieveCategories(String categoryQuery) {
@@ -371,5 +402,15 @@ public class DbHelper {
         return dal.retrieveAll(CategoryEntity.class).filter(
                 categoryEntity ->
                         categoryEntity.getName().toLowerCase(Locale.ROOT).contains(categoryQuery.toLowerCase(Locale.ROOT))).toList();
+    }
+
+    public static List<ItemEntity> retrieveCategoryItems(int categoryId) {
+        var dal = new Dal();
+        return dal
+                .retrieveById(CategoryEntity.class, categoryId)
+                .getItems()
+                .stream()
+                .filter(ItemEntity::getIsActive)
+                .toList();
     }
 }

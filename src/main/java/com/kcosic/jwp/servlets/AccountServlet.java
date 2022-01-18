@@ -5,6 +5,7 @@ import com.kcosic.jwp.shared.enums.JspEnum;
 import com.kcosic.jwp.shared.helpers.DbHelper;
 import com.kcosic.jwp.shared.helpers.Helper;
 import com.kcosic.jwp.shared.model.BaseServlet;
+import com.kcosic.jwp.shared.model.PaginationResponse;
 import com.kcosic.jwp.shared.model.entities.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -26,11 +27,30 @@ import java.util.List;
 public class AccountServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
+
+        var type = request.getParameter(AttributeEnum.TYPE.toString());
+        var action = request.getParameter(AttributeEnum.ACTION.toString());
+        if(type != null){
+            switch (type) {
+                case "details" -> handleDetailsChange(request, action);
+                case "default-address" -> handleDefaultAddressChange(request, action);
+                case "address" -> handleAddressChange(request, action);
+                case "admin-customers" -> handleAdminCustomerChange(request, action);
+                case "admin-history" -> handleAdminHistoryChange(request, action);
+                case "admin-items" -> handleAdminItemsChange(request, action);
+                case "admin-categories" -> handleAdminCategoryChange(request, action);
+                case "admin-logs" -> handleAdminLogsChange(request, action);
+            }
+        }
+
         processAccountGetRequest(request, response);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
         var type = request.getParameter(AttributeEnum.TYPE.toString());
         var action = request.getParameter(AttributeEnum.ACTION.toString());
         switch (type) {
@@ -74,30 +94,56 @@ public class AccountServlet extends BaseServlet {
      * @param customer Current customer
      */
     private void processAdminAccountData(HttpServletRequest request, CustomerEntity customer) {
-        var customers = DbHelper.retrieveCustomers().stream().filter(customerEntity -> customerEntity.getRole().getId() != 3).toList();
-        Helper.addAttribute(request, AttributeEnum.CUSTOMERS, customers);
+        if (request.getParameter(AttributeEnum.CUSTOMER_SEARCH_QUERY.toString()) == null) {
+            var customers = DbHelper.retrieveCustomers(true);
+            var pagination = request.getParameter(AttributeEnum.CUSTOMER_PAGINATION.toString());
+            Helper.addAttribute(request, AttributeEnum.CUSTOMERS, DbHelper.paginateData(customers, (pagination != null ? Integer.parseInt(pagination) : 1), 10));
+        }
 
-        if(request.getParameter(AttributeEnum.HISTORY_SEARCH_QUERY.toString()) == null) {
+        if (request.getParameter(AttributeEnum.HISTORY_SEARCH_QUERY.toString()) == null) {
             var carts = DbHelper.retrieveAllCarts(true);
-            Helper.addAttribute(request, AttributeEnum.ALL_CARTS, carts);
-        }
-
-        if(request.getParameter(AttributeEnum.ITEM_SEARCH_QUERY.toString()) == null){
-            var items = DbHelper.retrieveItems(false);
-            Helper.addAttribute(request, AttributeEnum.ITEMS, items);
-        }
-
-        if(request.getParameter(AttributeEnum.CATEGORY_SEARCH_QUERY.toString()) == null) {
             var categories = DbHelper.retrieveCategories();
-            Helper.addAttribute(request, AttributeEnum.CATEGORIES, categories);
+
+            var pagination = request.getParameter(AttributeEnum.HISTORY_PAGINATION.toString());
+            Helper.addAttribute(request, AttributeEnum.ALL_CARTS, DbHelper.paginateData(carts, (pagination != null ? Integer.parseInt(pagination) : 1), 10));
+            Helper.addAttribute(request, AttributeEnum.ALL_CATEGORIES, categories);
+            if(pagination != null){
+                Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-history");
+                Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
+            }
+        }
+
+        if (request.getParameter(AttributeEnum.ITEM_SEARCH_QUERY.toString()) == null) {
+            var items = DbHelper.retrieveItems(false);
+            var pagination = request.getParameter(AttributeEnum.ITEM_PAGINATION.toString());
+            Helper.addAttribute(request, AttributeEnum.ITEMS, DbHelper.paginateData(items, (pagination != null ? Integer.parseInt(pagination) : 1), 10));
+            if(pagination != null){
+                Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-items");
+                Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
+            }
+        }
+
+        if (request.getParameter(AttributeEnum.CATEGORY_SEARCH_QUERY.toString()) == null) {
+            var categories = DbHelper.retrieveCategories();
+            var pagination = request.getParameter(AttributeEnum.CATEGORY_PAGINATION.toString());
+            Helper.addAttribute(request, AttributeEnum.CATEGORIES, DbHelper.paginateData(categories, (pagination != null ? Integer.parseInt(pagination) : 1), 10));
+            if(pagination != null){
+                Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-categories");
+                Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
+            }
         }
 
         var roles = DbHelper.retrieveRoles();
         Helper.addAttribute(request, AttributeEnum.ROLES, roles);
 
-        if(request.getParameter(AttributeEnum.LOG_SEARCH_QUERY.toString()) == null) {
+        if (request.getParameter(AttributeEnum.LOG_SEARCH_QUERY.toString()) == null) {
             var logs = DbHelper.retrieveLogs();
-            Helper.addAttribute(request, AttributeEnum.LOGS, logs);
+            var pagination = request.getParameter(AttributeEnum.LOG_PAGINATION.toString());
+            Helper.addAttribute(request, AttributeEnum.LOGS, DbHelper.paginateData(logs, (pagination != null ? Integer.parseInt(pagination) : 1), 10));
+            if(pagination != null){
+                Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-logs");
+                Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
+            }
         }
     }
 
@@ -124,7 +170,7 @@ public class AccountServlet extends BaseServlet {
     private void processAccountPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var customer = getOrCreateCustomer(request);
 
-        if (customer.getRoleId() == 3) {
+        if (customer.getRole().getId() == 3) {
             Helper.addAttribute(request, AttributeEnum.HAS_ERROR, false);
             request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
             return;
@@ -132,7 +178,7 @@ public class AccountServlet extends BaseServlet {
 
         processDefaultAccountData(request, customer);
 
-        if (customer.getRoleId() == 1) {
+        if (customer.getRole().getId() == 1) {
             processAdminAccountData(request, customer);
         }
 
@@ -143,6 +189,7 @@ public class AccountServlet extends BaseServlet {
 
     private void handleAdminHistoryChange(HttpServletRequest request, String action) {
         var historyQuery = request.getParameter(AttributeEnum.HISTORY_SEARCH_QUERY.toString());
+        var historyPagination = request.getParameter(AttributeEnum.HISTORY_PAGINATION.toString());
         List<CartEntity> carts;
         if (!Helper.isNullOrEmpty(historyQuery)) {
             carts = DbHelper.retrieveAllCarts(historyQuery, true);
@@ -150,7 +197,7 @@ public class AccountServlet extends BaseServlet {
             carts = DbHelper.retrieveAllCarts(true);
         }
         Helper.addAttribute(request, AttributeEnum.HISTORY_SEARCH_QUERY, historyQuery != null ? historyQuery : "");
-        Helper.addAttribute(request, AttributeEnum.ALL_CARTS, carts);
+        Helper.addAttribute(request, AttributeEnum.ALL_CARTS, DbHelper.paginateData(carts, historyPagination != null ? Integer.parseInt(historyPagination) : 1, 10));
 
         Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-history");
         Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
@@ -158,6 +205,7 @@ public class AccountServlet extends BaseServlet {
 
     private void handleAdminLogsChange(HttpServletRequest request, String action) {
         var logQuery = request.getParameter(AttributeEnum.LOG_SEARCH_QUERY.toString());
+        var logPagination = request.getParameter(AttributeEnum.LOG_PAGINATION.toString());
         List<LogEntity> logs;
         if (!Helper.isNullOrEmpty(logQuery)) {
             logs = DbHelper.retrieveLogs(logQuery);
@@ -165,7 +213,8 @@ public class AccountServlet extends BaseServlet {
             logs = DbHelper.retrieveLogs();
         }
         Helper.addAttribute(request, AttributeEnum.LOG_SEARCH_QUERY, logQuery != null ? logQuery : "");
-        Helper.addAttribute(request, AttributeEnum.LOGS, logs);
+
+        Helper.addAttribute(request, AttributeEnum.LOGS, DbHelper.paginateData(logs, logPagination != null ? Integer.parseInt(logPagination) : 1, 10));
 
         Helper.addAttribute(request, AttributeEnum.PASSED_ADMIN_VIEW, "admin-logs");
         Helper.addAttribute(request, AttributeEnum.PASSED_VIEW, "admin");
@@ -175,12 +224,10 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles changes on categories by admin
-     *
-     * @param request
-     * @param action
      */
     private void handleAdminCategoryChange(HttpServletRequest request, String action) {
         var categoryQuery = request.getParameter(AttributeEnum.CATEGORY_SEARCH_QUERY.toString());
+        var categoryPagination = request.getParameter(AttributeEnum.CATEGORY_PAGINATION.toString());
         List<CategoryEntity> categories;
         if (!Helper.isNullOrEmpty(categoryQuery)) {
             categories = DbHelper.retrieveCategories(categoryQuery);
@@ -188,9 +235,9 @@ public class AccountServlet extends BaseServlet {
             categories = DbHelper.retrieveCategories();
         }
         Helper.addAttribute(request, AttributeEnum.CATEGORY_SEARCH_QUERY, categoryQuery != null ? categoryQuery : "");
-        Helper.addAttribute(request, AttributeEnum.CATEGORIES, categories);
+        Helper.addAttribute(request, AttributeEnum.CATEGORIES,  DbHelper.paginateData(categories, categoryPagination != null ? Integer.parseInt(categoryPagination) : 1, 10 ));
 
-        if(!action.equals("search")){
+        if (!action.equals("search")) {
 
             var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
             var category = new CategoryEntity();
@@ -218,14 +265,10 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles changes on items by admin
-     *
-     * @param request
-     * @param action
-     * @throws ServletException
-     * @throws IOException
      */
     private void handleAdminItemsChange(HttpServletRequest request, String action) throws ServletException, IOException {
         var itemQuery = request.getParameter(AttributeEnum.ITEM_SEARCH_QUERY.toString());
+        var itemPagination = request.getParameter(AttributeEnum.ITEM_PAGINATION.toString());
         List<ItemEntity> items;
         if (!Helper.isNullOrEmpty(itemQuery)) {
             items = DbHelper.retrieveItems(itemQuery, false);
@@ -233,9 +276,10 @@ public class AccountServlet extends BaseServlet {
             items = DbHelper.retrieveItems(false);
         }
         Helper.addAttribute(request, AttributeEnum.ITEM_SEARCH_QUERY, itemQuery != null ? itemQuery : "");
-        Helper.addAttribute(request, AttributeEnum.ITEMS, items);
 
-        if(!action.equals("search")){
+        Helper.addAttribute(request, AttributeEnum.ITEMS, DbHelper.paginateData(items, itemPagination != null ? Integer.parseInt(itemPagination) : 1, 10 ));
+
+        if (!action.equals("search")) {
             var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
             var item = new ItemEntity();
             if (exists) {
@@ -307,24 +351,20 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles changes on customers by admin
-     *
-     * @param request
-     * @param action
-     * @throws ServletException
-     * @throws IOException
      */
-    private void handleAdminCustomerChange(HttpServletRequest request, String action) throws ServletException, IOException {
+    private void handleAdminCustomerChange(HttpServletRequest request, String action) {
         var customerQuery = request.getParameter(AttributeEnum.CUSTOMER_SEARCH_QUERY.toString());
+        var customerPagination = request.getParameter(AttributeEnum.CUSTOMER_PAGINATION.toString());
         List<CustomerEntity> customers;
         if (!Helper.isNullOrEmpty(customerQuery)) {
-            customers = DbHelper.retrieveCustomers(customerQuery);
+            customers = DbHelper.retrieveCustomers(customerQuery, true);
         } else {
-            customers = DbHelper.retrieveCustomers();
+            customers = DbHelper.retrieveCustomers(true);
         }
         Helper.addAttribute(request, AttributeEnum.CUSTOMER_SEARCH_QUERY, customerQuery != null ? customerQuery : "");
-        Helper.addAttribute(request, AttributeEnum.CUSTOMERS, customers);
+        Helper.addAttribute(request, AttributeEnum.CUSTOMERS, DbHelper.paginateData(customers, customerPagination != null ? Integer.parseInt(customerPagination) : 1, 10 ));
 
-        if(!action.equals("search")){
+        if (!action.equals("search")) {
             var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
             var customer = new CustomerEntity();
             if (exists) {
@@ -350,9 +390,6 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles create and update of the customer addresses
-     *
-     * @param request
-     * @param action
      */
     private void handleAddressChange(HttpServletRequest request, String action) {
         var exists = request.getParameter(AttributeEnum.ID.toString()) != null;
@@ -394,9 +431,6 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles customer default address change
-     *
-     * @param request
-     * @param action
      */
     private void handleDefaultAddressChange(HttpServletRequest request, String action) {
         var addressId = Integer.parseInt(request.getParameter(AttributeEnum.ADDRESS.toString()));
@@ -417,9 +451,6 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * Handles customer details change
-     *
-     * @param request Incoming request
-     * @param action
      */
     private void handleDetailsChange(HttpServletRequest request, String action) {
         var customer = getOrCreateCustomer(request);

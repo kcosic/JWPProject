@@ -1,15 +1,16 @@
-<%--
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--
   Created by IntelliJ IDEA.
   User: Kresimir
   Date: 28/12/2021
   Time: 19:12
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<jsp:useBean id="item" scope="request" type="com.kcosic.jwp.shared.model.entities.ItemEntity"/>
+<c:set var="item" scope="request" value="<%= request.getAttribute(AttributeEnum.ITEM.toString())%>"/>
+<c:set var="category" scope="request" value="<%= request.getAttribute(AttributeEnum.CATEGORY.toString())%>"/>
+
 <html>
 <head>
     <title>${item.manufacturer} - ${item.name}</title>
@@ -30,7 +31,6 @@
     <div class="card w-100">
         <div class="card-header">
             <div class="row">
-                <jsp:useBean id="category" scope="request" type="com.kcosic.jwp.shared.model.entities.CategoryEntity"/>
                 <div class="col-12">${category.name}</div>
                 <div class="col-12">${item.manufacturer} - ${item.name}</div>
             </div>

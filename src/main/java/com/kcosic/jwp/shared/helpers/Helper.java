@@ -97,11 +97,13 @@ public class Helper {
         String uploadPath = context.getRealPath("") + File.separator + "assets" + File.separator + "images";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             uploadDir.mkdir();
         }
         return uploadPath;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isNullOrEmpty(String string) {
         return !(string != null && !string.isEmpty());
     }
@@ -113,5 +115,13 @@ public class Helper {
         newLog.setActionName(actionName);
         newLog.setIpAddress(request.getRemoteAddr());
         DbHelper.addLog(newLog);
+    }
+
+    public static String formatAmount(String totalPrice) {
+        var decimal = totalPrice.substring(totalPrice.lastIndexOf('.') + 1);
+        if(decimal.equals("00") || decimal.equals("0")){
+            return totalPrice.substring(0, totalPrice.lastIndexOf('.')).replace(",","");
+        }
+        return totalPrice.replace(",","");
     }
 }

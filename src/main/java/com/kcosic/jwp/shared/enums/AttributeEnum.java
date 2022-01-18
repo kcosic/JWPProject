@@ -62,7 +62,13 @@ public enum AttributeEnum {
     CATEGORY_SEARCH_QUERY("categorySearchQuery"),
     ITEM_SEARCH_QUERY("itemSearchQuery"),
     CUSTOMER_SEARCH_QUERY("customerSearchQuery"),
-    HISTORY_SEARCH_QUERY("historySearchQuery"), ACTION("action");
+    HISTORY_SEARCH_QUERY("historySearchQuery"),
+    ACTION("action"),
+    HISTORY_PAGINATION("historyPagination"),
+    ITEM_PAGINATION("itemPagination"),
+    CUSTOMER_PAGINATION("customerPagination"),
+    CATEGORY_PAGINATION("categoryPagination"),
+    LOG_PAGINATION("logPagination"), ALL_CATEGORIES("allCategories"), SELECTED_CATEGORY("selectedCategory");
 
     private final String label;
 

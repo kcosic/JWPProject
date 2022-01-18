@@ -34,4 +34,14 @@ public class BaseServlet extends HttpServlet {
     protected void handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logoutCustomer(request);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+    }
 }

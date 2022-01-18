@@ -1,6 +1,7 @@
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="totalPrice" scope="session" class="java.lang.String"/>
-<jsp:useBean id="cartItems" scope="session" class="java.lang.Integer"/>
+<c:set var="totalPrice" scope="request" value="<%= request.getAttribute(AttributeEnum.TOTAL_PRICE.toString())%>"/>
+<c:set var="cartItems" scope="request" value="<%= request.getAttribute(AttributeEnum.CART_ITEMS.toString())%>"/>
 <%--
   Created by IntelliJ IDEA.
   User: Kresimir
@@ -37,7 +38,7 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 </div>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">JWP</a>

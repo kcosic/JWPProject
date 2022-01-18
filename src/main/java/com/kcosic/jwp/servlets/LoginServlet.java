@@ -18,12 +18,14 @@ import java.security.NoSuchAlgorithmException;
 public class LoginServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doGet(request, response);
         processLoginGetRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       processLoginPostRequest(request, response);
+        super.doPost(request, response);
+        processLoginPostRequest(request, response);
     }
 
     private void processLoginPostRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

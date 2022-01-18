@@ -1,15 +1,16 @@
-<%--
+<%@ page import="com.kcosic.jwp.shared.enums.AttributeEnum" %><%--
   Created by IntelliJ IDEA.
   User: Kresimir
   Date: 11/01/2022
   Time: 20:10
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+<c:set var="totalPrice" scope="request" value="<%= request.getAttribute(AttributeEnum.TOTAL_PRICE.toString())%>"/>
+<c:set var="customerData" scope="session" value="<%= request.getSession().getAttribute(AttributeEnum.CUSTOMER_DATA.toString())%>"/>
+<c:set var="defaultAddress" scope="request" value="<%= request.getAttribute(AttributeEnum.DEFAULT_ADDRESS.toString())%>"/>
 <html>
 <head>
     <title>Payment</title>
@@ -22,7 +23,6 @@
         let totalPrice = '${totalPrice}';
         let customerName = '${customerData}';
         let address = '${defaultAddress}';
-
     </script>
     <script src="${contextPath}/assets/scripts/custom/payment.js" type="text/javascript"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=AarCvYNF5RL2c37rDeEKejUjEii_IBFcH9p7q_hNsZ_XXnfvqbbg4SStnQQ21k8Mr7UgMQgMo2gwJJxt&components=buttons"></script>
@@ -78,17 +78,18 @@
                                     <button type="submit" form="cash" class="btn btn-success" >Cash on delivery</button>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="" id="paypal-button-container"></div>
-                                </div>
-                            </div>
+
 
                         </c:when>
                         <c:otherwise>
                             Set default address
                         </c:otherwise>
                     </c:choose>
+                    <div ${defaultAddress != null && customerData != null ? "" : "hidden"} class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <div class="" id="paypal-button-container"></div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-3 d-grid gap-2">
                             <button type="submit" form="cart" class="btn btn-warning">Go to cart</button>
