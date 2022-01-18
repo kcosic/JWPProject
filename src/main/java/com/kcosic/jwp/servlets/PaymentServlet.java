@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Base64;
@@ -52,7 +53,7 @@ public class PaymentServlet extends BaseServlet {
         var cart = DbHelper.retrieveCurrentCart(customer.getId());
         cart.setPaidWith(PaymentEnum.PAYPAL);
         cart.setCurrent(false);
-        cart.setDateOfPurchase(Date.valueOf(LocalDate.now()));
+        cart.setDateOfPurchase(new Timestamp(System.currentTimeMillis()));
 
         DbHelper.updateCart(cart);
 
@@ -67,7 +68,7 @@ public class PaymentServlet extends BaseServlet {
         var cart = DbHelper.retrieveCurrentCart(customer.getId());
         cart.setPaidWith(PaymentEnum.CASH);
         cart.setCurrent(false);
-        cart.setDateOfPurchase(Date.valueOf(LocalDate.now()));
+        cart.setDateOfPurchase(new Timestamp(System.currentTimeMillis()));
 
         DbHelper.updateCart(cart);
         request.getRequestDispatcher(JspEnum.PAYMENT_SUCCESS.getJsp()).forward(request, response);

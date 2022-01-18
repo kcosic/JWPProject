@@ -3,12 +3,14 @@ package com.kcosic.jwp.shared.model;
 import com.kcosic.jwp.shared.enums.AttributeEnum;
 import com.kcosic.jwp.shared.helpers.Helper;
 import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.entities.LogEntity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class BaseServlet extends HttpServlet {
     public BaseServlet() {
@@ -38,10 +40,18 @@ public class BaseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        var customer = getOrCreateCustomer(req);
+        if(customer != null && customer.getRole().getId() != 3){
+            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1, req.getServletPath().length() - 1)+"|POST");
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        var customer = getOrCreateCustomer(req);
+        if(customer != null && customer.getRole().getId() != 3){
+            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1, req.getServletPath().length() - 1)+"|GET");
+        }
     }
 }

@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="cart" scope="request" value="<%= request.getAttribute(AttributeEnum.CART.toString())%>"/>
@@ -48,25 +48,32 @@
                                             <tr>
                                                 <td>${cartItem.item.name}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-secondary" form="itemIncrease${loop.index}" type="submit"><span
+                                                    <button class="btn btn-sm btn-secondary"
+                                                            form="itemIncrease${loop.index}" type="submit"><span
                                                             class="material-icons">arrow_upward</span></button>
                                                         ${cartItem.count}
-                                                    <button class="btn btn-sm btn-secondary" form="itemDecrease${loop.index}" type="submit"><span
+                                                    <button class="btn btn-sm btn-secondary"
+                                                            form="itemDecrease${loop.index}" type="submit"><span
                                                             class="material-icons">arrow_downward</span></button>
                                                     <form id="itemIncrease${loop.index}" action="cart" method="post">
-                                                        <input name="cartItemId" readonly required hidden value="${cartItem.id}"/>
-                                                        <input name="count" readonly required hidden value="${cartItem.count + 1}"/>
+                                                        <input name="cartItemId" readonly required hidden
+                                                               value="${cartItem.id}"/>
+                                                        <input name="count" readonly required hidden
+                                                               value="${cartItem.count + 1}"/>
                                                     </form>
                                                     <form id="itemDecrease${loop.index}" action="cart" method="post">
-                                                        <input name="cartItemId" readonly required hidden value="${cartItem.id}"/>
-                                                        <input name="count" readonly required hidden value="${cartItem.count - 1}"/>
+                                                        <input name="cartItemId" readonly required hidden
+                                                               value="${cartItem.id}"/>
+                                                        <input name="count" readonly required hidden
+                                                               value="${cartItem.count - 1}"/>
                                                     </form>
                                                 </td>
                                                 <td>${cartItem.price}kn</td>
                                                 <td>${cartItem.price * cartItem.count}kn</td>
                                                 <td>
                                                     <form method="post" action="cart">
-                                                        <input name="removeItem" value="${cartItem.id}" readonly required hidden/>
+                                                        <input name="removeItem" value="${cartItem.id}" readonly
+                                                               required hidden/>
                                                         <button type="submit" class="btn btn-outline-danger">
                                                             <span class="material-icons">delete_forever</span>
                                                         </button>
@@ -97,26 +104,41 @@
 
 
                 </div>
-                <c:if test="${cart.cartItems != null && cart.cartItems.size() > 0}">
-                    <div class="card-footer">
-                        <div class="row justify-content-end">
-                            <div class="col-xs-12 col-sm-6 col-md-2">
-                                <form action="cart" method="post" id="clearCart" novalidate>
-                                    <input name="clearCart" value="true" readonly required hidden/>
-                                </form>
-                                <button type="submit" form="clearCart" class="btn btn-outline-danger">
-                                    <span class="material-icons">remove_shopping_cart</span>&nbsp;Clear
-                                </button>
+
+                <div class="card-footer">
+                    <c:choose>
+                        <c:when test="${cart.cartItems != null && cart.cartItems.size() > 0}">
+                            <div class="row justify-content-end">
+                                <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <form action="cart" method="post" id="clearCart" novalidate>
+                                        <input name="clearCart" value="true" readonly required hidden/>
+                                    </form>
+                                    <button type="submit" form="clearCart" class="btn btn-outline-danger">
+                                        <span class="material-icons">remove_shopping_cart</span>&nbsp;Clear
+                                    </button>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <form action="payment" method="get" id="submitCart" novalidate></form>
+                                    <button type="submit" form="submitCart" class="btn btn-success">
+                                        <span class="material-icons">shopping_cart_checkout</span>&nbsp;Checkout
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-xs-12 col-sm-6 col-md-2">
-                                <form action="payment" method="get" id="submitCart" novalidate></form>
-                                <button type="submit" form="submitCart" class="btn btn-success">
-                                    <span class="material-icons">shopping_cart_checkout</span>&nbsp;Checkout
-                                </button>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="row justify-content-end">
+                                <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <form action="products" method="get" id="products" novalidate></form>
+                                    <button type="submit" form="products" class="btn btn-warning">
+                                        <span class="material-icons">arrow_left</span>&nbsp;To Products
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </c:if>
+                        </c:otherwise>
+                    </c:choose>
+
+                </div>
+
 
             </div>
         </div>

@@ -9,6 +9,7 @@ import com.kcosic.jwp.shared.model.entities.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -112,19 +113,12 @@ public class DbHelper {
         if (currentCart == null) {
             var newCart = new CartEntity();
             newCart.setCustomer(customer);
-            newCart.setDateCreated(Date.valueOf(LocalDate.now()));
+            newCart.setDateCreated(new Timestamp(System.currentTimeMillis()));
             newCart.setTotalPrice(BigDecimal.valueOf(0));
             newCart.setCurrent(true);
             newCart.setPaidWith(PaymentEnum.UNPAID);
             currentCart = dal.create(CartEntity.class, newCart);
         }
-        /*var currentCartId = currentCart.getId();
-        var optCartItem = dal
-                .retrieveAll(CartItemEntity.class)
-                .filter(cartItemEntity ->
-                        cartItemEntity.getItem().equals(item) &&
-                                cartItemEntity.getCart().getId().equals(currentCartId))
-                .findFirst();*/
         var optCartItem = currentCart.getCartItems().stream()
                 .filter(cartItemEntity ->
                         cartItemEntity.getItem().equals(item))
@@ -150,7 +144,6 @@ public class DbHelper {
 
         return null;
     }
-
 
     public static List<CartItemEntity> retrieveCartItems(Integer cartId) {
         var dal = new Dal();

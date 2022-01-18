@@ -68,7 +68,10 @@ public enum AttributeEnum {
     ITEM_PAGINATION("itemPagination"),
     CUSTOMER_PAGINATION("customerPagination"),
     CATEGORY_PAGINATION("categoryPagination"),
-    LOG_PAGINATION("logPagination"), ALL_CATEGORIES("allCategories"), SELECTED_CATEGORY("selectedCategory");
+    LOG_PAGINATION("logPagination"),
+    ALL_CATEGORIES("allCategories"),
+    SELECTED_CATEGORY("selectedCategory"),
+    CATEGORY_ID("categoryId");
 
     private final String label;
 

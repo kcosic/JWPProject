@@ -59,21 +59,8 @@ public class LoginServlet extends BaseServlet {
         request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
     }
 
-    private void processLoginGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            response.setContentType("text/html");
-
-            if (Helper.isUserAuthenticated(request.getParameter(AttributeEnum.CUSTOMER_DATA.toString()))) {
-                Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
-                request.getRequestDispatcher(JspEnum.PRODUCTS.getJsp()).forward(request, response);
-            }
-
-            Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
-            request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
-
-        } catch (ServletException e) {
-            PrintWriter out = response.getWriter();
-            e.printStackTrace(out);
-        }
+    private void processLoginGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
+        request.getRequestDispatcher(JspEnum.LOGIN.getJsp()).forward(request, response);
     }
 }

@@ -2,8 +2,8 @@ package com.kcosic.jwp.shared.helpers;
 
 import com.kcosic.jwp.shared.enums.AttributeEnum;
 import com.kcosic.jwp.shared.enums.JspEnum;
-import com.kcosic.jwp.shared.model.entities.*;
-import jakarta.mail.Address;
+import com.kcosic.jwp.shared.model.entities.CustomerEntity;
+import com.kcosic.jwp.shared.model.entities.LogEntity;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +14,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Helper {
     public static String hash(String plainText) throws NoSuchAlgorithmException {
@@ -111,7 +106,7 @@ public class Helper {
     public static void log(HttpServletRequest request, String customerMail, String actionName){
         var newLog = new LogEntity();
         newLog.setCustomer(customerMail);
-        newLog.setActionTime(Date.valueOf(LocalDate.now()));
+        newLog.setActionTime(new java.sql.Timestamp(System.currentTimeMillis()));
         newLog.setActionName(actionName);
         newLog.setIpAddress(request.getRemoteAddr());
         DbHelper.addLog(newLog);

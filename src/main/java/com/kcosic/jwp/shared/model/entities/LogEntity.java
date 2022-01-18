@@ -3,6 +3,8 @@ package com.kcosic.jwp.shared.model.entities;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -24,7 +26,7 @@ public class LogEntity extends BaseEntity {
     private String actionName;
     @Basic
     @Column(name = "actionTime", nullable = false)
-    private Date actionTime;
+    private Timestamp actionTime;
 
     public Integer getId() {
         return id;
@@ -58,11 +60,11 @@ public class LogEntity extends BaseEntity {
         this.actionName = actionName;
     }
 
-    public Date getActionTime() {
+    public Timestamp getActionTime() {
         return actionTime;
     }
 
-    public void setActionTime(Date actionTime) {
+    public void setActionTime(Timestamp actionTime) {
         this.actionTime = actionTime;
     }
 

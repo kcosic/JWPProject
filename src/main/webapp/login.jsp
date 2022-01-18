@@ -83,7 +83,10 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col d-grid gap-2">
-                        <a class="btn btn-block btn-warning" href="register" type="button">Back</a>
+                        <form action="products" method="get" id="products" novalidate></form>
+                        <button type="submit" form="products" class="btn btn-warning">
+                            <span class="material-icons">arrow_left</span>&nbsp;To Products
+                        </button>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -47,10 +48,10 @@ public class CartEntity extends BaseEntity {
     private BigDecimal totalPrice;
     @Basic
     @Column(name = "dateOfPurchase")
-    private Date dateOfPurchase;
+    private Timestamp dateOfPurchase;
     @Basic
     @Column(name = "dateCreated")
-    private Date dateCreated;
+    private Timestamp dateCreated;
     @Basic
     @Column(name = "isCurrent", nullable = false)
     private Boolean isCurrent;
@@ -110,19 +111,19 @@ public class CartEntity extends BaseEntity {
 
     }
 
-    public Date getDateOfPurchase() {
+    public Timestamp getDateOfPurchase() {
         return dateOfPurchase;
     }
 
-    public void setDateOfPurchase(Date dateOfPurchase) {
+    public void setDateOfPurchase(Timestamp dateOfPurchase) {
         this.dateOfPurchase = dateOfPurchase;
     }
 
-    public Date getDateCreated() {
+    public Timestamp getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(Timestamp dateCreated) {
         this.dateCreated = dateCreated;
     }
 
@@ -215,14 +216,11 @@ public class CartEntity extends BaseEntity {
 
 
     public PaymentEnum getPaidWith() {
-        switch (paidWith){
-            case 1:
-                return PaymentEnum.CASH;
-            case 2:
-                return PaymentEnum.PAYPAL;
-            default:
-                return PaymentEnum.UNPAID;
-        }
+        return switch (paidWith) {
+            case 1 -> PaymentEnum.CASH;
+            case 2 -> PaymentEnum.PAYPAL;
+            default -> PaymentEnum.UNPAID;
+        };
     }
 
     public void setPaidWith(PaymentEnum payment) {
