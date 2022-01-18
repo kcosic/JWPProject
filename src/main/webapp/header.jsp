@@ -49,12 +49,12 @@
         <div class="collapse navbar-collapse" id="navContent">
             <ul class="navbar-nav me-auto align-items-end">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="products">Home</a>
+                    <a class="nav-link active"  onclick="toggleOverlay(true)" aria-current="page" href="products">Home</a>
                 </li>
             </ul>
             <div class="d-flex flex-row-reverse align-items-center m-sm-3  m-md-2" href="cart">
                 <form class="m-0" action="cart" method="get" novalidate>
-                    <button type="submit" class="btn btn-dark d-flex justify-content-center align-content-center position-relative nav-url" href="cart">
+                    <button type="submit"  onclick="toggleOverlay(true)" class="btn btn-dark d-flex justify-content-center align-content-center position-relative nav-url" href="cart">
                         <span id="price" class="header-price">${totalPrice != null ? totalPrice : "-" }kn</span>
 
                         <span class="material-icons">shopping_cart</span>
@@ -78,7 +78,7 @@
                     <c:choose>
                         <c:when test="${customerData != null && customerData.role.id != 3}">
                             <li>
-                                <button form="account" type="submit" class="dropdown-item d-flex justify-content-between align-content-center">
+                                <button form="account" type="submit"  onclick="toggleOverlay(true)" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Settings
                                     <span class="material-icons">
                                     settings
@@ -87,7 +87,7 @@
                                 <form class="d-none" id="account" action="account" method="get" novalidate></form>
                             </li>
                             <li>
-                                <button form="logout" type="submit" class="dropdown-item d-flex justify-content-between align-content-center">
+                                <button form="logout" type="submit" onclick="toggleOverlay(true)" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Logout
                                     <span class="material-icons">
                                     logout
@@ -102,7 +102,7 @@
                         <c:otherwise>
                             <li>
 
-                                <button type="submit" form="login" class="dropdown-item d-flex justify-content-between align-content-center">
+                                <button type="submit" form="login"  onclick="toggleOverlay(true)" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Login&nbsp;
                                     <span class="material-icons">
                                     login
@@ -112,7 +112,7 @@
                             </li>
                             <li>
 
-                                <button type="submit" form="register" class="dropdown-item d-flex justify-content-between align-content-center">
+                                <button type="submit" form="register"  onclick="toggleOverlay(true)" class="dropdown-item d-flex justify-content-between align-content-center">
                                     Register&nbsp;
                                     <span class="material-icons">
                                     how_to_reg

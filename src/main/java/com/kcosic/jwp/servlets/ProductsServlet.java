@@ -52,13 +52,15 @@ public class ProductsServlet extends BaseServlet {
             //noinspection OptionalGetWithoutIsPresent
             data = search != null ? filterCategoryItems(search,optSelectedCategory.get().getItems()) : optSelectedCategory.get().getItems();
             Helper.addAttribute(request,AttributeEnum.ITEMS, data);
-            Helper.addAttribute(request, AttributeEnum.CATEGORY_NAME, optSelectedCategory.get().getName());
+            Helper.addAttribute(request, AttributeEnum.SELECTED_CATEGORY, optSelectedCategory.get().getName());
             Helper.addAttribute(request, AttributeEnum.CATEGORY_ID, optSelectedCategory.get().getId());
         }
         else {
             data = search != null ? DbHelper.retrieveItems(search, true) : DbHelper.retrieveItems(true);
             Helper.addAttribute(request,AttributeEnum.ITEMS, data);
             Helper.addAttribute(request, AttributeEnum.CATEGORY_ID, null);
+            Helper.addAttribute(request, AttributeEnum.SELECTED_CATEGORY, null);
+
         }
 
         try {
@@ -96,7 +98,7 @@ public class ProductsServlet extends BaseServlet {
             //noinspection OptionalGetWithoutIsPresent
             var data = search != null ? filterCategoryItems(search,optSelectedCategory.get().getItems()) : optSelectedCategory.get().getItems();
             Helper.addAttribute(request,AttributeEnum.ITEMS, data);
-            Helper.addAttribute(request, AttributeEnum.CATEGORY_NAME, optSelectedCategory.get().getName());
+            Helper.addAttribute(request, AttributeEnum.SELECTED_CATEGORY, optSelectedCategory.get().getName());
             Helper.addAttribute(request, AttributeEnum.CATEGORY_ID, optSelectedCategory.get().getId());
 
         }
@@ -104,6 +106,8 @@ public class ProductsServlet extends BaseServlet {
             var data = search != null ? DbHelper.retrieveItems(search, true) : DbHelper.retrieveItems(true);
             Helper.addAttribute(request,AttributeEnum.ITEMS, data);
             Helper.addAttribute(request, AttributeEnum.CATEGORY_ID, null);
+            Helper.addAttribute(request, AttributeEnum.SELECTED_CATEGORY, null);
+
 
         }
 

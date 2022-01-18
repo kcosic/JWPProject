@@ -48,11 +48,11 @@
                                             <tr>
                                                 <td>${cartItem.item.name}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-secondary"
+                                                    <button class="btn btn-sm btn-secondary"  onclick="toggleOverlay(true)"
                                                             form="itemIncrease${loop.index}" type="submit"><span
                                                             class="material-icons">arrow_upward</span></button>
                                                         ${cartItem.count}
-                                                    <button class="btn btn-sm btn-secondary"
+                                                    <button class="btn btn-sm btn-secondary"  onclick="toggleOverlay(true)"
                                                             form="itemDecrease${loop.index}" type="submit"><span
                                                             class="material-icons">arrow_downward</span></button>
                                                     <form id="itemIncrease${loop.index}" action="cart" method="post">
@@ -113,13 +113,13 @@
                                     <form action="cart" method="post" id="clearCart" novalidate>
                                         <input name="clearCart" value="true" readonly required hidden/>
                                     </form>
-                                    <button type="submit" form="clearCart" class="btn btn-outline-danger">
+                                    <button type="submit"  onclick="toggleOverlay(true)" form="clearCart" class="btn btn-outline-danger">
                                         <span class="material-icons">remove_shopping_cart</span>&nbsp;Clear
                                     </button>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-2">
                                     <form action="payment" method="get" id="submitCart" novalidate></form>
-                                    <button type="submit" form="submitCart" class="btn btn-success">
+                                    <button type="submit"  onclick="toggleOverlay(true)" form="submitCart" class="btn btn-success">
                                         <span class="material-icons">shopping_cart_checkout</span>&nbsp;Checkout
                                     </button>
                                 </div>
@@ -129,7 +129,7 @@
                             <div class="row justify-content-end">
                                 <div class="col-xs-12 col-sm-6 col-md-2">
                                     <form action="products" method="get" id="products" novalidate></form>
-                                    <button type="submit" form="products" class="btn btn-warning">
+                                    <button type="submit"  onclick="toggleOverlay(true)" form="products" class="btn btn-warning">
                                         <span class="material-icons">arrow_left</span>&nbsp;To Products
                                     </button>
                                 </div>
