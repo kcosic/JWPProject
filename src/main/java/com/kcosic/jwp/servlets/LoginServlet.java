@@ -45,7 +45,7 @@ public class LoginServlet extends BaseServlet {
                 Helper.addAttribute(request,AttributeEnum.HAS_ERROR, false);
 
                 DbHelper.deleteCustomer(customer);
-                Helper.log(request, loggedInCustomer.getEmail(), "LOGIN");
+                Helper.log(request, loggedInCustomer.getEmail(), "USER LOGGED IN");
             }
             else {
                 Helper.addAttribute(request,AttributeEnum.HAS_ERROR, true);

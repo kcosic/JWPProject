@@ -59,22 +59,11 @@ public class Dal {
      * @return Casted entity to wanted type.
      */
     public <T extends BaseEntity> T retrieveById(Class<T> clazz, int id){
-
         return entityManager.find(clazz, id, getHints(clazz));
-
-
-       /* var entityGraph = entityManager.getEntityGraph(getEntityGraphName(clazz));
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
-        Root<T> root = criteriaQuery.from(clazz);
-        criteriaQuery.where(criteriaBuilder.equal(root.<Integer>get("id"), id));
-        TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setHint("jakarta.persistence.loadgraph", entityGraph);
-        return typedQuery.getSingleResult();*/
     }
 
     /**
-     * Returns NamedEntityGraph inside of HashMap
+     * Returns NamedEntityGraph inside HashMap
      * @param clazz Class which NamedEntityGraph is going to be used
      * @param <T>
      * @return Hashmap with the graph

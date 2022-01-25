@@ -5,7 +5,7 @@
   Time: 12:05
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <html>
@@ -22,7 +22,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container-fluid">
+<div class="container">
     <div class="row align-content-center justify-content-center">
         <div class="col-12 ">
             <div class="card">
@@ -30,7 +30,8 @@
                     <h2 class="error-title">Error</h2>
                 </div>
                 <div class="card-body">
-                    <p>Error has happened</p>
+                    <p>Error has happened:</p>
+                    <p> ${requestScope['jakarta.servlet.error.message']}</p>
                 </div>
             </div>
         </div>

@@ -31,7 +31,6 @@ public class CartServlet extends BaseServlet {
     private void processCartGetRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var customer = getOrCreateCustomer(request);
         var cart = DbHelper.retrieveCurrentCart(customer.getId());
-
         Helper.addAttribute(request, AttributeEnum.CART, cart);
         request.getRequestDispatcher(JspEnum.CART.getJsp()).forward(request, response);
     }
