@@ -15,6 +15,8 @@
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://jwpproject.cyqwwtao73pf.eu-central-1.rds.amazonaws.com:1433;database=JWPProject"/>
+            <property name="jakarta.persistence.jdbc.user" value="user"/>
+            <property name="jakarta.persistence.jdbc.password" value="pass"/>
             <property name="eclipselink.weaving" value="static"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>
