@@ -55,7 +55,7 @@ public class CustomerEntity extends BaseEntity {
     private Collection<AddressEntity> addresses;
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL)
     private Collection<CartEntity> carts;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false)
     private RoleEntity role;
 

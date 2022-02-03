@@ -70,23 +70,25 @@
             <div class="card-footer">
                 <div class="row mt-3">
                     <div class="col d-grid gap-2">
-                        <button class="btn btn-block btn-success" type="submit">
-                            <i></i>
+                        <button class="btn btn-block btn-success d-flex flex-row justify-content-center" type="submit">
+                            <span class="material-icons">login</span>&nbsp;
                             Log In
                         </button>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col d-grid gap-2">
-                        <a class="btn btn-block btn-primary" href="register">Register</a>
+                        <a class="btn btn-block btn-primary d-flex flex-row justify-content-center" href="register">
+                            <span class="material-icons">contact_page</span>
+                            Register
+                        </a>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col d-grid gap-2">
-                        <form action="products" method="get" id="products" novalidate></form>
-                        <button type="submit" form="products" class="btn btn-warning">
-                            <span class="material-icons">arrow_left</span>&nbsp;To Products
-                        </button>
+                        <a class="btn btn-warning d-flex flex-row justify-content-center" href="products">
+                            <span class="material-icons">arrow_back</span>&nbsp;To Products
+                        </a>
                     </div>
                 </div>
             </div>

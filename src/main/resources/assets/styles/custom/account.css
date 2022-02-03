@@ -10766,4 +10766,19 @@ body {
   min-width: 1000px;
 }
 
+.align-with-buttons {
+  width: 24px;
+  height: 24px;
+  text-align: center;
+}
+
+.page-item.disabled a.page-link {
+  color: #9d9d9d !important;
+  border-color: #9d9d9d !important;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
 /*# sourceMappingURL=account.css.map */

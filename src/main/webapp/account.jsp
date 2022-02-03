@@ -210,18 +210,42 @@
                                                             <ul class="pagination">
                                                                 <li class="page-item ${!allCarts.canGoPrev ? 'disabled':''}">
                                                                     <a class="page-link"
-                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage - 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">Previous</a>
+                                                                       href="account?type=admin-history&historyPagination=1${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">
+                                                                        <span class="material-icons">fast_rewind</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="page-item ${!allCarts.canGoPrev ? 'disabled':''}">
+                                                                    <a class="page-link"
+                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage - 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">
+                                                                        <span class="material-icons">arrow_left</span>
+
+                                                                    </a>
                                                                 </li>
 
-                                                                <c:forEach begin="1" end="${allCarts.pages}" var="i">
+                                                                <c:forEach
+                                                                        begin="${allCarts.currentPage - 3 > 1 ? allCarts.currentPage - 3 : 1}"
+                                                                        end="${allCarts.currentPage + 3 < allCarts.pages ? allCarts.currentPage + 3 : allCarts.pages}"
+                                                                        var="i">
                                                                     <li class="page-item ${allCarts.currentPage == i ? 'active': ""}">
                                                                         <a class="page-link"
-                                                                           href="account?type=admin-history&historyPagination=${i}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">${i}</a>
+                                                                           href="account?type=admin-history&historyPagination=${i}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">
+                                                                            <div class="align-with-buttons d-flex flex-column justify-content-center">${i}</div>
+                                                                        </a>
                                                                     </li>
                                                                 </c:forEach>
                                                                 <li class="page-item ${!allCarts.canGoNext ? 'disabled':''}">
                                                                     <a class="page-link"
-                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage + 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">Next</a>
+                                                                       href="account?type=admin-history&historyPagination=${allCarts.currentPage + 1}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">
+                                                                        <span class="material-icons">arrow_right</span>
+
+                                                                    </a>
+                                                                </li>
+                                                                <li class="page-item ${!allCarts.canGoNext ? 'disabled':''}">
+                                                                    <a class="page-link"
+                                                                       href="account?type=admin-history&historyPagination=${allCarts.pages}${historySearchQuery != null ? "&action=search&historySearchQuery=".concat(historySearchQuery) : ""}">
+                                                                        <span class="material-icons">fast_forward</span>
+
+                                                                    </a>
                                                                 </li>
                                                             </ul>
                                                         </nav>
@@ -587,17 +611,38 @@
                                                     <ul class="pagination">
                                                         <li class="page-item ${!items.canGoPrev ? 'disabled':''}"><a
                                                                 class="page-link"
-                                                                href="account?type=admin-items&itemPagination=${items.currentPage - 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">Previous</a>
+                                                                href="account?type=admin-items&itemPagination=1${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">
+                                                            <span class="material-icons">fast_rewind</span>
+                                                        </a>
                                                         </li>
-                                                        <c:forEach begin="1" end="${items.pages}" var="i">
+                                                        <li class="page-item ${!items.canGoPrev ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?type=admin-items&itemPagination=${items.currentPage - 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">
+                                                            <span class="material-icons">arrow_left</span>
+                                                        </a>
+                                                        </li>
+                                                        <c:forEach
+                                                                begin="${items.currentPage - 3 > 1 ? items.currentPage - 3 : 1}"
+                                                                end="${items.currentPage + 3 < items.pages ? items.currentPage - 3 : items.pages}"
+                                                                var="i">
                                                             <li class="page-item ${items.currentPage == i ? 'active': ""}">
                                                                 <a class="page-link"
-                                                                   href="account?type=admin-items&itemPagination=${i}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">${i}</a>
+                                                                   href="account?type=admin-items&itemPagination=${i}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">
+                                                                    <div class="align-with-buttons d-flex flex-column justify-content-center">${i}</div>
+                                                                </a>
                                                             </li>
                                                         </c:forEach>
                                                         <li class="page-item ${!items.canGoNext ? 'disabled':''}"><a
                                                                 class="page-link"
-                                                                href="account?type=admin-items&itemPagination=${items.currentPage + 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">Next</a>
+                                                                href="account?type=admin-items&itemPagination=${items.currentPage + 1}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">
+                                                            <span class="material-icons">arrow_right</span>
+                                                        </a>
+                                                        </li>
+                                                        <li class="page-item ${!items.canGoNext ? 'disabled':''}"><a
+                                                                class="page-link"
+                                                                href="account?type=admin-items&itemPagination=${items.pages}${itemSearchQuery != "" ? "&action=search&itemSearchQuery=".concat(itemSearchQuery) : ""}">
+                                                            <span class="material-icons">fast_forward</span>
+                                                        </a>
                                                         </li>
                                                     </ul>
                                                 </nav>
@@ -771,18 +816,41 @@
                                                         <li class="page-item ${!categories.canGoPrev ? 'disabled':''}">
                                                             <a
                                                                     class="page-link"
-                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage - 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">Previous</a>
+                                                                    href="account?type=admin-categories&categoryPagination=1${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">
+                                                                <span class="material-icons">fast_rewind</span>
+                                                            </a>
                                                         </li>
-                                                        <c:forEach begin="1" end="${categories.pages}" var="i">
+                                                        <li class="page-item ${!categories.canGoPrev ? 'disabled':''}">
+                                                            <a
+                                                                    class="page-link"
+                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage - 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">
+                                                                <span class="material-icons">arrow_left</span>
+                                                            </a>
+                                                        </li>
+                                                        <c:forEach
+                                                                begin="${categories.currentPage - 3 > 1 ? categories.currentPage - 3 : 1}"
+                                                                end="${categories.currentPage + 3 < categories.pages ? categories.currentPage + 3 : categories.pages}"
+                                                                var="i">
                                                             <li class="page-item ${categories.currentPage == i ? 'active': ""}">
                                                                 <a class="page-link"
-                                                                   href="account?type=admin-categories&categoryPagination=${i}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">${i}</a>
+                                                                   href="account?type=admin-categories&categoryPagination=${i}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">
+                                                                    <div class="align-with-buttons d-flex flex-column justify-content-center">${i}</div>
+                                                                </a>
                                                             </li>
                                                         </c:forEach>
                                                         <li class="page-item ${!categories.canGoNext ? 'disabled':''}">
                                                             <a
                                                                     class="page-link"
-                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage + 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">Next</a>
+                                                                    href="account?type=admin-categories&categoryPagination=${categories.currentPage + 1}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">
+                                                                <span class="material-icons">arrow_right</span>
+                                                            </a>
+                                                        </li>
+                                                        <li class="page-item ${!categories.canGoNext ? 'disabled':''}">
+                                                            <a
+                                                                    class="page-link"
+                                                                    href="account?type=admin-categories&categoryPagination=${categories.pages}${categorySearchQuery != null ? "&action=search&categorySearchQuery=".concat(categorySearchQuery) : ""}">
+                                                                <span class="material-icons">fast_forward</span>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </nav>
@@ -865,7 +933,7 @@
                                                                                     <div class="input-group">
                                                                                         <div class="form-floating w-100">
                                                                                             <select class="form-select"
-                                                                                                    name="role"
+                                                                                                    name="roleId"
                                                                                                     required
                                                                                                     id="eRoles">
                                                                                                 <c:forEach
@@ -904,19 +972,42 @@
                                             <caption>
                                                 <nav aria-label="Pagination">
                                                     <ul class="pagination">
-                                                        <li class="page-item ${!customers.canGoPrev ? 'disabled':''}"><a
-                                                                class="page-link"
-                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage - 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">Previous</a>
+                                                        <li class="page-item ${!customers.canGoPrev ? 'disabled':''}">
+                                                            <a class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=1${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">
+                                                                <span class="material-icons">fast_rewind</span>
+                                                            </a>
                                                         </li>
-                                                        <c:forEach begin="1" end="${customers.pages}" var="i">
+                                                        <li class="page-item ${!customers.canGoPrev ? 'disabled':''}">
+                                                            <a class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage - 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">
+                                                                <span class="material-icons">arrow_left</span>
+                                                            </a>
+                                                        </li>
+                                                        <c:forEach
+                                                                begin="${customers.currentPage - 3 > 1 ? customers.currentPage - 4 : '1'}"
+                                                                end="${customers.currentPage + 3 < customers.pages ? customers.currentPage + 3 : customers.pages}"
+                                                                var="i">
                                                             <li class="page-item ${customers.currentPage == i ? 'active': ""}">
                                                                 <a class="page-link"
-                                                                   href="account?action=admin-customers&customerPagination=${i}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">${i}</a>
+                                                                   href="account?action=admin-customers&customerPagination=${i}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery) : ""}">
+                                                                        <div class="align-with-buttons d-flex flex-column justify-content-center">${i}</div>
+                                                                </a>
                                                             </li>
                                                         </c:forEach>
-                                                        <li class="page-item ${!customers.canGoNext ? 'disabled':''}"><a
-                                                                class="page-link"
-                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage + 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery): ""}">Next</a>
+                                                        <li class="page-item ${!customers.canGoNext ? 'disabled':''}">
+                                                            <a class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=${customers.currentPage + 1}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery): ""}">
+                                                                <span class="material-icons">arrow_right</span>
+
+                                                            </a>
+                                                        </li>
+                                                        <li class="page-item ${!customers.canGoNext ? 'disabled':''}">
+                                                            <a class="page-link"
+                                                                href="account?action=admin-customers&customerPagination=${customers.pages}${customerSearchQuery != null ? "&action=search&customerSearchQuery=".concat(customerSearchQuery): ""}">
+                                                                <span class="material-icons">fast_forward</span>
+
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </nav>
@@ -947,7 +1038,7 @@
                                     </c:if>
                                 </div>
                                 <div class="row  my-3">
-                                    <div class="col-xs-12 col-md-6  table-responsive">
+                                    <div class="col-12 table-responsive">
                                         <c:choose>
                                             <c:when test="${logs.data == null}">
                                                 <span>There are no logs to show.</span>
@@ -978,18 +1069,42 @@
                                                                 <li class="page-item ${!logs.canGoPrev ? 'disabled':''}">
                                                                     <a
                                                                             class="page-link"
-                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage - 1}">Previous</a>
+                                                                            href="account?type=admin-logs&logPagination=1">
+                                                                        <span class="material-icons">fast_rewind</span>
+                                                                    </a>
                                                                 </li>
-                                                                <c:forEach begin="1" end="${logs.pages}" var="i">
+                                                                <li class="page-item ${!logs.canGoPrev ? 'disabled':''}">
+                                                                    <a
+                                                                            class="page-link"
+                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage - 1}">
+                                                                        <span class="material-icons">arrow_left</span>
+                                                                    </a>
+                                                                </li>
+                                                                <c:forEach
+                                                                        begin="${logs.currentPage - 3 > 1 ? logs.currentPage - 3 : 1}"
+                                                                        end="${logs.currentPage + 3 < logs.pages ? logs.currentPage + 3 : logs.pages}"
+                                                                        var="i">
                                                                     <li class="page-item ${logs.currentPage == i ? 'active': ""}">
                                                                         <a class="page-link"
-                                                                           href="account?type=admin-logs&logPagination=${i}">${i}</a>
+                                                                           href="account?type=admin-logs&logPagination=${i}">
+                                                                            <div class="align-with-buttons d-flex flex-column justify-content-center">${i}</div>
+
+                                                                        </a>
                                                                     </li>
                                                                 </c:forEach>
                                                                 <li class="page-item ${!logs.canGoNext ? 'disabled':''}">
                                                                     <a
                                                                             class="page-link"
-                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage + 1}">Next</a>
+                                                                            href="account?type=admin-logs&logPagination=${logs.currentPage + 1}">
+                                                                        <span class="material-icons">arrow_right</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="page-item ${!logs.canGoNext ? 'disabled':''}">
+                                                                    <a
+                                                                            class="page-link"
+                                                                            href="account?type=admin-logs&logPagination=${logs.pages}">
+                                                                        <span class="material-icons">fast_forward</span>
+                                                                    </a>
                                                                 </li>
                                                             </ul>
                                                         </nav>
@@ -1010,9 +1125,9 @@
 
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12 d-flex flex-row justify-content-between align-items-center">
-                            <h2>Customer Details</h2>
-                            <span class="material-icons" onclick="toggleDetailsFields()">edit</span>
+                        <div class="col-12 d-flex flex-row align-items-center">
+                            <h2 class="p-2">Customer Details</h2>
+                            <span class="material-icons clickable" onclick="toggleDetailsFields()">edit</span>
                         </div>
                         <div class="col-xs-12 col-md-6 my-3 mx-sm-1 mx-md-3">
                             <div class="details-value form-floating">

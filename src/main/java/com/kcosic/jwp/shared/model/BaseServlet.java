@@ -42,7 +42,7 @@ public class BaseServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         var customer = getOrCreateCustomer(req);
         if(customer != null && customer.getRole().getId() != 3){
-            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1, req.getServletPath().length() - 1)+"|POST");
+            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1).concat("|POST"));
         }
     }
 
@@ -51,7 +51,7 @@ public class BaseServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         var customer = getOrCreateCustomer(req);
         if(customer != null && customer.getRole().getId() != 3){
-            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1, req.getServletPath().length() - 1)+"|GET");
+            Helper.log(req, customer.getEmail(), req.getServletPath().substring(1).concat("|GET"));
         }
     }
 }
